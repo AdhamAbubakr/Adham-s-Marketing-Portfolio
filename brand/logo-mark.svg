@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80">
+  <defs>
+    <linearGradient id="brandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#A855F7"/>
+    </linearGradient>
+    <linearGradient id="sparkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EC4899"/>
+      <stop offset="100%" stop-color="#F472B6"/>
+    </linearGradient>
+  </defs>
+  <!-- Rounded square BG with gradient -->
+  <rect width="80" height="80" rx="18" fill="url(#brandGrad)"/>
+  <!-- Subtle inner glow -->
+  <rect x="2" y="2" width="76" height="76" rx="16" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+  <!-- Stylized A letterform (bold, triangular) -->
+  <path d="M 40 16 L 64 64 L 54 64 L 50 56 L 30 56 L 26 64 L 16 64 Z M 33.5 48 L 46.5 48 L 40 35 Z" fill="#FFFFFF"/>
+  <!-- Inner upward arrow inside the A (growth indicator) -->
+  <path d="M 36 44 L 40 38 L 44 44 Z" fill="url(#sparkGrad)"/>
+  <!-- Spark accent dot (top-right) -->
+  <circle cx="62" cy="20" r="4" fill="url(#sparkGrad)"/>
+  <circle cx="62" cy="20" r="6" fill="none" stroke="rgba(236,72,153,0.4)" stroke-width="1.2"/>
+</svg>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <!-- Mark in white outline -->
+  <rect x="1" y="1" width="78" height="78" rx="17" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+  <path d="M 40 16 L 64 64 L 54 64 L 50 56 L 30 56 L 26 64 L 16 64 Z M 33.5 48 L 46.5 48 L 40 35 Z" fill="#FFFFFF"/>
+  <path d="M 36 44 L 40 38 L 44 44 Z" fill="#FFFFFF" opacity="0.6"/>
+  <circle cx="62" cy="20" r="3" fill="#FFFFFF"/>
+  <!-- Wordmark -->
+  <text x="100" y="50" font-family="'Space Grotesk', system-ui, sans-serif" font-size="34" font-weight="700" fill="#FFFFFF" letter-spacing="-0.02em">Adham</text>
+  <circle cx="208" cy="48" r="5" fill="#FFFFFF"/>
+  <text x="100" y="68" font-family="'Inter', system-ui, sans-serif" font-size="10" font-weight="500" fill="#FFFFFF" opacity="0.7" letter-spacing="0.18em">DIGITAL · MARKETING · GROWTH</text>
+</svg>

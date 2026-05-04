@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A0F2E"/>
+      <stop offset="100%" stop-color="#0A0118"/>
+    </linearGradient>
+    <linearGradient id="markGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#A855F7"/>
+    </linearGradient>
+    <linearGradient id="sparkG" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EC4899"/>
+      <stop offset="100%" stop-color="#F472B6"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="70%" cy="30%">
+      <stop offset="0%" stop-color="rgba(168,85,247,0.5)"/>
+      <stop offset="60%" stop-color="rgba(168,85,247,0)"/>
+    </radialGradient>
+  </defs>
+  <!-- BG -->
+  <rect width="1000" height="1000" fill="url(#bgGrad)"/>
+  <rect width="1000" height="1000" fill="url(#glow)"/>
+  <!-- Subtle grid -->
+  <g opacity="0.05" stroke="#A855F7" stroke-width="1">
+    <line x1="0" y1="200" x2="1000" y2="200"/>
+    <line x1="0" y1="400" x2="1000" y2="400"/>
+    <line x1="0" y1="600" x2="1000" y2="600"/>
+    <line x1="0" y1="800" x2="1000" y2="800"/>
+    <line x1="200" y1="0" x2="200" y2="1000"/>
+    <line x1="400" y1="0" x2="400" y2="1000"/>
+    <line x1="600" y1="0" x2="600" y2="1000"/>
+    <line x1="800" y1="0" x2="800" y2="1000"/>
+  </g>
+  <!-- Centered mark -->
+  <g transform="translate(350 240) scale(3.75)">
+    <rect width="80" height="80" rx="18" fill="url(#markGrad)"/>
+    <rect x="2" y="2" width="76" height="76" rx="16" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+    <path d="M 40 16 L 64 64 L 54 64 L 50 56 L 30 56 L 26 64 L 16 64 Z M 33.5 48 L 46.5 48 L 40 35 Z" fill="#FFFFFF"/>
+    <path d="M 36 44 L 40 38 L 44 44 Z" fill="url(#sparkG)"/>
+    <circle cx="62" cy="20" r="4" fill="url(#sparkG)"/>
+  </g>
+  <!-- Wordmark -->
+  <text x="500" y="700" text-anchor="middle" font-family="'Space Grotesk', system-ui, sans-serif" font-size="100" font-weight="700" fill="#F8F8FC" letter-spacing="-0.02em">Adham</text>
+  <circle cx="703" cy="690" r="14" fill="#EC4899"/>
+  <!-- Tag -->
+  <text x="500" y="780" text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="32" font-weight="500" fill="#A855F7" letter-spacing="0.25em">DIGITAL MARKETING SPECIALIST</text>
+  <!-- Decorative bottom line -->
+  <line x1="350" y1="850" x2="650" y2="850" stroke="rgba(168,85,247,0.4)" stroke-width="1.5"/>
+  <text x="500" y="900" text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="22" font-weight="400" fill="#8B8BA0" letter-spacing="0.18em">STRATEGY · PERFORMANCE · GROWTH</text>
+</svg>

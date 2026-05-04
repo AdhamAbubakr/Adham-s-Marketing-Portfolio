@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bg3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#A855F7"/>
+    </linearGradient>
+    <linearGradient id="sp3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EC4899"/>
+      <stop offset="100%" stop-color="#F472B6"/>
+    </linearGradient>
+  </defs>
+  <!-- MARK centered -->
+  <g transform="translate(60 16)">
+    <rect width="80" height="80" rx="18" fill="url(#bg3)"/>
+    <rect x="2" y="2" width="76" height="76" rx="16" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+    <path d="M 40 16 L 64 64 L 54 64 L 50 56 L 30 56 L 26 64 L 16 64 Z M 33.5 48 L 46.5 48 L 40 35 Z" fill="#FFFFFF"/>
+    <path d="M 36 44 L 40 38 L 44 44 Z" fill="url(#sp3)"/>
+    <circle cx="62" cy="20" r="4" fill="url(#sp3)"/>
+  </g>
+  <!-- WORDMARK -->
+  <text x="100" y="135" text-anchor="middle" font-family="'Space Grotesk', system-ui, sans-serif" font-size="34" font-weight="700" fill="#F8F8FC" letter-spacing="-0.02em">Adham</text>
+  <circle cx="156" cy="133" r="5" fill="#EC4899"/>
+  <!-- Tagline -->
+  <text x="100" y="160" text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="9" font-weight="500" fill="#A855F7" letter-spacing="0.22em">DIGITAL · MARKETING · GROWTH</text>
+  <!-- Decorative line -->
+  <line x1="60" y1="172" x2="140" y2="172" stroke="rgba(168,85,247,0.3)" stroke-width="1"/>
+  <text x="100" y="187" text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="8" font-weight="400" fill="#8B8BA0" letter-spacing="0.15em">EST · 2024 · EGYPT</text>
+</svg>

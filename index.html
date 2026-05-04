@@ -7,16 +7,28 @@
   <meta name="description" content="Adham Abo Bakr SalahElden — Digital Marketing Specialist building brands across MENA & Africa. Paid Ads, Social Media, E-commerce, WordPress & Shopify." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop offset='0' stop-color='%237C3AED'/%3E%3Cstop offset='1' stop-color='%23C084FC'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Ctext x='32' y='44' text-anchor='middle' font-family='Space Grotesk, sans-serif' font-weight='700' font-size='30' fill='white'%3EA%3C/text%3E%3C/svg%3E" />
+  <link rel="icon" type="image/svg+xml" href="brand/favicon.svg" />
 <style>
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   :root{
-    --purple:#7C3AED; --purple-light:#9D5CF8; --purple-deep:#5B21B6;
+    /* Brand colors */
+    --purple:#7C3AED;          /* Royal Purple - primary */
+    --purple-light:#A855F7;    /* Electric Violet - highlight */
+    --purple-deep:#5B21B6;     /* Deep purple */
     --purple-glow:rgba(124,58,237,0.25);
-    --bg:#07070C; --bg2:#0F0F18; --bg3:#16161F;
-    --card:#1A1A24; --card-hover:#22222F;
-    --border:rgba(124,58,237,0.18); --border-strong:rgba(124,58,237,0.4);
-    --text:#F5F5FA; --muted:#8B8BA0; --accent:#C084FC; --green:#22D88F;
+    --magenta:#EC4899;         /* Magenta Spark - energy/accent */
+    --magenta-light:#F472B6;
+    --cyan:#06B6D4;            /* Cyan Pulse - data/digital */
+    --cream:#FEF3C7;           /* Warm contrast */
+    /* Surfaces */
+    --bg:#0A0118;              /* Midnight (deep purple-black) */
+    --bg2:#11062A;
+    --bg3:#1A0F2E;
+    --card:#1C1130; --card-hover:#241540;
+    --border:rgba(168,85,247,0.18);
+    --border-strong:rgba(168,85,247,0.4);
+    /* Text */
+    --text:#F8F8FC; --muted:#9090A8; --accent:#C084FC; --green:#22D88F;
   }
   html{scroll-behavior:smooth}
   body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden}
@@ -34,16 +46,15 @@
   }
   #intro.gone{opacity:0;visibility:hidden;pointer-events:none}
   .intro-mark{
-    width:140px;height:140px;border-radius:30px;
-    background:linear-gradient(135deg,var(--purple),var(--accent));
-    display:flex;align-items:center;justify-content:center;
-    font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:5rem;
-    box-shadow:0 20px 60px rgba(124,58,237,.5);position:relative;overflow:hidden;
+    width:140px;height:140px;border-radius:30px;overflow:hidden;
+    box-shadow:0 20px 60px rgba(124,58,237,.5),0 0 80px rgba(236,72,153,.25);
+    position:relative;
     animation:markPop 1.4s cubic-bezier(.2,1,.3,1.2) forwards;
   }
+  .intro-mark svg{display:block;width:100%;height:100%}
   .intro-mark::after{
-    content:'';position:absolute;inset:-2px;border-radius:30px;
-    background:linear-gradient(135deg,transparent,rgba(255,255,255,.4),transparent);
+    content:'';position:absolute;inset:0;border-radius:30px;pointer-events:none;
+    background:linear-gradient(135deg,transparent 30%,rgba(255,255,255,.35) 50%,transparent 70%);
     transform:translateX(-100%);animation:shine 1.6s ease .6s forwards;
   }
   @keyframes markPop{0%{transform:scale(0) rotate(-30deg);opacity:0}60%{transform:scale(1.08) rotate(0);opacity:1}100%{transform:scale(1)}}
@@ -66,14 +77,12 @@
   }
   .nav-logo{display:flex;align-items:center;gap:.6rem;text-decoration:none}
   .logo-mark{
-    width:34px;height:34px;border-radius:9px;
-    background:linear-gradient(135deg,var(--purple),var(--accent));
-    display:flex;align-items:center;justify-content:center;
-    font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:1.05rem;
-    box-shadow:0 4px 14px rgba(124,58,237,.4);
+    width:36px;height:36px;border-radius:9px;overflow:hidden;
+    box-shadow:0 4px 14px rgba(124,58,237,.4);display:block;
   }
+  .logo-mark svg{display:block;width:100%;height:100%}
   .logo-text{font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:600;color:var(--text);letter-spacing:.02em}
-  .logo-text span{color:var(--accent)}
+  .logo-text span{color:var(--magenta)}
   .nav-links{display:flex;gap:2rem;list-style:none}
   .nav-links a{color:var(--muted);text-decoration:none;font-size:.88rem;font-weight:500;transition:color .2s;position:relative}
   .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:var(--purple);transition:width .25s}
@@ -233,10 +242,9 @@
   }
   .about-img{
     width:100%;aspect-ratio:1;border-radius:18px;
-    background:linear-gradient(135deg,var(--purple) 0%,var(--accent) 100%);
+    background:linear-gradient(135deg,var(--purple) 0%,var(--purple-light) 100%);
     display:flex;align-items:center;justify-content:center;
-    font-family:'Space Grotesk',sans-serif;font-size:8rem;font-weight:700;color:#fff;
-    box-shadow:0 30px 80px rgba(124,58,237,.3);
+    box-shadow:0 30px 80px rgba(124,58,237,.4),0 0 60px rgba(236,72,153,.2);
     position:relative;overflow:hidden;
   }
   .about-img::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.18),transparent 60%)}
@@ -425,14 +433,43 @@
 
 <!-- INTRO LOADER -->
 <div id="intro">
-  <div class="intro-mark">A</div>
-  <div class="intro-name">Adham Abo Bakr</div>
+  <div class="intro-mark">
+    <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+      <defs>
+        <linearGradient id="iGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#7C3AED"/>
+          <stop offset="100%" stop-color="#A855F7"/>
+        </linearGradient>
+        <linearGradient id="iSpark" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#EC4899"/>
+          <stop offset="100%" stop-color="#F472B6"/>
+        </linearGradient>
+      </defs>
+      <rect width="80" height="80" rx="18" fill="url(#iGrad)"/>
+      <rect x="2" y="2" width="76" height="76" rx="16" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <path d="M 40 16 L 64 64 L 54 64 L 50 56 L 30 56 L 26 64 L 16 64 Z M 33.5 48 L 46.5 48 L 40 35 Z" fill="#FFFFFF"/>
+      <path d="M 36 44 L 40 38 L 44 44 Z" fill="url(#iSpark)"/>
+      <circle cx="62" cy="20" r="4" fill="url(#iSpark)"/>
+    </svg>
+  </div>
+  <div class="intro-name">Adham<span style="color:#EC4899">.</span> Marketing</div>
 </div>
 
 <!-- NAV -->
 <nav>
-  <a href="#" class="nav-logo">
-    <span class="logo-mark">A</span>
+  <a href="#" class="nav-logo" aria-label="Adham — Digital Marketing">
+    <span class="logo-mark" aria-hidden="true">
+      <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="nGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#7C3AED"/><stop offset="100%" stop-color="#A855F7"/>
+          </linearGradient>
+        </defs>
+        <rect width="80" height="80" rx="18" fill="url(#nGrad)"/>
+        <path d="M 40 16 L 64 64 L 54 64 L 50 56 L 30 56 L 26 64 L 16 64 Z M 33.5 48 L 46.5 48 L 40 35 Z" fill="#FFFFFF"/>
+        <circle cx="62" cy="20" r="4" fill="#EC4899"/>
+      </svg>
+    </span>
     <span class="logo-text">Adham<span>.</span></span>
   </a>
   <ul class="nav-links">
@@ -577,7 +614,12 @@
   <div class="section-inner">
     <div class="about-grid">
       <div class="fade-in">
-        <div class="about-img">A</div>
+        <div class="about-img">
+          <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" style="width:55%;height:55%">
+            <path d="M 40 16 L 64 64 L 54 64 L 50 56 L 30 56 L 26 64 L 16 64 Z M 33.5 48 L 46.5 48 L 40 35 Z" fill="#FFFFFF"/>
+            <circle cx="62" cy="20" r="4" fill="#EC4899"/>
+          </svg>
+        </div>
       </div>
       <div class="fade-in">
         <div class="section-tag">About Me</div>
@@ -953,7 +995,7 @@
 </section>
 
 <footer>
-  <span class="footer-brand">Adham. — Marketing With Adham</span>
+  <span class="footer-brand">Adham<span style="color:var(--magenta)">.</span> &mdash; Strategy &middot; Performance &middot; Growth</span>
   <span class="footer-copy">© 2026 Adham Abo Bakr SalahElden · Digital Marketing Specialist · Egypt</span>
 </footer>
 

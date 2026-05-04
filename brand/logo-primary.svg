@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <defs>
+    <linearGradient id="brandGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#A855F7"/>
+    </linearGradient>
+    <linearGradient id="sparkGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EC4899"/>
+      <stop offset="100%" stop-color="#F472B6"/>
+    </linearGradient>
+  </defs>
+  <!-- MARK -->
+  <rect width="80" height="80" rx="18" fill="url(#brandGrad2)"/>
+  <rect x="2" y="2" width="76" height="76" rx="16" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+  <path d="M 40 16 L 64 64 L 54 64 L 50 56 L 30 56 L 26 64 L 16 64 Z M 33.5 48 L 46.5 48 L 40 35 Z" fill="#FFFFFF"/>
+  <path d="M 36 44 L 40 38 L 44 44 Z" fill="url(#sparkGrad2)"/>
+  <circle cx="62" cy="20" r="4" fill="url(#sparkGrad2)"/>
+
+  <!-- WORDMARK -->
+  <text x="100" y="50" font-family="'Space Grotesk', system-ui, sans-serif" font-size="34" font-weight="700" fill="#F8F8FC" letter-spacing="-0.02em">Adham</text>
+  <circle cx="208" cy="48" r="5" fill="#EC4899"/>
+
+  <!-- Tagline -->
+  <text x="100" y="68" font-family="'Inter', system-ui, sans-serif" font-size="10" font-weight="500" fill="#A855F7" letter-spacing="0.18em">DIGITAL · MARKETING · GROWTH</text>
+</svg>
