@@ -1184,24 +1184,54 @@
         const { error } = await supabase.from('leads').insert([lead]);
         if(error) throw error;
 
-        // 2. Send email notification via Web3Forms (best-effort, non-blocking)
+        // 2. Send email notification via Web3Forms
         if(window.WEB3FORMS_KEY){
-          fetch('https://api.web3forms.com/submit', {
-            method: 'POST',
-            headers: {'Content-Type':'application/json', 'Accept':'application/json'},
-            body: JSON.stringify({
-              access_key: window.WEB3FORMS_KEY,
-              subject: `🔥 New Lead from Portfolio: ${lead.name}`,
-              from_name: 'Adham Portfolio',
-              name: lead.name,
-              email: lead.email,
-              phone: lead.phone || 'Not provided',
-              service: lead.service,
-              budget: lead.budget || 'Not specified',
-              message: lead.message || 'No additional message',
-              source: lead.source
-            })
-          }).catch(e => console.warn('Email notification failed (lead still saved):', e));
+          try {
+            const emailBody = `
+🔥 New Lead from Portfolio Website
+
+━━━━━━━━━━━━━━━━━━━━━━━
+👤 NAME:     ${lead.name}
+📧 EMAIL:    ${lead.email}
+📱 PHONE:    ${lead.phone || 'Not provided'}
+🎯 SERVICE:  ${lead.service}
+💰 BUDGET:   ${lead.budget || 'Not specified'}
+🌐 SOURCE:   ${lead.source}
+━━━━━━━━━━━━━━━━━━━━━━━
+
+💬 MESSAGE:
+${lead.message || '(No message provided)'}
+
+━━━━━━━━━━━━━━━━━━━━━━━
+View all leads: https://adhamabobakr.netlify.app/admin.html
+            `.trim();
+
+            const emailResp = await fetch('https://api.web3forms.com/submit', {
+              method: 'POST',
+              headers: {'Content-Type':'application/json', 'Accept':'application/json'},
+              body: JSON.stringify({
+                access_key: window.WEB3FORMS_KEY,
+                subject: `🔥 New Lead: ${lead.name} — ${lead.service}`,
+                from_name: 'Adham Portfolio',
+                name: lead.name,
+                email: lead.email,
+                phone: lead.phone || 'Not provided',
+                service: lead.service,
+                budget: lead.budget || 'Not specified',
+                source: lead.source,
+                message: emailBody,
+                botcheck: false
+              })
+            });
+            const emailData = await emailResp.json();
+            if(!emailData.success){
+              console.warn('Web3Forms response:', emailData);
+            } else {
+              console.log('✅ Email notification sent');
+            }
+          } catch(e) {
+            console.warn('Email notification failed (lead still saved):', e);
+          }
         }
 
         showFeedback('✅ Thanks! I\'ll reach out within 24 hours.', 'success');
