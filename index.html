@@ -403,21 +403,77 @@
   @media (max-width:900px){.process-steps{grid-template-columns:repeat(2,1fr)}}
   @media (max-width:520px){.process-steps{grid-template-columns:1fr}}
 
-  /* ---------- CONTACT ---------- */
+  /* ---------- CONTACT + LEAD FORM ---------- */
   #contact{background:linear-gradient(180deg,var(--bg),var(--bg2))}
-  .contact-inner{text-align:center;max-width:780px;margin:0 auto}
-  .contact-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin:1.6rem 0 3rem}
-  .contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+  .contact-grid-2col{display:grid;grid-template-columns:0.95fr 1.05fr;gap:3.5rem;align-items:start}
+  .contact-channels{display:flex;flex-direction:column;gap:.9rem;margin-top:1.5rem}
   .contact-item{
     background:var(--card);border:1px solid var(--border);border-radius:14px;
-    padding:1.5rem 1rem;text-decoration:none;color:var(--text);
-    display:flex;flex-direction:column;align-items:center;gap:.4rem;transition:all .3s;
+    padding:1.1rem 1.3rem;text-decoration:none;color:var(--text);
+    display:flex;align-items:center;gap:1rem;transition:all .25s;
   }
-  .contact-item:hover{border-color:var(--border-strong);transform:translateY(-4px);background:var(--card-hover)}
-  .contact-icon{font-size:1.6rem;margin-bottom:.4rem}
-  .contact-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.15em;color:var(--muted)}
-  .contact-value{font-size:.92rem;font-weight:600}
-  @media (max-width:600px){.contact-grid{grid-template-columns:1fr}}
+  .contact-item:hover{border-color:var(--border-strong);transform:translateX(4px);background:var(--card-hover)}
+  .contact-icon{font-size:1.5rem;width:42px;height:42px;display:flex;align-items:center;justify-content:center;background:var(--purple-glow);border-radius:10px;flex-shrink:0}
+  .contact-item div{display:flex;flex-direction:column}
+  .contact-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);margin-bottom:.15rem}
+  .contact-value{font-size:.9rem;font-weight:600}
+
+  /* FORM */
+  .contact-form-wrap{
+    background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(236,72,153,.06));
+    border:1px solid var(--border-strong);border-radius:20px;
+    padding:2.4rem;position:relative;overflow:hidden;
+  }
+  .contact-form-wrap::before{
+    content:'';position:absolute;top:-50%;right:-20%;width:300px;height:300px;
+    border-radius:50%;background:radial-gradient(circle,rgba(236,72,153,.15),transparent 70%);
+    pointer-events:none;
+  }
+  .lead-form{position:relative;z-index:1}
+  .form-tag{display:inline-flex;align-items:center;gap:.4rem;background:rgba(236,72,153,.12);border:1px solid rgba(236,72,153,.4);padding:.3rem .8rem;border-radius:50px;font-size:.72rem;font-weight:600;color:var(--magenta);letter-spacing:.1em;text-transform:uppercase;margin-bottom:1rem}
+  .form-title{font-family:'Space Grotesk',sans-serif;font-size:1.7rem;font-weight:700;line-height:1.2;margin-bottom:.4rem}
+  .form-sub{color:var(--muted);font-size:.92rem;margin-bottom:1.6rem}
+
+  .field{display:flex;flex-direction:column;margin-bottom:1rem;flex:1}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  .field label{font-size:.78rem;font-weight:600;margin-bottom:.4rem;color:var(--text);letter-spacing:.02em}
+  .field input,.field select,.field textarea{
+    background:var(--bg);border:1px solid var(--border);
+    color:var(--text);padding:.75rem .9rem;border-radius:10px;
+    font-family:'Inter',sans-serif;font-size:.92rem;
+    transition:border-color .2s, background .2s;
+    width:100%;
+  }
+  .field input:focus,.field select:focus,.field textarea:focus{
+    outline:none;border-color:var(--purple-light);
+    background:var(--bg2);
+    box-shadow:0 0 0 3px rgba(168,85,247,.15);
+  }
+  .field textarea{resize:vertical;min-height:90px;font-family:'Inter',sans-serif}
+  .field input::placeholder,.field textarea::placeholder{color:#5e5e75}
+  .field select{cursor:pointer}
+  .field select option{background:var(--bg);color:var(--text)}
+
+  .btn-submit{
+    width:100%;justify-content:center;margin-top:.6rem;font-size:1rem;
+    padding:1rem;border:none;cursor:pointer;font-family:'Inter',sans-serif;
+  }
+  .btn-submit .btn-loading{display:none}
+  .btn-submit.loading .btn-label{display:none}
+  .btn-submit.loading .btn-loading{display:inline-flex;align-items:center;gap:.4rem}
+  .btn-submit:disabled{opacity:.7;cursor:not-allowed}
+
+  .form-feedback{margin-top:1rem;padding:0;font-size:.88rem;border-radius:10px;text-align:center;display:none}
+  .form-feedback.show{display:block;padding:.85rem;}
+  .form-feedback.success{background:rgba(34,216,143,.1);border:1px solid rgba(34,216,143,.4);color:#22D88F}
+  .form-feedback.error{background:rgba(236,72,153,.1);border:1px solid rgba(236,72,153,.4);color:var(--magenta)}
+  .form-note{font-size:.72rem;color:var(--muted);text-align:center;margin-top:1rem;line-height:1.5}
+
+  @media (max-width:900px){
+    .contact-grid-2col{grid-template-columns:1fr;gap:2.5rem}
+    .field-row{grid-template-columns:1fr}
+    .contact-form-wrap{padding:1.8rem}
+  }
 
   /* ---------- FOOTER ---------- */
   footer{
@@ -962,33 +1018,106 @@
   </div>
 </section>
 
-<!-- CONTACT -->
+<!-- CONTACT (with Lead Capture Form -> Supabase) -->
 <section id="contact">
   <div class="section-inner">
-    <div class="contact-inner">
-      <div class="section-tag" style="justify-content:center">Let's Build Something</div>
-      <h2>Ready to Grow <span class="h1-grad">Your Brand?</span></h2>
-      <p class="section-desc" style="margin-left:auto;margin-right:auto">Tell me about your business, your goals, and your budget — I'll come back with a clear plan, real numbers, and a path to growth.</p>
-      <div class="contact-btns">
-        <a href="mailto:adhambakrsalah@gmail.com" class="btn-primary">📧 Send Email</a>
-        <a href="https://wa.me/201044724144" target="_blank" rel="noopener" class="btn-secondary">💬 WhatsApp Me</a>
+    <div class="contact-grid-2col">
+      <!-- Left: Intro + Direct Channels -->
+      <div class="contact-left">
+        <div class="section-tag">Let&rsquo;s Build Something</div>
+        <h2>Ready to Grow <span class="h1-grad">Your Brand?</span></h2>
+        <p class="section-desc" style="margin-bottom:2rem">Tell me about your business, your goals, and your budget — I&rsquo;ll come back with a clear plan, real numbers, and a path to growth.</p>
+
+        <div class="contact-channels">
+          <a href="mailto:adhambakrsalah@gmail.com" class="contact-item">
+            <span class="contact-icon">📧</span>
+            <div>
+              <span class="contact-label">Email</span>
+              <span class="contact-value">adhambakrsalah@gmail.com</span>
+            </div>
+          </a>
+          <a href="https://wa.me/201044724144" target="_blank" rel="noopener" class="contact-item">
+            <span class="contact-icon">💬</span>
+            <div>
+              <span class="contact-label">WhatsApp</span>
+              <span class="contact-value">+20 104 472 4144</span>
+            </div>
+          </a>
+          <a href="tel:+201044724144" class="contact-item">
+            <span class="contact-icon">📞</span>
+            <div>
+              <span class="contact-label">Phone</span>
+              <span class="contact-value">+20 104 472 4144</span>
+            </div>
+          </a>
+        </div>
       </div>
-      <div class="contact-grid">
-        <a href="mailto:adhambakrsalah@gmail.com" class="contact-item">
-          <span class="contact-icon">📧</span>
-          <span class="contact-label">Email</span>
-          <span class="contact-value">adhambakrsalah@gmail.com</span>
-        </a>
-        <a href="tel:+201044724144" class="contact-item">
-          <span class="contact-icon">📞</span>
-          <span class="contact-label">Phone</span>
-          <span class="contact-value">+20 104 472 4144</span>
-        </a>
-        <a href="https://wa.me/201044724144" target="_blank" rel="noopener" class="contact-item">
-          <span class="contact-icon">💬</span>
-          <span class="contact-label">WhatsApp</span>
-          <span class="contact-value">+20 104 472 4144</span>
-        </a>
+
+      <!-- Right: Lead Capture Form -->
+      <div class="contact-form-wrap">
+        <form id="leadForm" class="lead-form" novalidate>
+          <div class="form-tag">📝 Free Strategy Call</div>
+          <h3 class="form-title">Send Me a Project Brief</h3>
+          <p class="form-sub">Get a free 30-min strategy call. No commitment, no fluff.</p>
+
+          <div class="field">
+            <label>Full Name *</label>
+            <input type="text" name="name" required placeholder="John Doe" />
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label>Email *</label>
+              <input type="email" name="email" required placeholder="you@company.com" />
+            </div>
+            <div class="field">
+              <label>Phone / WhatsApp</label>
+              <input type="tel" name="phone" placeholder="+20 100 000 0000" />
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label>Service Needed *</label>
+              <select name="service" required>
+                <option value="">Choose one&hellip;</option>
+                <option value="social-media">Social Media Management</option>
+                <option value="paid-ads">Paid Ads (Meta / Google / TikTok)</option>
+                <option value="ecommerce-website">E-commerce Website (Shopify / WordPress)</option>
+                <option value="content-design">Content &amp; Creative Design</option>
+                <option value="crm-automation">CRM &amp; Automation</option>
+                <option value="analytics">Analytics &amp; Reporting</option>
+                <option value="full-strategy">Full Marketing Strategy</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Monthly Budget</label>
+              <select name="budget">
+                <option value="">Select range</option>
+                <option value="<500">Less than $500</option>
+                <option value="500-1500">$500 &ndash; $1,500</option>
+                <option value="1500-5000">$1,500 &ndash; $5,000</option>
+                <option value="5000+">$5,000+</option>
+                <option value="not-sure">Not sure yet</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Tell me about your project</label>
+            <textarea name="message" rows="4" placeholder="What does your business do? What are your main goals?"></textarea>
+          </div>
+
+          <button type="submit" class="btn-primary btn-submit">
+            <span class="btn-label">🚀 Send Project Brief</span>
+            <span class="btn-loading">Sending&hellip;</span>
+          </button>
+
+          <div class="form-feedback" id="formFeedback"></div>
+
+          <p class="form-note">By submitting, you agree to be contacted about your project. No spam, ever.</p>
+        </form>
       </div>
     </div>
   </div>
@@ -999,11 +1128,80 @@
   <span class="footer-copy">© 2026 Adham Abo Bakr SalahElden · Digital Marketing Specialist · Egypt</span>
 </footer>
 
+<!-- Supabase JS Client -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.min.js"></script>
+<script src="supabase-config.js"></script>
+
 <script>
   // INTRO
   window.addEventListener('load', () => {
     setTimeout(() => document.getElementById('intro').classList.add('gone'), 1900);
   });
+
+  // ===== SUPABASE LEAD FORM =====
+  const supabase = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+
+  const leadForm = document.getElementById('leadForm');
+  const formFeedback = document.getElementById('formFeedback');
+  const submitBtn = leadForm?.querySelector('.btn-submit');
+
+  // Capture UTM source from URL (for tracking which campaign brought them)
+  function getSource(){
+    const params = new URLSearchParams(window.location.search);
+    return params.get('utm_source') || params.get('source') || 'website';
+  }
+
+  if(leadForm){
+    leadForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fd = new FormData(leadForm);
+      const lead = {
+        name: fd.get('name')?.trim(),
+        email: fd.get('email')?.trim(),
+        phone: fd.get('phone')?.trim() || null,
+        service: fd.get('service'),
+        budget: fd.get('budget') || null,
+        message: fd.get('message')?.trim() || null,
+        source: getSource()
+      };
+
+      // Basic validation
+      if(!lead.name || !lead.email || !lead.service){
+        showFeedback('Please fill in all required fields.', 'error');
+        return;
+      }
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lead.email)){
+        showFeedback('Please enter a valid email address.', 'error');
+        return;
+      }
+
+      submitBtn.classList.add('loading');
+      submitBtn.disabled = true;
+      formFeedback.className = 'form-feedback';
+
+      try {
+        const { error } = await supabase.from('leads').insert([lead]);
+        if(error) throw error;
+        showFeedback('✅ Thanks! I\'ll reach out within 24 hours.', 'success');
+        leadForm.reset();
+        // Track conversion if pixel/GA installed
+        if(window.fbq) fbq('track', 'Lead');
+        if(window.gtag) gtag('event', 'generate_lead', {service: lead.service});
+      } catch(err) {
+        console.error(err);
+        showFeedback('⚠️ Something went wrong. Please try WhatsApp or email.', 'error');
+      } finally {
+        submitBtn.classList.remove('loading');
+        submitBtn.disabled = false;
+      }
+    });
+  }
+
+  function showFeedback(msg, type){
+    formFeedback.textContent = msg;
+    formFeedback.className = `form-feedback show ${type}`;
+    if(type === 'success') setTimeout(() => formFeedback.classList.remove('show'), 8000);
+  }
 
   // FADE IN
   const observer = new IntersectionObserver((entries) => {

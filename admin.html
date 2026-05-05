@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Adham. — Leads Dashboard</title>
+<link rel="icon" type="image/svg+xml" href="brand/favicon.svg" />
+<meta name="robots" content="noindex,nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --purple:#7C3AED; --purple-light:#A855F7; --magenta:#EC4899; --cyan:#06B6D4;
+    --bg:#0A0118; --bg2:#11062A; --bg3:#1A0F2E;
+    --card:#1C1130; --card-hover:#241540;
+    --border:rgba(168,85,247,0.18); --border-strong:rgba(168,85,247,0.4);
+    --text:#F8F8FC; --muted:#9090A8; --green:#22D88F; --red:#EF4444; --yellow:#EAB308;
+  }
+  body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.6;min-height:100vh}
+  ::-webkit-scrollbar{width:6px}
+  ::-webkit-scrollbar-track{background:var(--bg)}
+  ::-webkit-scrollbar-thumb{background:var(--purple);border-radius:3px}
+
+  /* LOGIN */
+  .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;background:radial-gradient(ellipse at top,rgba(124,58,237,0.15),transparent 60%)}
+  .login-card{
+    background:var(--card);border:1px solid var(--border-strong);border-radius:20px;
+    padding:2.5rem;max-width:420px;width:100%;
+    box-shadow:0 20px 60px rgba(0,0,0,0.4);
+  }
+  .login-mark{width:60px;height:60px;border-radius:14px;margin:0 auto 1.4rem;display:block;overflow:hidden}
+  .login-card h1{font-family:'Space Grotesk',sans-serif;font-size:1.6rem;text-align:center;margin-bottom:.4rem}
+  .login-card .sub{text-align:center;color:var(--muted);font-size:.9rem;margin-bottom:1.8rem}
+  .login-card label{display:block;font-size:.78rem;font-weight:600;margin-bottom:.4rem;letter-spacing:.02em}
+  .login-card input{
+    width:100%;background:var(--bg);border:1px solid var(--border);
+    color:var(--text);padding:.8rem 1rem;border-radius:10px;
+    font-family:'Inter',sans-serif;font-size:.95rem;margin-bottom:1rem;
+    transition:border-color .2s;
+  }
+  .login-card input:focus{outline:none;border-color:var(--purple-light);box-shadow:0 0 0 3px rgba(168,85,247,.15)}
+  .login-card button{
+    width:100%;background:var(--purple);color:#fff;border:none;padding:.85rem;
+    border-radius:10px;font-weight:600;font-size:.95rem;cursor:pointer;
+    transition:all .2s;font-family:'Inter',sans-serif;
+  }
+  .login-card button:hover{background:var(--purple-light);transform:translateY(-1px)}
+  .login-card button:disabled{opacity:.6;cursor:not-allowed}
+  .login-error{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.4);color:var(--red);padding:.7rem;border-radius:10px;font-size:.85rem;margin-bottom:1rem;display:none}
+  .login-error.show{display:block}
+
+  /* DASHBOARD */
+  .dash{display:none;min-height:100vh}
+  .dash.show{display:block}
+
+  .topbar{
+    position:sticky;top:0;z-index:50;background:rgba(10,1,24,0.85);backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border);
+    display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;
+  }
+  .topbar-brand{display:flex;align-items:center;gap:.7rem;font-family:'Space Grotesk',sans-serif;font-weight:600}
+  .topbar-mark{width:32px;height:32px;border-radius:8px;overflow:hidden}
+  .topbar-actions{display:flex;align-items:center;gap:1rem}
+  .topbar-user{font-size:.85rem;color:var(--muted)}
+  .btn-logout{background:transparent;border:1px solid var(--border-strong);color:var(--text);padding:.4rem 1rem;border-radius:8px;cursor:pointer;font-size:.85rem;transition:all .2s;font-family:'Inter',sans-serif}
+  .btn-logout:hover{background:var(--card-hover)}
+
+  .container{max-width:1400px;margin:0 auto;padding:2rem}
+
+  /* STATS */
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem}
+  .stat-card{
+    background:var(--card);border:1px solid var(--border);border-radius:14px;
+    padding:1.4rem 1.3rem;position:relative;overflow:hidden;
+  }
+  .stat-card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:3px;
+    background:linear-gradient(90deg,var(--purple),var(--magenta));
+  }
+  .stat-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);margin-bottom:.5rem}
+  .stat-num{font-family:'Space Grotesk',sans-serif;font-size:2.2rem;font-weight:700;line-height:1;margin-bottom:.3rem;background:linear-gradient(135deg,var(--text),var(--purple-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .stat-sub{font-size:.78rem;color:var(--muted)}
+  .stat-icon{position:absolute;top:1.2rem;right:1.2rem;font-size:1.3rem;opacity:.5}
+  @media (max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:480px){.stats-grid{grid-template-columns:1fr}}
+
+  /* CHARTS */
+  .charts-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:1rem;margin-bottom:2rem}
+  .chart-card{
+    background:var(--card);border:1px solid var(--border);border-radius:14px;
+    padding:1.4rem;
+  }
+  .chart-title{font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:600;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center}
+  .chart-title small{font-size:.72rem;font-weight:500;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+  canvas{max-width:100%;height:240px !important}
+  @media (max-width:900px){.charts-grid{grid-template-columns:1fr}}
+
+  /* LEADS TABLE */
+  .table-card{
+    background:var(--card);border:1px solid var(--border);border-radius:14px;
+    padding:1.4rem;overflow:hidden;
+  }
+  .table-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1.2rem}
+  .table-header h2{font-family:'Space Grotesk',sans-serif;font-size:1.15rem;font-weight:600}
+  .table-controls{display:flex;gap:.6rem;flex-wrap:wrap}
+  .table-controls input,.table-controls select{
+    background:var(--bg);border:1px solid var(--border);color:var(--text);
+    padding:.5rem .8rem;border-radius:8px;font-size:.85rem;font-family:'Inter',sans-serif;
+  }
+  .table-controls input:focus,.table-controls select:focus{outline:none;border-color:var(--purple-light)}
+  .btn-export{background:var(--magenta);color:#fff;border:none;padding:.5rem 1rem;border-radius:8px;cursor:pointer;font-size:.85rem;font-weight:600;font-family:'Inter',sans-serif;transition:all .2s}
+  .btn-export:hover{background:#F472B6;transform:translateY(-1px)}
+
+  .table-scroll{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;min-width:900px}
+  th{
+    text-align:left;padding:.85rem 1rem;font-size:.72rem;font-weight:600;
+    color:var(--muted);text-transform:uppercase;letter-spacing:.1em;
+    border-bottom:1px solid var(--border);background:var(--bg3);
+  }
+  td{padding:.95rem 1rem;border-bottom:1px solid var(--border);font-size:.88rem;vertical-align:top}
+  tbody tr{transition:background .15s}
+  tbody tr:hover{background:var(--card-hover)}
+  .lead-name{font-weight:600;color:var(--text)}
+  .lead-meta{color:var(--muted);font-size:.78rem;margin-top:.15rem}
+  .lead-link{color:var(--purple-light);text-decoration:none;font-size:.85rem}
+  .lead-link:hover{color:var(--magenta)}
+  .badge{display:inline-block;padding:.22rem .55rem;border-radius:50px;font-size:.7rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+  .badge-new{background:rgba(168,85,247,0.18);color:var(--purple-light)}
+  .badge-contacted{background:rgba(234,179,8,0.15);color:var(--yellow)}
+  .badge-converted{background:rgba(34,216,143,0.15);color:var(--green)}
+  .badge-lost{background:rgba(239,68,68,0.15);color:var(--red)}
+  .status-select{background:var(--bg);border:1px solid var(--border);color:var(--text);padding:.3rem .55rem;border-radius:6px;font-size:.78rem;cursor:pointer;font-family:'Inter',sans-serif}
+  .btn-row{display:flex;gap:.4rem}
+  .btn-icon{background:transparent;border:1px solid var(--border);color:var(--muted);width:30px;height:30px;border-radius:6px;cursor:pointer;font-size:.85rem;transition:all .15s;display:inline-flex;align-items:center;justify-content:center}
+  .btn-icon:hover{border-color:var(--magenta);color:var(--magenta)}
+
+  .empty{text-align:center;padding:4rem 1rem;color:var(--muted)}
+  .empty-icon{font-size:3rem;margin-bottom:1rem;opacity:.5}
+  .loading{text-align:center;padding:3rem;color:var(--muted)}
+  .spinner{display:inline-block;width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--purple-light);border-radius:50%;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN VIEW -->
+<div class="login-wrap" id="loginView">
+  <div class="login-card">
+    <div class="login-mark">
+      <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#7C3AED"/><stop offset="100%" stop-color="#A855F7"/>
+          </linearGradient>
+        </defs>
+        <rect width="80" height="80" rx="18" fill="url(#lg)"/>
+        <path d="M 40 16 L 64 64 L 54 64 L 50 56 L 30 56 L 26 64 L 16 64 Z M 33.5 48 L 46.5 48 L 40 35 Z" fill="#FFF"/>
+        <circle cx="62" cy="20" r="4" fill="#EC4899"/>
+      </svg>
+    </div>
+    <h1>Admin Login</h1>
+    <p class="sub">Adham<span style="color:#EC4899">.</span> Marketing Dashboard</p>
+    <div class="login-error" id="loginError"></div>
+    <form id="loginForm">
+      <label>Email</label>
+      <input type="email" id="loginEmail" required autocomplete="email" placeholder="adhambakrsalah@gmail.com" />
+      <label>Password</label>
+      <input type="password" id="loginPassword" required autocomplete="current-password" />
+      <button type="submit" id="loginBtn">Sign In →</button>
+    </form>
+  </div>
+</div>
+
+<!-- DASHBOARD VIEW -->
+<div class="dash" id="dashView">
+  <div class="topbar">
+    <div class="topbar-brand">
+      <span class="topbar-mark">
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <defs><linearGradient id="tg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#7C3AED"/><stop offset="100%" stop-color="#A855F7"/></linearGradient></defs>
+          <rect width="80" height="80" rx="18" fill="url(#tg)"/>
+          <path d="M 40 16 L 64 64 L 54 64 L 50 56 L 30 56 L 26 64 L 16 64 Z M 33.5 48 L 46.5 48 L 40 35 Z" fill="#FFF"/>
+          <circle cx="62" cy="20" r="4" fill="#EC4899"/>
+        </svg>
+      </span>
+      Adham<span style="color:var(--magenta)">.</span> Dashboard
+    </div>
+    <div class="topbar-actions">
+      <span class="topbar-user" id="userEmail"></span>
+      <button class="btn-logout" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">📥</div>
+        <div class="stat-label">Total Leads</div>
+        <div class="stat-num" id="statTotal">0</div>
+        <div class="stat-sub">all-time inquiries</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-label">This Week</div>
+        <div class="stat-num" id="statWeek">0</div>
+        <div class="stat-sub">last 7 days</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-label">Converted</div>
+        <div class="stat-num" id="statConverted">0</div>
+        <div class="stat-sub">closed deals</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📊</div>
+        <div class="stat-label">Conversion Rate</div>
+        <div class="stat-num" id="statRate">0%</div>
+        <div class="stat-sub">from total leads</div>
+      </div>
+    </div>
+
+    <!-- CHARTS -->
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-title">Leads Over Time <small>last 30 days</small></div>
+        <canvas id="chartTimeline"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">By Service <small>breakdown</small></div>
+        <canvas id="chartService"></canvas>
+      </div>
+    </div>
+
+    <!-- LEADS TABLE -->
+    <div class="table-card">
+      <div class="table-header">
+        <h2>📋 All Leads</h2>
+        <div class="table-controls">
+          <input type="search" id="searchInput" placeholder="🔍 Search name, email, phone…" />
+          <select id="statusFilter">
+            <option value="">All statuses</option>
+            <option value="new">New</option>
+            <option value="contacted">Contacted</option>
+            <option value="converted">Converted</option>
+            <option value="lost">Lost</option>
+          </select>
+          <button class="btn-export" id="exportBtn">⬇ Export CSV</button>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Contact</th>
+              <th>Service</th>
+              <th>Budget</th>
+              <th>Source</th>
+              <th>Message</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="leadsBody">
+            <tr><td colspan="8" class="loading"><div class="spinner"></div><div style="margin-top:.7rem">Loading leads&hellip;</div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Supabase + Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="supabase-config.js"></script>
+
+<script>
+const supabase = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+
+const loginView = document.getElementById('loginView');
+const dashView = document.getElementById('dashView');
+const loginForm = document.getElementById('loginForm');
+const loginError = document.getElementById('loginError');
+const loginBtn = document.getElementById('loginBtn');
+const userEmailEl = document.getElementById('userEmail');
+
+let allLeads = [];
+let timelineChart, serviceChart;
+
+// ===== AUTH =====
+async function checkAuth(){
+  const { data:{ session } } = await supabase.auth.getSession();
+  if(session){ showDash(session.user); }
+  else{ showLogin(); }
+}
+function showLogin(){ loginView.style.display='flex'; dashView.classList.remove('show'); }
+function showDash(user){
+  loginView.style.display='none';
+  dashView.classList.add('show');
+  userEmailEl.textContent = user.email;
+  loadLeads();
+}
+
+loginForm.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  loginError.classList.remove('show');
+  loginBtn.disabled=true; loginBtn.textContent='Signing in…';
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  loginBtn.disabled=false; loginBtn.textContent='Sign In →';
+  if(error){ loginError.textContent = error.message; loginError.classList.add('show'); return; }
+  showDash(data.user);
+});
+
+document.getElementById('logoutBtn').addEventListener('click', async ()=>{
+  await supabase.auth.signOut();
+  location.reload();
+});
+
+// ===== LOAD LEADS =====
+async function loadLeads(){
+  const { data, error } = await supabase
+    .from('leads')
+    .select('*')
+    .order('created_at', { ascending:false });
+  if(error){
+    document.getElementById('leadsBody').innerHTML = `<tr><td colspan="8" class="empty">⚠️ Error loading leads: ${error.message}</td></tr>`;
+    return;
+  }
+  allLeads = data || [];
+  renderStats();
+  renderCharts();
+  renderTable(allLeads);
+}
+
+function renderStats(){
+  const total = allLeads.length;
+  const weekAgo = Date.now() - 7*24*60*60*1000;
+  const thisWeek = allLeads.filter(l => new Date(l.created_at).getTime() > weekAgo).length;
+  const converted = allLeads.filter(l => l.status === 'converted').length;
+  const rate = total ? Math.round((converted/total)*100) : 0;
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statWeek').textContent = thisWeek;
+  document.getElementById('statConverted').textContent = converted;
+  document.getElementById('statRate').textContent = rate + '%';
+}
+
+function renderCharts(){
+  // Timeline (last 30 days)
+  const days = [];
+  const counts = [];
+  for(let i=29;i>=0;i--){
+    const d = new Date(); d.setDate(d.getDate()-i); d.setHours(0,0,0,0);
+    days.push(d.toLocaleDateString('en', {month:'short', day:'numeric'}));
+    const next = new Date(d); next.setDate(next.getDate()+1);
+    counts.push(allLeads.filter(l => {
+      const t = new Date(l.created_at);
+      return t >= d && t < next;
+    }).length);
+  }
+  if(timelineChart) timelineChart.destroy();
+  const ctx1 = document.getElementById('chartTimeline').getContext('2d');
+  const grad = ctx1.createLinearGradient(0,0,0,240);
+  grad.addColorStop(0,'rgba(168,85,247,0.4)');
+  grad.addColorStop(1,'rgba(168,85,247,0)');
+  timelineChart = new Chart(ctx1, {
+    type:'line',
+    data:{ labels:days, datasets:[{
+      label:'Leads', data:counts,
+      borderColor:'#A855F7', backgroundColor:grad,
+      borderWidth:2, tension:0.35, pointRadius:0, pointHoverRadius:5,
+      pointHoverBackgroundColor:'#EC4899', fill:true
+    }]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{
+        backgroundColor:'#1C1130', borderColor:'rgba(168,85,247,0.4)', borderWidth:1,
+        titleColor:'#F8F8FC', bodyColor:'#9090A8'
+      }},
+      scales:{
+        x:{ grid:{display:false}, ticks:{color:'#5e5e75', font:{size:10}, maxTicksLimit:8} },
+        y:{ grid:{color:'rgba(168,85,247,0.08)'}, ticks:{color:'#5e5e75', font:{size:10}, stepSize:1, beginAtZero:true} }
+      }
+    }
+  });
+
+  // Service breakdown
+  const services = {};
+  allLeads.forEach(l => { const s = l.service || 'unknown'; services[s] = (services[s]||0)+1; });
+  const labels = Object.keys(services);
+  const values = Object.values(services);
+  if(serviceChart) serviceChart.destroy();
+  const ctx2 = document.getElementById('chartService').getContext('2d');
+  serviceChart = new Chart(ctx2, {
+    type:'doughnut',
+    data:{ labels:labels.map(prettyService), datasets:[{
+      data:values,
+      backgroundColor:['#7C3AED','#A855F7','#EC4899','#06B6D4','#F472B6','#FEF3C7','#22D88F','#EAB308'],
+      borderWidth:0
+    }]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{position:'bottom', labels:{color:'#9090A8', font:{size:11}, padding:12, boxWidth:10}},
+        tooltip:{backgroundColor:'#1C1130', borderColor:'rgba(168,85,247,0.4)', borderWidth:1}
+      },
+      cutout:'60%'
+    }
+  });
+}
+
+function prettyService(s){
+  const map = {
+    'social-media':'Social Media',
+    'paid-ads':'Paid Ads',
+    'ecommerce-website':'E-commerce',
+    'content-design':'Content',
+    'crm-automation':'Automation',
+    'analytics':'Analytics',
+    'full-strategy':'Full Strategy',
+    'other':'Other',
+    'unknown':'—'
+  };
+  return map[s] || s;
+}
+
+function renderTable(leads){
+  const body = document.getElementById('leadsBody');
+  if(!leads.length){
+    body.innerHTML = `<tr><td colspan="8" class="empty"><div class="empty-icon">📭</div>No leads yet — share your portfolio to start collecting!</td></tr>`;
+    return;
+  }
+  body.innerHTML = leads.map(l => `
+    <tr data-id="${l.id}">
+      <td><div class="lead-meta">${formatDate(l.created_at)}</div></td>
+      <td>
+        <div class="lead-name">${escapeHtml(l.name)}</div>
+        <div><a class="lead-link" href="mailto:${escapeHtml(l.email)}">${escapeHtml(l.email)}</a></div>
+        ${l.phone ? `<div><a class="lead-link" href="https://wa.me/${l.phone.replace(/[^0-9+]/g,'')}" target="_blank">${escapeHtml(l.phone)}</a></div>` : ''}
+      </td>
+      <td>${prettyService(l.service)}</td>
+      <td>${l.budget || '—'}</td>
+      <td><span style="color:var(--cyan);font-size:.8rem">${escapeHtml(l.source || '—')}</span></td>
+      <td style="max-width:240px"><div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${escapeHtml(l.message||'')}">${escapeHtml(l.message || '—')}</div></td>
+      <td>
+        <select class="status-select" data-id="${l.id}">
+          ${['new','contacted','converted','lost'].map(s => `<option value="${s}" ${l.status===s?'selected':''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`).join('')}
+        </select>
+      </td>
+      <td>
+        <div class="btn-row">
+          <button class="btn-icon" onclick="deleteLead('${l.id}')" title="Delete">🗑️</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+
+  body.querySelectorAll('.status-select').forEach(sel => {
+    sel.addEventListener('change', async (e) => {
+      const id = e.target.dataset.id;
+      const status = e.target.value;
+      await supabase.from('leads').update({ status }).eq('id', id);
+      const lead = allLeads.find(l => l.id === id);
+      if(lead) lead.status = status;
+      renderStats();
+    });
+  });
+}
+
+window.deleteLead = async (id) => {
+  if(!confirm('Delete this lead permanently?')) return;
+  const { error } = await supabase.from('leads').delete().eq('id', id);
+  if(!error){
+    allLeads = allLeads.filter(l => l.id !== id);
+    renderStats(); renderCharts(); applyFilters();
+  } else alert('Error: ' + error.message);
+};
+
+function formatDate(iso){
+  const d = new Date(iso);
+  return d.toLocaleDateString('en',{month:'short',day:'numeric',year:'2-digit'}) + ' · ' + d.toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'});
+}
+function escapeHtml(s){ if(!s) return ''; return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
+
+// FILTERS
+const searchInput = document.getElementById('searchInput');
+const statusFilter = document.getElementById('statusFilter');
+function applyFilters(){
+  const q = searchInput.value.toLowerCase().trim();
+  const st = statusFilter.value;
+  const filtered = allLeads.filter(l => {
+    if(st && l.status !== st) return false;
+    if(q && !`${l.name} ${l.email} ${l.phone||''} ${l.message||''}`.toLowerCase().includes(q)) return false;
+    return true;
+  });
+  renderTable(filtered);
+}
+searchInput.addEventListener('input', applyFilters);
+statusFilter.addEventListener('change', applyFilters);
+
+// EXPORT CSV
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const headers = ['Date','Name','Email','Phone','Service','Budget','Message','Source','Status'];
+  const rows = allLeads.map(l => [
+    new Date(l.created_at).toISOString(),
+    l.name, l.email, l.phone||'', l.service||'', l.budget||'',
+    (l.message||'').replace(/[\r\n]+/g,' '), l.source||'', l.status||''
+  ]);
+  const csv = [headers, ...rows].map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob(['﻿'+csv], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `leads-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+// REALTIME (auto-update when new leads come in)
+supabase.channel('leads-changes').on('postgres_changes',
+  {event:'INSERT', schema:'public', table:'leads'},
+  (payload) => {
+    allLeads.unshift(payload.new);
+    renderStats(); renderCharts(); applyFilters();
+  }
+).subscribe();
+
+// INIT
+checkAuth();
+</script>
+</body>
+</html>
