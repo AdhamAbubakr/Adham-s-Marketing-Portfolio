@@ -272,8 +272,45 @@
       </div>
     </div>
 
-    <!-- TRACKING PIXELS SETTINGS -->
+    <!-- LEADS TABLE -->
     <div class="table-card" style="margin-bottom:2rem">
+      <div class="table-header">
+        <h2>📋 All Leads</h2>
+        <div class="table-controls">
+          <input type="search" id="searchInput" placeholder="🔍 Search name, email, phone…" />
+          <select id="statusFilter">
+            <option value="">All statuses</option>
+            <option value="new">New</option>
+            <option value="contacted">Contacted</option>
+            <option value="converted">Converted</option>
+            <option value="lost">Lost</option>
+          </select>
+          <button class="btn-export" id="exportBtn">⬇ Export CSV</button>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Contact</th>
+              <th>Service</th>
+              <th>Budget</th>
+              <th>Source</th>
+              <th>Message</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="leadsBody">
+            <tr><td colspan="8" class="loading"><div class="spinner"></div><div style="margin-top:.7rem">Loading leads&hellip;</div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TRACKING PIXELS SETTINGS -->
+    <div class="table-card">
       <div class="table-header">
         <h2>📡 Tracking Pixels &amp; Analytics</h2>
         <span style="font-size:.78rem;color:var(--muted)">Add the ID, click Save — pixel goes live on the website automatically.</span>
@@ -366,43 +403,6 @@
       </div>
 
       <div id="pixelFeedback" class="pixel-feedback"></div>
-    </div>
-
-    <!-- LEADS TABLE -->
-    <div class="table-card">
-      <div class="table-header">
-        <h2>📋 All Leads</h2>
-        <div class="table-controls">
-          <input type="search" id="searchInput" placeholder="🔍 Search name, email, phone…" />
-          <select id="statusFilter">
-            <option value="">All statuses</option>
-            <option value="new">New</option>
-            <option value="contacted">Contacted</option>
-            <option value="converted">Converted</option>
-            <option value="lost">Lost</option>
-          </select>
-          <button class="btn-export" id="exportBtn">⬇ Export CSV</button>
-        </div>
-      </div>
-      <div class="table-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Contact</th>
-              <th>Service</th>
-              <th>Budget</th>
-              <th>Source</th>
-              <th>Message</th>
-              <th>Status</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="leadsBody">
-            <tr><td colspan="8" class="loading"><div class="spinner"></div><div style="margin-top:.7rem">Loading leads&hellip;</div></td></tr>
-          </tbody>
-        </table>
-      </div>
     </div>
   </div>
 </div>
