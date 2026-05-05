@@ -136,6 +136,44 @@
   .btn-icon{background:transparent;border:1px solid var(--border);color:var(--muted);width:30px;height:30px;border-radius:6px;cursor:pointer;font-size:.85rem;transition:all .15s;display:inline-flex;align-items:center;justify-content:center}
   .btn-icon:hover{border-color:var(--magenta);color:var(--magenta)}
 
+  /* PIXELS */
+  .pixels-grid{display:flex;flex-direction:column;gap:.7rem;margin-top:.5rem}
+  .pixel-row{
+    display:grid;grid-template-columns:1.4fr 1.4fr auto;gap:1rem;
+    align-items:center;background:var(--bg3);
+    padding:1rem 1.2rem;border-radius:12px;border:1px solid var(--border);
+  }
+  .pixel-info{display:flex;align-items:center;gap:.9rem}
+  .pixel-icon{
+    width:42px;height:42px;background:var(--purple-glow);border-radius:10px;
+    display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;
+  }
+  .pixel-name{font-weight:600;font-size:.95rem;font-family:'Space Grotesk',sans-serif}
+  .pixel-hint{font-size:.75rem;color:var(--muted);margin-top:.15rem}
+  .pixel-hint code{background:var(--bg);padding:.1rem .35rem;border-radius:4px;font-size:.7rem;color:var(--cyan);font-family:'Space Grotesk',sans-serif}
+  .pixel-row input,.pixel-row textarea{
+    background:var(--bg);border:1px solid var(--border);color:var(--text);
+    padding:.6rem .8rem;border-radius:8px;font-size:.85rem;font-family:'Inter',sans-serif;
+    width:100%;
+  }
+  .pixel-row input:focus,.pixel-row textarea:focus{outline:none;border-color:var(--purple-light)}
+  .pixel-row textarea{resize:vertical;min-height:90px;font-family:'Space Grotesk',monospace}
+  .btn-save-pixel{
+    background:var(--purple);color:#fff;border:none;padding:.6rem 1.1rem;
+    border-radius:8px;font-weight:600;font-size:.85rem;cursor:pointer;
+    transition:all .2s;font-family:'Inter',sans-serif;white-space:nowrap;
+  }
+  .btn-save-pixel:hover{background:var(--purple-light);transform:translateY(-1px)}
+  .btn-save-pixel.saved{background:var(--green)}
+  .btn-save-pixel.saved::before{content:'✓ '}
+  .btn-save-pixel:disabled{opacity:.6;cursor:not-allowed}
+  .pixel-feedback{font-size:.85rem;text-align:center;margin-top:1rem;color:var(--muted)}
+  .pixel-feedback.success{color:var(--green)}
+  .pixel-feedback.error{color:var(--red)}
+  @media (max-width:780px){
+    .pixel-row{grid-template-columns:1fr;gap:.7rem}
+  }
+
   .empty{text-align:center;padding:4rem 1rem;color:var(--muted)}
   .empty-icon{font-size:3rem;margin-bottom:1rem;opacity:.5}
   .loading{text-align:center;padding:3rem;color:var(--muted)}
@@ -234,6 +272,102 @@
       </div>
     </div>
 
+    <!-- TRACKING PIXELS SETTINGS -->
+    <div class="table-card" style="margin-bottom:2rem">
+      <div class="table-header">
+        <h2>📡 Tracking Pixels &amp; Analytics</h2>
+        <span style="font-size:.78rem;color:var(--muted)">Add the ID, click Save — pixel goes live on the website automatically.</span>
+      </div>
+
+      <div class="pixels-grid">
+        <div class="pixel-row">
+          <div class="pixel-info">
+            <span class="pixel-icon">📱</span>
+            <div>
+              <div class="pixel-name">Meta Pixel</div>
+              <div class="pixel-hint">Facebook + Instagram tracking · ID like <code>1234567890123456</code></div>
+            </div>
+          </div>
+          <input type="text" data-key="meta_pixel_id" placeholder="Paste Pixel ID" />
+          <button class="btn-save-pixel" data-key="meta_pixel_id">Save</button>
+        </div>
+
+        <div class="pixel-row">
+          <div class="pixel-info">
+            <span class="pixel-icon">📊</span>
+            <div>
+              <div class="pixel-name">Google Analytics 4</div>
+              <div class="pixel-hint">Measurement ID · format <code>G-XXXXXXXXXX</code></div>
+            </div>
+          </div>
+          <input type="text" data-key="ga4_id" placeholder="G-XXXXXXXXXX" />
+          <button class="btn-save-pixel" data-key="ga4_id">Save</button>
+        </div>
+
+        <div class="pixel-row">
+          <div class="pixel-info">
+            <span class="pixel-icon">🏷️</span>
+            <div>
+              <div class="pixel-name">Google Tag Manager</div>
+              <div class="pixel-hint">Container ID · format <code>GTM-XXXXXXX</code></div>
+            </div>
+          </div>
+          <input type="text" data-key="gtm_id" placeholder="GTM-XXXXXXX" />
+          <button class="btn-save-pixel" data-key="gtm_id">Save</button>
+        </div>
+
+        <div class="pixel-row">
+          <div class="pixel-info">
+            <span class="pixel-icon">🎵</span>
+            <div>
+              <div class="pixel-name">TikTok Pixel</div>
+              <div class="pixel-hint">Pixel Code from TikTok Events Manager</div>
+            </div>
+          </div>
+          <input type="text" data-key="tiktok_pixel_id" placeholder="C12ABCD3EFGHIJK" />
+          <button class="btn-save-pixel" data-key="tiktok_pixel_id">Save</button>
+        </div>
+
+        <div class="pixel-row">
+          <div class="pixel-info">
+            <span class="pixel-icon">👻</span>
+            <div>
+              <div class="pixel-name">Snapchat Pixel</div>
+              <div class="pixel-hint">Pixel ID from Snap Ads Manager</div>
+            </div>
+          </div>
+          <input type="text" data-key="snapchat_pixel_id" placeholder="abcd1234-..." />
+          <button class="btn-save-pixel" data-key="snapchat_pixel_id">Save</button>
+        </div>
+
+        <div class="pixel-row">
+          <div class="pixel-info">
+            <span class="pixel-icon">💼</span>
+            <div>
+              <div class="pixel-name">LinkedIn Insight Tag</div>
+              <div class="pixel-hint">Partner ID · numeric (e.g. <code>1234567</code>)</div>
+            </div>
+          </div>
+          <input type="text" data-key="linkedin_partner_id" placeholder="1234567" />
+          <button class="btn-save-pixel" data-key="linkedin_partner_id">Save</button>
+        </div>
+
+        <div class="pixel-row" style="grid-template-columns:1fr;gap:.6rem">
+          <div class="pixel-info">
+            <span class="pixel-icon">➕</span>
+            <div>
+              <div class="pixel-name">Custom Head Code</div>
+              <div class="pixel-hint">Paste any other tracking script or &lt;meta&gt; tags — they'll be added to &lt;head&gt;.</div>
+            </div>
+          </div>
+          <textarea data-key="custom_head_code" rows="4" placeholder="<!-- e.g. Hotjar, Clarity, custom script... -->"></textarea>
+          <button class="btn-save-pixel" data-key="custom_head_code" style="align-self:flex-start;width:auto">Save Custom Code</button>
+        </div>
+      </div>
+
+      <div id="pixelFeedback" class="pixel-feedback"></div>
+    </div>
+
     <!-- LEADS TABLE -->
     <div class="table-card">
       <div class="table-header">
@@ -303,6 +437,49 @@ function showDash(user){
   dashView.classList.add('show');
   userEmailEl.textContent = user.email;
   loadLeads();
+  loadPixels();
+}
+
+// ===== TRACKING PIXELS =====
+async function loadPixels(){
+  const { data, error } = await supabase.from('site_settings').select('key,value');
+  if(error){ console.warn('Could not load settings:', error); return; }
+  (data || []).forEach(row => {
+    const el = document.querySelector(`[data-key="${row.key}"]`);
+    if(el && el.tagName !== 'BUTTON') el.value = row.value || '';
+  });
+}
+
+document.querySelectorAll('.btn-save-pixel').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const key = btn.dataset.key;
+    const input = document.querySelector(`input[data-key="${key}"], textarea[data-key="${key}"]`);
+    const value = (input.value || '').trim();
+    btn.disabled = true; btn.textContent = 'Saving…';
+    const { error } = await supabase.from('site_settings')
+      .upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict:'key' });
+    btn.disabled = false;
+    if(error){
+      btn.textContent = 'Error ✗';
+      showPixelFeedback('⚠️ ' + error.message, 'error');
+    } else {
+      btn.textContent = key === 'custom_head_code' ? 'Save Custom Code' : 'Save';
+      btn.classList.add('saved');
+      btn.textContent = 'Saved ✓';
+      showPixelFeedback('✅ ' + (value ? 'Pixel activated! It\'s now live on the website.' : 'Pixel removed. It will no longer load on the site.'), 'success');
+      setTimeout(() => {
+        btn.classList.remove('saved');
+        btn.textContent = key === 'custom_head_code' ? 'Save Custom Code' : 'Save';
+      }, 2500);
+    }
+  });
+});
+
+function showPixelFeedback(msg, type){
+  const el = document.getElementById('pixelFeedback');
+  el.textContent = msg;
+  el.className = 'pixel-feedback ' + type;
+  setTimeout(() => { el.textContent = ''; el.className = 'pixel-feedback'; }, 5000);
 }
 
 loginForm.addEventListener('submit', async (e)=>{
