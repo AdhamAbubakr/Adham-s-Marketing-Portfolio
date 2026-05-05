@@ -529,7 +529,7 @@
     <span class="logo-text">Adham<span>.</span></span>
   </a>
   <ul class="nav-links">
-    <li><a href="#impact">Impact</a></li>
+    <li><a href="#top">Home</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#services">Services</a></li>
     <li><a href="#case-studies">Case Studies</a></li>
@@ -537,11 +537,11 @@
     <li><a href="#resume">Resume</a></li>
     <li><a href="#process">Process</a></li>
   </ul>
-  <a href="#contact" class="nav-cta">Hire Me</a>
+  <a href="#contact" class="nav-cta">Contact Me</a>
 </nav>
 
 <!-- HERO -->
-<section class="hero">
+<section class="hero" id="top">
   <div class="hero-bg"></div>
   <div class="hero-grid"></div>
   <div class="blob blob-1"></div>
@@ -811,7 +811,7 @@
         <div class="brand-item">Amazing Store<small>E-com</small></div>
         <div class="brand-item">MEDU Science<small>Education</small></div>
         <div class="brand-item">WOLVES<small>Brand</small></div>
-        <div class="brand-item">نبادر<small>Initiative</small></div>
+        <div class="brand-item">Ayam Zaman<small>Kuwait</small></div>
         <div class="brand-item">أكاديمية التفوق<small>Education</small></div>
       </div>
     </div>
@@ -1180,8 +1180,30 @@
       formFeedback.className = 'form-feedback';
 
       try {
+        // 1. Save to Supabase database
         const { error } = await supabase.from('leads').insert([lead]);
         if(error) throw error;
+
+        // 2. Send email notification via Web3Forms (best-effort, non-blocking)
+        if(window.WEB3FORMS_KEY){
+          fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json', 'Accept':'application/json'},
+            body: JSON.stringify({
+              access_key: window.WEB3FORMS_KEY,
+              subject: `🔥 New Lead from Portfolio: ${lead.name}`,
+              from_name: 'Adham Portfolio',
+              name: lead.name,
+              email: lead.email,
+              phone: lead.phone || 'Not provided',
+              service: lead.service,
+              budget: lead.budget || 'Not specified',
+              message: lead.message || 'No additional message',
+              source: lead.source
+            })
+          }).catch(e => console.warn('Email notification failed (lead still saved):', e));
+        }
+
         showFeedback('✅ Thanks! I\'ll reach out within 24 hours.', 'success');
         leadForm.reset();
         // Track conversion if pixel/GA installed

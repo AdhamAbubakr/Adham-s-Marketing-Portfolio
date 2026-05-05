@@ -48,8 +48,10 @@ Personal portfolio website for **Adham Abo Bakr SalahElden** — Digital Marketi
 11. Contact (email, phone, WhatsApp)
 12. Footer
 
-## Brands Adham has worked with (12)
-SAMA Cape Town (KSA + South Africa), SAMA Transportation, GROOMI Wear, Kayanac ERP, Kitaan, The Old Days, Infinity Store, Amazing Store, MEDU Science, WOLVES Store, نبادر, أكاديمية التفوق, Nader Sunglasses (Kuwait), Ayam Zaman (Kuwait), ببساطة أتعلم.
+## Brands Adham has worked with
+SAMA Cape Town (KSA + South Africa), SAMA Transportation, GROOMI Wear, Kayanac ERP, Kitaan, The Old Days, Infinity Store, Amazing Store, MEDU Science, WOLVES Store, أكاديمية التفوق, Nader Sunglasses (Kuwait), Ayam Zaman (Kuwait), ببساطة أتعلم.
+
+⚠️ Do NOT include "نبادر" / Nabader — Adham did not work with this brand.
 
 ## Key user preferences (IMPORTANT)
 - ❌ DO NOT use Meduscience-only numbers (he wants combined results across all brands, not just one)
