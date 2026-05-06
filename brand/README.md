@@ -1,11 +1,11 @@
-# Athar. — Brand Assets
+# Barkar. — Brand Assets
 
-Source files for the **Athar.** marketing agency brand identity.
+Source files for the **Barkar.** marketing agency brand identity.
 Founded by **Adham Abo Bakr SalahElden**.
 
-> **Athar** (أثر) — *the trace · the impact · the mark that endures*
+> **Barkar** is a coined brand name &mdash; built to stand out, defined by the work, not by dictionary meaning.
 >
-> Tagline: **"Marketing that leaves a mark."**
+> Tagline: **"Built different."**
 
 ## 📁 Files
 
@@ -41,8 +41,8 @@ Open `brand-guide.html` in a browser → "Save as PDF" to export the full brand 
 
 ## ⚖️ Quick rules
 
-- The "**A**" mark works for both the wordmark "Athar" and the founder "Adham"
-- Always include the magenta dot in the wordmark (Athar**.**)
+- The "**A**" mark works for both the wordmark "Barkar" and the founder "Adham"
+- Always include the magenta dot in the wordmark (Barkar**.**)
 - Don't recolor outside the palette
 - Don't add drop-shadows or 3D effects
 - Minimum size: 24px (use the favicon below that)

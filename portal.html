@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Client Portal — Athar.</title>
+<title>Client Portal — Barkar.</title>
 <link rel="icon" type="image/svg+xml" href="brand/favicon.svg" />
 <meta name="robots" content="noindex,nofollow" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -184,9 +184,9 @@
   <div class="topbar">
     <a href="#" class="topbar-brand">
       <span class="topbar-mark">
-        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="tg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#7C3AED"/><stop offset="100%" stop-color="#A855F7"/></linearGradient></defs><rect width="80" height="80" rx="18" fill="url(#tg)"/><path d="M 40 16 L 64 64 L 54 64 L 50 56 L 30 56 L 26 64 L 16 64 Z M 33.5 48 L 46.5 48 L 40 35 Z" fill="#FFF"/><circle cx="62" cy="20" r="4" fill="#EC4899"/></svg>
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="tg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#7C3AED"/><stop offset="100%" stop-color="#A855F7"/></linearGradient></defs><rect width="80" height="80" rx="18" fill="url(#tg)"/><path fill-rule="evenodd" d="M22 16h22c10 0 17 6 17 14 0 5-3 9-7 11 5 2 9 7 9 13 0 8-7 14-17 14H22V16zm10 8v10h12c4 0 6-2 6-5s-2-5-6-5H32zm0 18v12h14c4 0 7-2 7-6s-3-6-7-6H32z" fill="#FFF"/><circle cx="62" cy="20" r="4" fill="#EC4899"/></svg>
       </span>
-      Athar<span style="color:var(--magenta)">.</span>&nbsp;Client&nbsp;Portal
+      Barkar<span style="color:var(--magenta)">.</span>&nbsp;Client&nbsp;Portal
     </a>
     <div class="topbar-actions">
       <span class="topbar-user" id="userEmail"></span>
@@ -253,7 +253,7 @@ function renderEmpty(email){
     <div class="empty-state">
       <div class="empty-icon">⏳</div>
       <h2>Account is being set up</h2>
-      <p>Welcome ${email}! Your account exists but isn&rsquo;t linked to a brand profile yet. The Athar team will link it shortly &mdash; check back in a few minutes, or reach out via WhatsApp.</p>
+      <p>Welcome ${email}! Your account exists but isn&rsquo;t linked to a brand profile yet. The Barkar team will link it shortly &mdash; check back in a few minutes, or reach out via WhatsApp.</p>
       <a href="https://wa.me/201044724144" target="_blank" rel="noopener" class="btn-save" style="text-decoration:none;display:inline-block">💬 Message us on WhatsApp</a>
     </div>
   `;
@@ -420,7 +420,7 @@ function drawBriefStep(client){
             body: JSON.stringify({
               access_key: window.WEB3FORMS_KEY,
               subject: `📝 New Brief Submitted: ${client.name}`,
-              from_name: 'Athar Portal',
+              from_name: 'Barkar Portal',
               brand: client.name,
               email: client.contact_email,
               message: `Client ${client.name} (${client.contact_email}) just submitted their brief. View in admin: https://adhamabobakr.netlify.app/admin.html`
@@ -432,7 +432,7 @@ function drawBriefStep(client){
         <div class="empty-state">
           <div class="empty-icon">🎉</div>
           <h2>Brief submitted — thank you!</h2>
-          <p>The Athar team will review your answers and get back to you within 48 hours with a marketing strategy. You'll see it right here in your portal.</p>
+          <p>The Barkar team will review your answers and get back to you within 48 hours with a marketing strategy. You'll see it right here in your portal.</p>
           <button class="btn-save" onclick="location.reload()">Go to my dashboard →</button>
         </div>
       `;
@@ -504,7 +504,7 @@ async function renderPortal(client, user){
     html += `
       <div class="services-pick">
         <h2>Pick the services you have with us</h2>
-        <p>Select all the services Athar is delivering for you &mdash; your dashboard will show only what&rsquo;s relevant.</p>
+        <p>Select all the services Barkar is delivering for you &mdash; your dashboard will show only what&rsquo;s relevant.</p>
         <div class="service-grid" id="serviceGrid">
           ${SERVICES.map(s => `
             <div class="service-tile" data-key="${s.key}">
@@ -598,7 +598,7 @@ async function renderPortal(client, user){
     html += `
       <div class="svc-section">
         <div class="svc-section-head"><h3>🛒 Website / E-commerce</h3></div>
-        <div class="cta-box">Live website analytics will appear here once we connect your site (GA4 / Shopify). For now, ask the Athar team for the latest report.</div>
+        <div class="cta-box">Live website analytics will appear here once we connect your site (GA4 / Shopify). For now, ask the Barkar team for the latest report.</div>
       </div>
     `;
   }
@@ -616,7 +616,7 @@ async function renderPortal(client, user){
     html += `
       <div class="svc-section">
         <div class="svc-section-head"><h3>🤖 CRM &amp; Automation</h3></div>
-        <div class="cta-box">CRM pipeline &amp; automation workflows will be visible here once Athar links them after setup.</div>
+        <div class="cta-box">CRM pipeline &amp; automation workflows will be visible here once Barkar links them after setup.</div>
       </div>
     `;
   }
@@ -625,7 +625,7 @@ async function renderPortal(client, user){
     html += `
       <div class="svc-section">
         <div class="svc-section-head"><h3>📊 Analytics &amp; Reporting</h3></div>
-        <div class="cta-box">Detailed monthly reports + custom dashboards will appear here. Ask the Athar team for your latest report.</div>
+        <div class="cta-box">Detailed monthly reports + custom dashboards will appear here. Ask the Barkar team for your latest report.</div>
       </div>
     `;
   }
@@ -662,7 +662,7 @@ async function renderPortal(client, user){
         <div class="strategy-actions">
           ${strategy.is_paid_unlocked && strategy.pdf_url
             ? `<a href="${esc(strategy.pdf_url)}" target="_blank" class="btn-save" style="text-decoration:none;display:inline-block">⬇ Download PDF</a>`
-            : `<div class="cta-box" style="margin-top:0">PDF download unlocks once payment is confirmed. Talk to the Athar team to proceed.</div>`}
+            : `<div class="cta-box" style="margin-top:0">PDF download unlocks once payment is confirmed. Talk to the Barkar team to proceed.</div>`}
           ${strategy.status === 'sent' ? `<button class="btn-secondary-soft" id="approveStrategyBtn" data-id="${strategy.id}">✅ Approve Strategy</button>` : ''}
         </div>
       </div>

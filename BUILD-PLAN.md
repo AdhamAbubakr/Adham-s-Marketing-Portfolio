@@ -1,4 +1,4 @@
-# 🚀 Athar. — Complete Build Plan
+# 🚀 Barkar. — Complete Build Plan
 
 > From MVP (35%) → Full Agency Platform (100%)
 > Timeline: ~16 weeks (4 months) of building
@@ -11,7 +11,7 @@
 ```
 ┌──────────────────────────────────────────┐
 │  HOSTINGER CLOUD STARTUP ($9.99/mo)      │
-│  • Hosting (athar.agency domain)         │
+│  • Hosting (barkar.agency domain)         │
 │  • Business Emails (100 inboxes)         │
 │  • 200 GB File Storage                   │
 │    └── client videos, designs, content   │
@@ -62,11 +62,11 @@ After Phase 8 (Launch):          ███████████████�
 
 ### 📋 Tasks
 - [ ] Buy Hostinger Cloud Startup (48 months)
-- [ ] Register `athar.agency` domain
+- [ ] Register `barkar.agency` domain
 - [ ] Activate Business Email accounts:
-  - `adham@athar.agency`
-  - `contact@athar.agency`
-  - `team@athar.agency`
+  - `adham@barkar.agency`
+  - `contact@barkar.agency`
+  - `team@barkar.agency`
 - [ ] Connect GitHub repo to Hostinger Git
 - [ ] Set up auto-deploy webhook
 - [ ] Update DNS records
@@ -85,7 +85,7 @@ After Phase 8 (Launch):          ███████████████�
 - [ ] Test end-to-end: signup, login, form, admin
 
 ### 🛠️ Deliverables
-- ✅ `https://athar.agency` live
+- ✅ `https://barkar.agency` live
 - ✅ Auto-deploy from GitHub working
 - ✅ Email infrastructure ready
 - ✅ Storage system ready
@@ -154,7 +154,7 @@ strategy_revisions (
    - Approve / Request changes buttons
 5. **PDF Export**
    - Browser-based PDF generation
-   - Branded with Athar. identity
+   - Branded with Barkar. identity
    - Auto-uploaded to Hostinger storage
 
 ### ⏱️ Timeline
@@ -407,7 +407,7 @@ Auto-sync data from Meta, Google, TikTok ad platforms.
 - [ ] Mobile responsiveness final check
 - [ ] Onboard 2-3 pilot clients
 - [ ] Marketing campaign on social
-- [ ] LinkedIn launch post for Athar.
+- [ ] LinkedIn launch post for Barkar.
 
 ---
 
@@ -427,7 +427,7 @@ Auto-sync data from Meta, Google, TikTok ad platforms.
 - **Week 1:** Apply for Google Ads Developer Token
 - **Week 1:** Apply for TikTok Business
 - **Week 2-4:** Start outreach to first clients
-- **Week 2-4:** Create content for Athar's social media
+- **Week 2-4:** Create content for Barkar's social media
 - **Week 5+:** Onboard pilot clients on the platform
 
 ### Track 3 — Approvals (passive waiting)
@@ -449,7 +449,7 @@ Auto-sync data from Meta, Google, TikTok ad platforms.
 
 ## Claude Code's Checklist (Done ✅)
 - [x] All MVP features working
-- [x] Brand identity finalized (Athar.)
+- [x] Brand identity finalized (Barkar.)
 - [x] Logo files generated
 - [x] Database schema documented (database-backup.sql)
 - [x] Migration guide written (MIGRATION-GUIDE.md)
@@ -464,7 +464,7 @@ Auto-sync data from Meta, Google, TikTok ad platforms.
 | Item | Annual Cost |
 |---|---|
 | Hostinger Cloud Startup (48 mo plan) | $120/year (avg) |
-| Domain (athar.agency) | $0 (1st year free) |
+| Domain (barkar.agency) | $0 (1st year free) |
 | Business Emails | included |
 | Supabase Free → Pro Q3 | $0-150 (year 1) |
 | Web3Forms Free | $0 |
@@ -511,7 +511,7 @@ Auto-sync data from Meta, Google, TikTok ad platforms.
 ## For Adham (in next 24 hours)
 1. ✅ Review this plan
 2. 🛒 Buy Hostinger Cloud Startup (48 months)
-3. 🌐 Register `athar.agency` (or chosen domain)
+3. 🌐 Register `barkar.agency` (or chosen domain)
 4. 📧 Activate Business Email
 5. 📨 Send me: domain name + confirmation
 6. 📝 Apply for Meta Developer App: https://developers.facebook.com
@@ -531,7 +531,8 @@ Auto-sync data from Meta, Google, TikTok ad platforms.
 
 | Date | Decision | Rationale |
 |---|---|---|
-| 2026-05-06 | Brand: Athar. (أثر) | Strong meaning, MENA-rooted, scalable |
+| 2026-05-07 | Brand: Barkar. | Coined name, distinctive, owns its meaning |
+| 2026-05-07 | Domain: barkar.net | .com unavailable; .net is clean alternative |
 | 2026-05-06 | Stack: Hostinger + Supabase + GitHub | Best-of-breed, cost-effective, scalable |
 | 2026-05-06 | Migration first, build second | Get production domain ASAP |
 | 2026-05-06 | Manual data entry first, API later | Approvals take weeks, can't block on them |

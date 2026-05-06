@@ -32,13 +32,12 @@
   <g transform="translate(350 240) scale(3.75)">
     <rect width="80" height="80" rx="18" fill="url(#markGrad)"/>
     <rect x="2" y="2" width="76" height="76" rx="16" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
-    <path d="M 40 16 L 64 64 L 54 64 L 50 56 L 30 56 L 26 64 L 16 64 Z M 33.5 48 L 46.5 48 L 40 35 Z" fill="#FFFFFF"/>
-    <path d="M 36 44 L 40 38 L 44 44 Z" fill="url(#sparkG)"/>
+    <path fill-rule="evenodd" d="M22 16h22c10 0 17 6 17 14 0 5-3 9-7 11 5 2 9 7 9 13 0 8-7 14-17 14H22V16zm10 8v10h12c4 0 6-2 6-5s-2-5-6-5H32zm0 18v12h14c4 0 7-2 7-6s-3-6-7-6H32z" fill="#FFFFFF"/>
     <circle cx="62" cy="20" r="4" fill="url(#sparkG)"/>
   </g>
-  <text x="500" y="700" text-anchor="middle" font-family="'Space Grotesk', system-ui, sans-serif" font-size="100" font-weight="700" fill="#F8F8FC" letter-spacing="-0.02em">Athar</text>
-  <circle cx="635" cy="690" r="14" fill="#EC4899"/>
-  <text x="500" y="780" text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="32" font-weight="500" fill="#A855F7" letter-spacing="0.25em">MARKETING THAT LEAVES A MARK</text>
+  <text x="500" y="700" text-anchor="middle" font-family="'Space Grotesk', system-ui, sans-serif" font-size="100" font-weight="700" fill="#F8F8FC" letter-spacing="-0.02em">Barkar</text>
+  <circle cx="664" cy="690" r="14" fill="#EC4899"/>
+  <text x="500" y="780" text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="32" font-weight="500" fill="#A855F7" letter-spacing="0.25em">BUILT DIFFERENT.</text>
   <line x1="350" y1="850" x2="650" y2="850" stroke="rgba(168,85,247,0.4)" stroke-width="1.5"/>
   <text x="500" y="900" text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="22" font-weight="400" fill="#8B8BA0" letter-spacing="0.18em">FOUNDED BY ADHAM ABO BAKR · EGYPT · 2026</text>
 </svg>

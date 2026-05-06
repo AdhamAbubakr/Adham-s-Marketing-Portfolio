@@ -1,4 +1,4 @@
-# AI Context Brief — Athar. Agency Platform
+# AI Context Brief — Barkar. Agency Platform
 
 > **How to use:** Paste this entire file into any new AI chat (Claude, ChatGPT, Gemini, etc.) before asking for edits. It gives the AI everything it needs to continue the work.
 
@@ -10,11 +10,12 @@
 ---
 
 ## Project
-**Athar.** (أثر — meaning "the trace, the mark you leave behind") is a digital marketing agency operations platform / SaaS prototype — multi-tenant with auth, role separation (admin/client), per-client dashboards, lead capture, and tracking-pixel management.
+**Barkar.** is a coined brand name — distinctive, memorable, and intentionally without preset meaning so it can be defined by the work itself. Barkar is a digital marketing agency operations platform / SaaS prototype — multi-tenant with auth, role separation (admin/client), per-client dashboards, lead capture, and tracking-pixel management.
 
 **Founder:** Adham Abo Bakr SalahElden (Digital Marketing Specialist, Egypt).
-**Tagline:** "Marketing that leaves a mark."
-**Brand wordmark:** Always written `Athar.` with a magenta period (#EC4899).
+**Tagline:** "Built different."
+**Brand wordmark:** Always written `Barkar.` with a magenta period (#EC4899).
+**Domain:** barkar.net (registered on Hostinger, May 2026).
 
 ## Owner / Contact
 - **Name:** Adham Abo Bakr SalahElden
