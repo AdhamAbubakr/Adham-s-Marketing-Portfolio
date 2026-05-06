@@ -18,3 +18,4 @@ python -m http.server 5173
 - 📧 adhambakrsalah@gmail.com
 - 📱 +20 104 472 4144
 <!-- Auto-deploy test: 2026-05-06T23:50:34Z -->
+<!-- Live deploy verified: 2026-05-06T23:53:42Z - barkar.net -->
