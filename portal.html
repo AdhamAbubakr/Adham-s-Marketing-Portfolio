@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Client Portal — Adham. Marketing</title>
+<title>Client Portal — Athar.</title>
 <link rel="icon" type="image/svg+xml" href="brand/favicon.svg" />
 <meta name="robots" content="noindex,nofollow" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -154,7 +154,7 @@
       <span class="topbar-mark">
         <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="tg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#7C3AED"/><stop offset="100%" stop-color="#A855F7"/></linearGradient></defs><rect width="80" height="80" rx="18" fill="url(#tg)"/><path d="M 40 16 L 64 64 L 54 64 L 50 56 L 30 56 L 26 64 L 16 64 Z M 33.5 48 L 46.5 48 L 40 35 Z" fill="#FFF"/><circle cx="62" cy="20" r="4" fill="#EC4899"/></svg>
       </span>
-      Adham<span style="color:var(--magenta)">.</span>&nbsp;Client&nbsp;Portal
+      Athar<span style="color:var(--magenta)">.</span>&nbsp;Client&nbsp;Portal
     </a>
     <div class="topbar-actions">
       <span class="topbar-user" id="userEmail"></span>
@@ -221,8 +221,8 @@ function renderEmpty(email){
     <div class="empty-state">
       <div class="empty-icon">⏳</div>
       <h2>Account is being set up</h2>
-      <p>Welcome ${email}! Your account exists but isn't linked to a brand profile yet. Adham will link it shortly &mdash; check back in a few minutes, or reach out via WhatsApp.</p>
-      <a href="https://wa.me/201044724144" target="_blank" rel="noopener" class="btn-save" style="text-decoration:none;display:inline-block">💬 Message Adham on WhatsApp</a>
+      <p>Welcome ${email}! Your account exists but isn&rsquo;t linked to a brand profile yet. The Athar team will link it shortly &mdash; check back in a few minutes, or reach out via WhatsApp.</p>
+      <a href="https://wa.me/201044724144" target="_blank" rel="noopener" class="btn-save" style="text-decoration:none;display:inline-block">💬 Message us on WhatsApp</a>
     </div>
   `;
 }
@@ -252,7 +252,7 @@ async function renderPortal(client, user){
     html += `
       <div class="services-pick">
         <h2>Pick the services you have with us</h2>
-        <p>Select all the services you're working with Adham on — your dashboard will show only what's relevant to you.</p>
+        <p>Select all the services Athar is delivering for you &mdash; your dashboard will show only what&rsquo;s relevant.</p>
         <div class="service-grid" id="serviceGrid">
           ${SERVICES.map(s => `
             <div class="service-tile" data-key="${s.key}">
@@ -346,7 +346,7 @@ async function renderPortal(client, user){
     html += `
       <div class="svc-section">
         <div class="svc-section-head"><h3>🛒 Website / E-commerce</h3></div>
-        <div class="cta-box">Live website analytics will appear here once Adham connects your site (GA4 / Shopify). For now, ask him for the latest report on WhatsApp.</div>
+        <div class="cta-box">Live website analytics will appear here once we connect your site (GA4 / Shopify). For now, ask the Athar team for the latest report.</div>
       </div>
     `;
   }
@@ -364,7 +364,7 @@ async function renderPortal(client, user){
     html += `
       <div class="svc-section">
         <div class="svc-section-head"><h3>🤖 CRM &amp; Automation</h3></div>
-        <div class="cta-box">CRM pipeline &amp; automation workflows will be visible here. Adham will link them after setup.</div>
+        <div class="cta-box">CRM pipeline &amp; automation workflows will be visible here once Athar links them after setup.</div>
       </div>
     `;
   }
@@ -373,7 +373,7 @@ async function renderPortal(client, user){
     html += `
       <div class="svc-section">
         <div class="svc-section-head"><h3>📊 Analytics &amp; Reporting</h3></div>
-        <div class="cta-box">Detailed monthly reports + custom dashboards will appear here. Ask Adham for your latest report.</div>
+        <div class="cta-box">Detailed monthly reports + custom dashboards will appear here. Ask the Athar team for your latest report.</div>
       </div>
     `;
   }

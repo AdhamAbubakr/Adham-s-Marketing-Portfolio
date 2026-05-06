@@ -18,11 +18,11 @@
     <circle cx="62" cy="20" r="4" fill="url(#sp3)"/>
   </g>
   <!-- WORDMARK -->
-  <text x="100" y="135" text-anchor="middle" font-family="'Space Grotesk', system-ui, sans-serif" font-size="34" font-weight="700" fill="#F8F8FC" letter-spacing="-0.02em">Adham</text>
-  <circle cx="156" cy="133" r="5" fill="#EC4899"/>
+  <text x="100" y="135" text-anchor="middle" font-family="'Space Grotesk', system-ui, sans-serif" font-size="34" font-weight="700" fill="#F8F8FC" letter-spacing="-0.02em">Athar</text>
+  <circle cx="139" cy="133" r="5" fill="#EC4899"/>
   <!-- Tagline -->
-  <text x="100" y="160" text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="9" font-weight="500" fill="#A855F7" letter-spacing="0.22em">DIGITAL · MARKETING · GROWTH</text>
+  <text x="100" y="160" text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="9" font-weight="500" fill="#A855F7" letter-spacing="0.22em">MARKETING THAT LEAVES A MARK</text>
   <!-- Decorative line -->
   <line x1="60" y1="172" x2="140" y2="172" stroke="rgba(168,85,247,0.3)" stroke-width="1"/>
-  <text x="100" y="187" text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="8" font-weight="400" fill="#8B8BA0" letter-spacing="0.15em">EST · 2024 · EGYPT</text>
+  <text x="100" y="187" text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="8" font-weight="400" fill="#8B8BA0" letter-spacing="0.15em">EST · 2026 · EGYPT</text>
 </svg>

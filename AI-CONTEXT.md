@@ -1,4 +1,4 @@
-# AI Context Brief — Adham's Marketing Platform
+# AI Context Brief — Athar. Agency Platform
 
 > **How to use:** Paste this entire file into any new AI chat (Claude, ChatGPT, Gemini, etc.) before asking for edits. It gives the AI everything it needs to continue the work.
 
@@ -10,7 +10,11 @@
 ---
 
 ## Project
-What started as a personal portfolio is now an **agency operations platform / SaaS prototype** — multi-tenant with auth, role separation (admin/client), per-client dashboards, lead capture, and tracking-pixel management. Owner is **Adham Abo Bakr SalahElden**, a Digital Marketing Specialist building a marketing agency around this platform.
+**Athar.** (أثر — meaning "the trace, the mark you leave behind") is a digital marketing agency operations platform / SaaS prototype — multi-tenant with auth, role separation (admin/client), per-client dashboards, lead capture, and tracking-pixel management.
+
+**Founder:** Adham Abo Bakr SalahElden (Digital Marketing Specialist, Egypt).
+**Tagline:** "Marketing that leaves a mark."
+**Brand wordmark:** Always written `Athar.` with a magenta period (#EC4899).
 
 ## Owner / Contact
 - **Name:** Adham Abo Bakr SalahElden

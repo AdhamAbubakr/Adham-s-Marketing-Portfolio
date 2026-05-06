@@ -17,9 +17,9 @@
   <circle cx="62" cy="20" r="4" fill="url(#sparkGrad2)"/>
 
   <!-- WORDMARK -->
-  <text x="100" y="50" font-family="'Space Grotesk', system-ui, sans-serif" font-size="34" font-weight="700" fill="#F8F8FC" letter-spacing="-0.02em">Adham</text>
-  <circle cx="208" cy="48" r="5" fill="#EC4899"/>
+  <text x="100" y="50" font-family="'Space Grotesk', system-ui, sans-serif" font-size="34" font-weight="700" fill="#F8F8FC" letter-spacing="-0.02em">Athar</text>
+  <circle cx="190" cy="48" r="5" fill="#EC4899"/>
 
   <!-- Tagline -->
-  <text x="100" y="68" font-family="'Inter', system-ui, sans-serif" font-size="10" font-weight="500" fill="#A855F7" letter-spacing="0.18em">DIGITAL · MARKETING · GROWTH</text>
+  <text x="100" y="68" font-family="'Inter', system-ui, sans-serif" font-size="9" font-weight="500" fill="#A855F7" letter-spacing="0.18em">MARKETING THAT LEAVES A MARK</text>
 </svg>
