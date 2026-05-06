@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Adham. Marketing — Project Summary &amp; Roadmap</title>
+<link rel="icon" type="image/svg+xml" href="brand/favicon.svg" />
+<meta name="robots" content="noindex,nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --purple:#7C3AED; --purple-light:#A855F7; --magenta:#EC4899;
+    --cyan:#06B6D4; --cream:#FEF3C7; --green:#22D88F; --yellow:#EAB308; --red:#EF4444;
+    --bg:#0A0118; --bg2:#11062A; --bg3:#1A0F2E;
+    --card:#1C1130; --border:rgba(168,85,247,0.18);
+    --border-strong:rgba(168,85,247,0.4);
+    --text:#F8F8FC; --muted:#9090A8;
+  }
+  body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.7}
+  .pdf-print-btn{
+    position:fixed;top:20px;right:20px;z-index:99;
+    background:var(--magenta);color:#fff;padding:.85rem 1.4rem;border:none;
+    border-radius:10px;font-weight:600;font-size:.9rem;cursor:pointer;
+    box-shadow:0 8px 24px rgba(236,72,153,.4);font-family:'Inter',sans-serif;
+  }
+
+  .page{max-width:920px;margin:0 auto;padding:80px 60px;page-break-after:always}
+  .page:last-child{page-break-after:auto}
+
+  /* COVER */
+  .cover{
+    background:linear-gradient(135deg,#0A0118,#1A0F2E,#11062A);
+    min-height:1000px;display:flex;flex-direction:column;justify-content:space-between;
+    position:relative;overflow:hidden;
+  }
+  .cover::before{
+    content:'';position:absolute;top:-15%;right:-15%;width:600px;height:600px;
+    border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,0.4),transparent 60%);filter:blur(40px);
+  }
+  .cover::after{
+    content:'';position:absolute;bottom:-10%;left:-10%;width:450px;height:450px;
+    border-radius:50%;background:radial-gradient(circle,rgba(236,72,153,0.25),transparent 60%);filter:blur(40px);
+  }
+  .cover-mark{width:140px;height:140px;border-radius:24px;margin-bottom:2.5rem;position:relative;z-index:1;box-shadow:0 20px 50px rgba(124,58,237,.5)}
+  .cover-eye{font-size:.8rem;color:var(--magenta);font-weight:600;letter-spacing:.3em;text-transform:uppercase;margin-bottom:.8rem;position:relative;z-index:1}
+  .cover-h{font-family:'Space Grotesk',sans-serif;font-size:4.2rem;font-weight:700;line-height:.95;letter-spacing:-.02em;margin-bottom:.6rem;position:relative;z-index:1}
+  .cover-h .dot{color:var(--magenta)}
+  .cover-sub{font-size:1.3rem;color:var(--muted);max-width:560px;margin-bottom:2rem;position:relative;z-index:1}
+  .cover-meta{display:flex;gap:2rem;flex-wrap:wrap;font-size:.85rem;color:var(--muted);position:relative;z-index:1}
+  .cover-meta strong{color:var(--text);display:block;font-size:.95rem;margin-bottom:.2rem}
+  .toc{position:relative;z-index:1;background:rgba(28,17,48,.5);border:1px solid var(--border-strong);border-radius:14px;padding:1.6rem 1.8rem;margin:3rem 0;backdrop-filter:blur(10px)}
+  .toc-title{font-size:.78rem;color:var(--magenta);font-weight:600;letter-spacing:.2em;text-transform:uppercase;margin-bottom:1rem}
+  .toc-grid{display:grid;grid-template-columns:1fr 1fr;gap:.4rem .8rem;font-size:.92rem}
+  .toc-grid span{color:var(--muted)}
+
+  /* SECTIONS */
+  .h-tag{display:inline-block;font-size:.75rem;color:var(--magenta);font-weight:600;letter-spacing:.25em;text-transform:uppercase;margin-bottom:.7rem}
+  h1.sec{font-family:'Space Grotesk',sans-serif;font-size:2.6rem;font-weight:700;margin-bottom:.4rem;letter-spacing:-.01em}
+  .lede{color:var(--muted);font-size:1rem;margin-bottom:2rem;max-width:680px}
+  h2{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;font-weight:600;margin:2.4rem 0 1rem;color:var(--text)}
+  h3{font-family:'Space Grotesk',sans-serif;font-size:1.05rem;font-weight:600;margin:1.4rem 0 .6rem;color:var(--purple-light)}
+  p{margin-bottom:1rem;color:var(--text)}
+  ul{padding-left:1.4rem;margin-bottom:1.2rem}
+  li{margin-bottom:.4rem;color:var(--text)}
+  li strong{color:var(--purple-light)}
+  code{background:var(--bg3);padding:.15rem .45rem;border-radius:5px;font-family:'Space Grotesk',monospace;font-size:.85rem;color:var(--cyan)}
+
+  table{width:100%;border-collapse:collapse;margin:1rem 0 1.5rem;background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+  th{text-align:left;padding:.85rem 1rem;background:var(--bg3);font-size:.78rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border)}
+  td{padding:.85rem 1rem;border-bottom:1px solid var(--border);font-size:.88rem;vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  .pct-bar{display:flex;align-items:center;gap:.7rem}
+  .pct-track{flex:1;height:8px;background:var(--bg3);border-radius:4px;overflow:hidden}
+  .pct-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--purple),var(--magenta))}
+  .pct-fill.full{background:linear-gradient(90deg,var(--green),#10b981)}
+  .pct-fill.low{background:linear-gradient(90deg,var(--red),var(--magenta))}
+  .pct-num{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:.85rem;width:40px;text-align:right}
+
+  .callout{background:var(--card);border-left:3px solid var(--purple);border-radius:8px;padding:1rem 1.2rem;margin:1.2rem 0;color:var(--text)}
+  .callout.warn{border-left-color:var(--yellow)}
+  .callout.danger{border-left-color:var(--red)}
+  .callout.success{border-left-color:var(--green)}
+
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin:1rem 0}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:1rem 0}
+  .info-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.3rem}
+  .info-card h4{font-family:'Space Grotesk',sans-serif;font-size:.95rem;color:var(--text);margin-bottom:.5rem;display:flex;align-items:center;gap:.4rem}
+  .info-card p{font-size:.85rem;color:var(--muted);margin:0;line-height:1.6}
+  .info-card .price{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.4rem;color:var(--cyan);margin:.4rem 0}
+
+  pre{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1rem;overflow-x:auto;font-family:'Space Grotesk',monospace;font-size:.78rem;color:var(--cyan);margin:.8rem 0 1.4rem;line-height:1.6;white-space:pre-wrap}
+
+  .arrow-flow{display:flex;flex-direction:column;gap:.5rem;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.4rem;margin:1.2rem 0;font-family:'Space Grotesk',monospace;font-size:.9rem}
+  .arrow-flow .step{padding:.4rem 0;color:var(--text)}
+  .arrow-flow .arr{color:var(--magenta);text-align:center}
+
+  @media print{
+    .pdf-print-btn{display:none}
+    body{background:#0A0118 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .page{padding:40px 50px;page-break-after:always}
+    .cover{min-height:980px}
+  }
+  @page{size:A4;margin:0}
+</style>
+</head>
+<body>
+
+<button class="pdf-print-btn" onclick="window.print()">⬇ Save as PDF</button>
+
+<!-- ==================== COVER ==================== -->
+<section class="page cover">
+  <div>
+    <div class="cover-mark">
+      <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+        <defs>
+          <linearGradient id="cg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#7C3AED"/><stop offset="100%" stop-color="#A855F7"/>
+          </linearGradient>
+        </defs>
+        <rect width="80" height="80" rx="18" fill="url(#cg)"/>
+        <path d="M 40 16 L 64 64 L 54 64 L 50 56 L 30 56 L 26 64 L 16 64 Z M 33.5 48 L 46.5 48 L 40 35 Z" fill="#FFF"/>
+        <circle cx="62" cy="20" r="4" fill="#EC4899"/>
+      </svg>
+    </div>
+    <div class="cover-eye">Project Summary &middot; Architecture &middot; Roadmap</div>
+    <h1 class="cover-h">Adham<span class="dot">.</span><br/>Marketing&nbsp;Platform</h1>
+    <p class="cover-sub">A complete snapshot of what&rsquo;s built, what&rsquo;s missing, and the migration plan to a production-ready agency operations platform.</p>
+  </div>
+
+  <div class="toc">
+    <div class="toc-title">Inside this document</div>
+    <div class="toc-grid">
+      <div>01 &middot; Executive Summary</div><span>p. 2</span>
+      <div>02 &middot; What&rsquo;s Built</div><span>p. 3</span>
+      <div>03 &middot; Vision vs Current State</div><span>p. 4</span>
+      <div>04 &middot; Architecture &amp; Stack</div><span>p. 5</span>
+      <div>05 &middot; File &amp; Data Inventory</div><span>p. 6</span>
+      <div>06 &middot; Workflows</div><span>p. 7</span>
+      <div>07 &middot; Migration Plan</div><span>p. 8</span>
+      <div>08 &middot; Roadmap to 100%</div><span>p. 9</span>
+      <div>09 &middot; Backup &amp; Recovery</div><span>p. 10</span>
+    </div>
+  </div>
+
+  <div class="cover-meta">
+    <div><strong>Owner</strong>Adham Abo Bakr SalahElden</div>
+    <div><strong>Issued</strong>May 2026</div>
+    <div><strong>Repo</strong>github.com/AdhamAbubakr</div>
+    <div><strong>Live</strong>adhamabobakr.netlify.app</div>
+  </div>
+</section>
+
+<!-- ==================== 01 EXECUTIVE SUMMARY ==================== -->
+<section class="page">
+  <div class="h-tag">01 &middot; Executive Summary</div>
+  <h1 class="sec">Where We Are</h1>
+  <p class="lede">In one sprint, we transformed a static portfolio into the foundation of an agency-operations platform with multi-tenant security, real client onboarding, and the ability to manage every brand from one dashboard.</p>
+
+  <div class="callout success">
+    <strong>✅ MVP delivered in days, not weeks.</strong> The site is live, the database is structured, clients can sign up and access their own portal, and you have an admin command-center that scales as you scale.
+  </div>
+
+  <h2>The big picture</h2>
+  <p>We built a production-grade <strong>Phase 1 + Phase 2 SaaS prototype</strong> covering:</p>
+  <ul>
+    <li><strong>Public Portfolio</strong> — full brand identity, services, case studies, lead capture</li>
+    <li><strong>Admin Dashboard</strong> — leads, clients, per-client metrics, tracking pixels</li>
+    <li><strong>Client Portal</strong> — signup, login, service-based dashboards, real-time data</li>
+    <li><strong>Multi-tenant Security</strong> — role-based access; clients only see their own numbers</li>
+    <li><strong>Brand System</strong> — logo files, palette, full PDF brand guide</li>
+  </ul>
+
+  <h2>What this means for the business</h2>
+  <p>You can already start onboarding clients today. They get a real login, a private dashboard, and live numbers — the same experience an agency 10× our size would offer. Scope for monthly services becomes easier to pitch, because the &ldquo;you&rsquo;ll get a portal&rdquo; line is now a real deliverable.</p>
+
+  <div class="callout warn">
+    <strong>⚠️ Reality check.</strong> The free tier (Netlify + Supabase) is fine for piloting with 1&ndash;3 clients. Beyond that, the migration plan in this doc moves us to Hostinger + Supabase Pro for ~$30&ndash;40/month total.
+  </div>
+</section>
+
+<!-- ==================== 02 WHAT'S BUILT ==================== -->
+<section class="page">
+  <div class="h-tag">02 &middot; What&rsquo;s Built</div>
+  <h1 class="sec">Shipped Capabilities</h1>
+  <p class="lede">A walk through every feature that&rsquo;s live on adhamabobakr.netlify.app today.</p>
+
+  <h2>🌐 Public Portfolio (`index.html`)</h2>
+  <ul>
+    <li><strong>Animated intro loader</strong> with the &ldquo;A&rdquo; brand mark</li>
+    <li><strong>Hero</strong> with gradient title, animated counters, floating metric cards</li>
+    <li><strong>Combined Impact</strong> — 8 aggregate counters across all brands</li>
+    <li><strong>About</strong> — bio + meta pills</li>
+    <li><strong>Services</strong> — 6 service cards including WordPress / Shopify e-commerce</li>
+    <li><strong>Case Studies</strong> — pooled-numbers approach + 12-brand logo strip</li>
+    <li><strong>Skills</strong> — animated bars + tool pills</li>
+    <li><strong>Resume</strong> — full timeline of 8 jobs + education + downloadable PDF</li>
+    <li><strong>Process</strong> — 5-step working method</li>
+    <li><strong>Contact</strong> — full lead form (writes to Supabase + emails via Web3Forms) + direct channels</li>
+    <li><strong>Tracking pixels</strong> — dynamically injected based on admin settings</li>
+  </ul>
+
+  <h2>🎨 Brand System (`brand/`, `brand-guide.html`)</h2>
+  <ul>
+    <li>7 logo SVGs (primary, stacked, mark, white, black, favicon, social-avatar 1000&times;1000)</li>
+    <li>Brand palette — Royal Purple, Electric Violet, Magenta Spark, Cyan Pulse, Cream, Midnight</li>
+    <li>9-page printable brand guide PDF (cover, essence, logo, rules, colors, type, icons, social templates, contact)</li>
+  </ul>
+
+  <h2>🔐 Admin Dashboard (`admin.html`)</h2>
+  <ul>
+    <li><strong>Tabs:</strong> Overview &middot; Clients &middot; Leads &middot; Pixels</li>
+    <li><strong>Overview</strong> — total leads, week count, conversions, conversion-rate cards + 2 charts</li>
+    <li><strong>Clients Manager</strong> — full CRUD; per-client dashboard with stats, charts, campaigns table, metrics history; Add/Edit modals; manual data entry; campaign URL bookmarks (open in Meta/Google)</li>
+    <li><strong>Leads Manager</strong> — search, filter by status, change status (new/contacted/converted/lost), CSV export, delete; realtime auto-update on new leads</li>
+    <li><strong>Tracking Pixels</strong> — Meta, GA4, GTM, TikTok, Snapchat, LinkedIn, Custom Head Code; save individually; live on the website instantly</li>
+  </ul>
+
+  <h2>👤 Client Portal (`portal.html`)</h2>
+  <ul>
+    <li>Welcome screen with client name, brand, and country</li>
+    <li>Service-selection screen on first login (6 services: media buying, social, web, content, CRM, analytics)</li>
+    <li>Aggregate stats cards (Spend, Reach, Conversions, ROAS)</li>
+    <li>Charts (spend over time + platform breakdown)</li>
+    <li>Service-specific sections that render conditionally based on selected services</li>
+    <li>Active campaigns table (read-only)</li>
+    <li>Logout + change-services link</li>
+  </ul>
+
+  <h2>📝 Auth System (`signup.html`)</h2>
+  <ul>
+    <li>Combined signup + sign-in tabs</li>
+    <li>Match-by-email logic — if admin pre-created a client with the email, auto-link instead of duplicating</li>
+    <li>Email verification flow (Supabase Auth)</li>
+    <li>Role-based redirect — admin &rarr; <code>/admin.html</code>, client &rarr; <code>/portal.html</code></li>
+  </ul>
+</section>
+
+<!-- ==================== 03 VISION vs CURRENT ==================== -->
+<section class="page">
+  <div class="h-tag">03 &middot; Reality Check</div>
+  <h1 class="sec">Vision vs Current State</h1>
+  <p class="lede">Honest scoring of every capability against the long-term vision.</p>
+
+  <table>
+    <thead>
+      <tr><th>Capability</th><th>State</th><th style="width:160px">Coverage</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Public Portfolio + Brand</td><td>Done</td><td><div class="pct-bar"><div class="pct-track"><div class="pct-fill full" style="width:100%"></div></div><div class="pct-num">100%</div></div></td></tr>
+      <tr><td>Lead Capture (form + email)</td><td>Done</td><td><div class="pct-bar"><div class="pct-track"><div class="pct-fill full" style="width:100%"></div></div><div class="pct-num">100%</div></div></td></tr>
+      <tr><td>Admin Dashboard (basics)</td><td>Done</td><td><div class="pct-bar"><div class="pct-track"><div class="pct-fill" style="width:70%"></div></div><div class="pct-num">70%</div></div></td></tr>
+      <tr><td>Client Portal foundation</td><td>Done</td><td><div class="pct-bar"><div class="pct-track"><div class="pct-fill" style="width:40%"></div></div><div class="pct-num">40%</div></div></td></tr>
+      <tr><td>Tracking Pixels Manager</td><td>Done</td><td><div class="pct-bar"><div class="pct-track"><div class="pct-fill full" style="width:100%"></div></div><div class="pct-num">100%</div></div></td></tr>
+      <tr><td>Multi-tenant security (RLS + roles)</td><td>Done</td><td><div class="pct-bar"><div class="pct-track"><div class="pct-fill full" style="width:100%"></div></div><div class="pct-num">100%</div></div></td></tr>
+      <tr><td>Client Brief / Onboarding form</td><td>Pending</td><td><div class="pct-bar"><div class="pct-track"><div class="pct-fill low" style="width:0%"></div></div><div class="pct-num">0%</div></div></td></tr>
+      <tr><td>Marketing Strategy module</td><td>Pending</td><td><div class="pct-bar"><div class="pct-track"><div class="pct-fill low" style="width:0%"></div></div><div class="pct-num">0%</div></div></td></tr>
+      <tr><td>Content Calendar + approvals</td><td>Pending</td><td><div class="pct-bar"><div class="pct-track"><div class="pct-fill low" style="width:0%"></div></div><div class="pct-num">0%</div></div></td></tr>
+      <tr><td>File sharing (designs / videos)</td><td>Pending</td><td><div class="pct-bar"><div class="pct-track"><div class="pct-fill low" style="width:0%"></div></div><div class="pct-num">0%</div></div></td></tr>
+      <tr><td>Team / Employee portal</td><td>Pending</td><td><div class="pct-bar"><div class="pct-track"><div class="pct-fill low" style="width:0%"></div></div><div class="pct-num">0%</div></div></td></tr>
+      <tr><td>Content scheduling / publisher</td><td>Pending</td><td><div class="pct-bar"><div class="pct-track"><div class="pct-fill low" style="width:0%"></div></div><div class="pct-num">0%</div></div></td></tr>
+      <tr><td>Monthly reports + PDF export</td><td>Pending</td><td><div class="pct-bar"><div class="pct-track"><div class="pct-fill low" style="width:0%"></div></div><div class="pct-num">0%</div></div></td></tr>
+      <tr><td>Strategy vs actual comparison</td><td>Pending</td><td><div class="pct-bar"><div class="pct-track"><div class="pct-fill low" style="width:0%"></div></div><div class="pct-num">0%</div></div></td></tr>
+      <tr><td>API integrations (Meta / Google)</td><td>UI scaffolded</td><td><div class="pct-bar"><div class="pct-track"><div class="pct-fill low" style="width:10%"></div></div><div class="pct-num">10%</div></div></td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>Overall progress: ~30&ndash;35% of the full vision.</strong> The foundation (auth, multi-tenancy, dashboards) is solid. What&rsquo;s missing is workflow tooling (briefs, calendars, approvals, team), reporting, and real platform integrations.
+  </div>
+</section>
+
+<!-- ==================== 04 ARCHITECTURE ==================== -->
+<section class="page">
+  <div class="h-tag">04 &middot; Architecture</div>
+  <h1 class="sec">Stack &amp; How It Fits Together</h1>
+
+  <h2>Tech stack</h2>
+  <ul>
+    <li><strong>Frontend</strong> — single-file HTML / CSS / vanilla JS (no framework, no build step)</li>
+    <li><strong>Hosting</strong> — Netlify (free tier; auto-deploys from GitHub on push)</li>
+    <li><strong>Source control</strong> — GitHub (<code>github.com/AdhamAbubakr/Adham-s-Marketing-Portfolio</code>)</li>
+    <li><strong>Database</strong> — Supabase Postgres (free tier; project <code>rgofucjhmiiyygbcnoim</code>)</li>
+    <li><strong>Auth</strong> — Supabase Auth (email + password; verification on)</li>
+    <li><strong>Charts</strong> — Chart.js (CDN)</li>
+    <li><strong>Email notifications</strong> — Web3Forms (free, 250/mo)</li>
+    <li><strong>Type</strong> — Google Fonts (Space Grotesk + Inter)</li>
+  </ul>
+
+  <h2>Request flow — public visitor</h2>
+  <div class="arrow-flow">
+    <div class="step">Visitor opens adhamabobakr.netlify.app</div>
+    <div class="arr">↓</div>
+    <div class="step">Static HTML loads from Netlify CDN</div>
+    <div class="arr">↓</div>
+    <div class="step">tracking.js fetches pixel IDs from Supabase &rarr; injects Meta/GA4/etc.</div>
+    <div class="arr">↓</div>
+    <div class="step">Visitor fills form &rarr; supabase.from('leads').insert()</div>
+    <div class="arr">↓</div>
+    <div class="step">Web3Forms POST &rarr; email lands at adhambakrsalah@gmail.com</div>
+  </div>
+
+  <h2>Request flow — client login</h2>
+  <div class="arrow-flow">
+    <div class="step">Client opens /signup.html &rarr; signs up</div>
+    <div class="arr">↓</div>
+    <div class="step">supabase.auth.signUp() &rarr; trigger creates user_role = 'client'</div>
+    <div class="arr">↓</div>
+    <div class="step">Client record auto-created OR linked by email</div>
+    <div class="arr">↓</div>
+    <div class="step">Login &rarr; role check &rarr; redirect to /portal.html</div>
+    <div class="arr">↓</div>
+    <div class="step">Portal fetches client/campaigns/metrics filtered by RLS</div>
+  </div>
+
+  <h2>Request flow — admin</h2>
+  <div class="arrow-flow">
+    <div class="step">Admin opens /admin.html &rarr; signs in</div>
+    <div class="arr">↓</div>
+    <div class="step">role check &rarr; is_admin() returns true</div>
+    <div class="arr">↓</div>
+    <div class="step">Full access to leads / clients / campaigns / metrics / pixels</div>
+    <div class="arr">↓</div>
+    <div class="step">Realtime subscription on new leads &rarr; auto-update dashboard</div>
+  </div>
+</section>
+
+<!-- ==================== 05 FILE INVENTORY ==================== -->
+<section class="page">
+  <div class="h-tag">05 &middot; Inventory</div>
+  <h1 class="sec">Files &amp; Database</h1>
+
+  <h2>Repository file structure</h2>
+  <pre>portfolio/
+├── index.html                  Public portfolio (~1,250 lines)
+├── signup.html                 Combined signup / login
+├── portal.html                 Client portal (post-login)
+├── admin.html                  Admin command center (~1,500 lines)
+├── brand-guide.html            Printable brand identity guide
+├── project-summary.html        THIS DOCUMENT
+├── tracking.js                 Dynamic pixel loader
+├── supabase-config.js          Public keys (anon + Web3Forms)
+├── database-backup.sql         Full schema for recreation
+├── Adham-Abo-Bakr-Resume.pdf   Downloadable CV
+├── AI-CONTEXT.md               Context for future AI sessions
+├── README.md                   Project overview
+├── brand/
+│   ├── logo-primary.svg
+│   ├── logo-stacked.svg
+│   ├── logo-mark.svg
+│   ├── logo-white.svg
+│   ├── logo-black.svg
+│   ├── favicon.svg
+│   ├── social-avatar.svg
+│   └── README.md
+└── .gitignore</pre>
+
+  <h2>Database tables (Supabase)</h2>
+  <table>
+    <thead><tr><th>Table</th><th>Purpose</th><th>Key Columns</th></tr></thead>
+    <tbody>
+      <tr><td><code>leads</code></td><td>Public form submissions</td><td>id, name, email, phone, service, budget, message, source, status</td></tr>
+      <tr><td><code>site_settings</code></td><td>Pixel IDs &amp; custom code</td><td>key, value, updated_at</td></tr>
+      <tr><td><code>clients</code></td><td>Brand profiles + auth link</td><td>id, auth_user_id, name, slug, services, platforms, monthly_budget, contact_*</td></tr>
+      <tr><td><code>client_campaigns</code></td><td>Per-client campaigns</td><td>id, client_id, name, platform, objective, budget, external_url, status</td></tr>
+      <tr><td><code>client_metrics</code></td><td>Daily numbers per client</td><td>id, client_id, date, platform, spend, reach, conversions, revenue</td></tr>
+      <tr><td><code>client_activity</code></td><td>Action log</td><td>id, client_id, type, title, description</td></tr>
+      <tr><td><code>user_roles</code></td><td>Admin vs client</td><td>user_id, role</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Security model (RLS policies)</h2>
+  <ul>
+    <li><strong>leads</strong> — anyone INSERTs; only authenticated read/update/delete</li>
+    <li><strong>site_settings</strong> — anyone reads (public site needs pixel IDs); admin writes</li>
+    <li><strong>clients / campaigns / metrics / activity</strong> — admin: full access; client: read-only on own row(s)</li>
+    <li><strong>user_roles</strong> — user reads their own role only</li>
+    <li><strong>Trigger</strong> — new auth signup auto-assigned <code>role='client'</code></li>
+    <li><strong>Function</strong> — <code>is_admin()</code> returns true only for <code>role='admin'</code></li>
+  </ul>
+</section>
+
+<!-- ==================== 06 WORKFLOWS ==================== -->
+<section class="page">
+  <div class="h-tag">06 &middot; Workflows</div>
+  <h1 class="sec">How You Use the System</h1>
+
+  <h2>Onboarding a new client</h2>
+  <ol style="padding-left:1.4rem">
+    <li>Discovery call &rarr; agree on scope</li>
+    <li>Open <code>/admin.html</code> &rarr; <strong>Clients</strong> tab &rarr; <strong>+ Add New Client</strong></li>
+    <li>Fill name, contact email, country, platforms, monthly budget</li>
+    <li>Send the client the link <code>adhamabobakr.netlify.app/signup.html</code></li>
+    <li>Client signs up with the same email &rarr; system auto-links to your record</li>
+    <li>Client picks services &rarr; their dashboard goes live</li>
+  </ol>
+
+  <h2>Weekly cycle (per client)</h2>
+  <ol style="padding-left:1.4rem">
+    <li>Run campaigns on Meta / Google / TikTok as usual</li>
+    <li>Open the client&rsquo;s page in <code>/admin.html</code></li>
+    <li>Click <strong>+ Log Numbers</strong> &rarr; enter spend, reach, conversions, revenue per platform</li>
+    <li>Charts update instantly; client portal reflects the new data on next login</li>
+    <li>Add/update campaigns; paste their platform URL so you both can jump back to Meta in one click</li>
+  </ol>
+
+  <h2>Monthly reporting (today)</h2>
+  <ol style="padding-left:1.4rem">
+    <li>Open client dashboard at end of month</li>
+    <li>Screenshot the stat cards + charts</li>
+    <li>Send to the client via WhatsApp/email + a brief commentary</li>
+  </ol>
+  <p style="color:var(--muted)"><em>Note: automated PDF export is on the roadmap — see Section 8.</em></p>
+
+  <h2>Lead management</h2>
+  <ul>
+    <li>New lead arrives &rarr; you get an email AND it shows in <strong>Leads</strong> tab</li>
+    <li>Search by name/email/phone, filter by status</li>
+    <li>Change status (new &rarr; contacted &rarr; converted &rarr; lost) — single click</li>
+    <li>Export CSV anytime for cold reach-outs / CRM imports</li>
+  </ul>
+
+  <h2>Pixel deployment</h2>
+  <ul>
+    <li>Want to track website traffic with Meta? Paste Pixel ID in <strong>Pixels</strong> tab &rarr; Save</li>
+    <li>Pixel goes live on every page within seconds &mdash; no redeploy</li>
+    <li>Removing the ID disables the pixel instantly</li>
+  </ul>
+</section>
+
+<!-- ==================== 07 MIGRATION ==================== -->
+<section class="page">
+  <div class="h-tag">07 &middot; Migration Plan</div>
+  <h1 class="sec">From Free Tier &rarr; Production Infra</h1>
+  <p class="lede">When the system gets serious traction (3+ active clients), here&rsquo;s the upgrade path.</p>
+
+  <h2>Recommended stack</h2>
+  <div class="grid-3">
+    <div class="info-card">
+      <h4>🏠 Hosting</h4>
+      <div class="price">$3&ndash;10/mo</div>
+      <p><strong>Hostinger Premium</strong> &mdash; static hosting, free SSL, custom domain, fast CDN. Or stay on Netlify Pro ($19) if simplicity matters more than savings.</p>
+    </div>
+    <div class="info-card">
+      <h4>🗄️ Database</h4>
+      <div class="price">$25/mo</div>
+      <p><strong>Supabase Pro</strong> &mdash; 8 GB DB, 250 GB bandwidth, 100 GB storage, daily backups, support. Same project, just upgrade.</p>
+    </div>
+    <div class="info-card">
+      <h4>🌐 Domain</h4>
+      <div class="price">$10&ndash;15/yr</div>
+      <p><strong>Custom domain</strong> like <code>adhammarketing.com</code>. Hostinger or Namecheap. Add as alias in Netlify or point to Hostinger.</p>
+    </div>
+  </div>
+
+  <p style="margin-top:1.5rem"><strong>Total cost:</strong> ~$30&ndash;40/month + $10&ndash;15/year &mdash; affordable once you have 3+ paying clients on retainer.</p>
+
+  <h2>Migration checklist</h2>
+  <ol style="padding-left:1.4rem">
+    <li><strong>Buy domain</strong> at Hostinger or Namecheap (5 minutes)</li>
+    <li><strong>Upgrade Supabase</strong> to Pro plan (1 click, no migration needed &mdash; same project keeps running)</li>
+    <li><strong>Connect domain to Netlify:</strong> Site Settings &rarr; Domain Management &rarr; Add custom domain &rarr; follow DNS instructions</li>
+    <li><strong>OR move to Hostinger:</strong> upload <code>portfolio/</code> folder via File Manager or FTP &rarr; point domain</li>
+    <li><strong>Update Supabase Site URL</strong> in Authentication settings to your new domain (otherwise email verification breaks)</li>
+    <li><strong>Test signup flow</strong> end-to-end on the new domain</li>
+    <li><strong>Set up daily backups</strong> in Supabase dashboard (Settings &rarr; Database &rarr; Backups)</li>
+  </ol>
+
+  <h2>Disaster recovery</h2>
+  <p>If anything ever goes wrong (Netlify down, Supabase data lost, account deleted), you can rebuild from this PDF + the GitHub repo + the <code>database-backup.sql</code> file in <strong>under one day</strong>:</p>
+  <ol style="padding-left:1.4rem">
+    <li>Clone the GitHub repo to any host (Netlify / Vercel / Hostinger)</li>
+    <li>Create a new Supabase project</li>
+    <li>Run <code>database-backup.sql</code> in the SQL editor</li>
+    <li>Update <code>supabase-config.js</code> with the new project URL + anon key</li>
+    <li>Push to host &mdash; you&rsquo;re back online</li>
+  </ol>
+</section>
+
+<!-- ==================== 08 ROADMAP ==================== -->
+<section class="page">
+  <div class="h-tag">08 &middot; Roadmap</div>
+  <h1 class="sec">From 35% &rarr; 100%</h1>
+  <p class="lede">A staged plan to complete the full agency-platform vision.</p>
+
+  <h2>🟣 Phase 3 (next — 1-2 weeks)</h2>
+  <ul>
+    <li><strong>Client Brief Form</strong> &mdash; structured intake questionnaire that flows into a <code>client_briefs</code> table</li>
+    <li><strong>Marketing Strategy module</strong> &mdash; document strategy per client, version it, link to the brief</li>
+    <li><strong>Notes &amp; Activity Log</strong> &mdash; add to client dashboard for full timeline</li>
+    <li><strong>PDF Export</strong> &mdash; one-click monthly report for any client</li>
+  </ul>
+
+  <h2>🟣 Phase 4 (2-3 weeks)</h2>
+  <ul>
+    <li><strong>Content Calendar</strong> &mdash; weekly grid view; admin assigns posts &rarr; client approves</li>
+    <li><strong>Approval Workflow</strong> &mdash; status badges (draft / pending review / approved / scheduled / published)</li>
+    <li><strong>File Storage</strong> &mdash; Supabase Storage buckets for designs, videos; client previews + comments</li>
+    <li><strong>Email notifications</strong> &mdash; trigger via Supabase Edge Function on each status change</li>
+  </ul>
+
+  <h2>🟣 Phase 5 (2-3 weeks)</h2>
+  <ul>
+    <li><strong>Team / Employee Portal</strong> &mdash; new role <code>'team'</code>; per-team-member task dashboard</li>
+    <li><strong>Task assignment</strong> &mdash; designers / video editors / photographers see only their tasks</li>
+    <li><strong>Internal chat</strong> per client (admin + team only)</li>
+  </ul>
+
+  <h2>🟣 Phase 6 (4-6 weeks &mdash; depends on platform approvals)</h2>
+  <ul>
+    <li><strong>Meta API integration</strong> &mdash; OAuth + auto-sync campaign data</li>
+    <li><strong>Google Ads API integration</strong> &mdash; same model</li>
+    <li><strong>TikTok Marketing API</strong></li>
+    <li><strong>Auto-import</strong> daily metrics into <code>client_metrics</code> &mdash; manual entry becomes optional fallback</li>
+  </ul>
+
+  <h2>🟣 Phase 7 (polish + launch)</h2>
+  <ul>
+    <li>Marketing site for the platform itself (sell to other agencies?)</li>
+    <li>Public sign-up flow with Stripe billing</li>
+    <li>Onboarding tutorials inside the portal</li>
+    <li>Mobile app shell (PWA install)</li>
+  </ul>
+</section>
+
+<!-- ==================== 09 BACKUP ==================== -->
+<section class="page">
+  <div class="h-tag">09 &middot; Backup</div>
+  <h1 class="sec">If Anything Breaks</h1>
+  <p class="lede">Three artifacts make this project recoverable from total loss.</p>
+
+  <div class="grid-2">
+    <div class="info-card">
+      <h4>📄 This PDF</h4>
+      <p>Full architectural blueprint. Even with no code, an experienced dev can rebuild everything from this document in 2&ndash;3 days.</p>
+    </div>
+    <div class="info-card">
+      <h4>🗄️ database-backup.sql</h4>
+      <p>One file recreates every table, every policy, every trigger, every helper function. Run on a fresh Supabase project &rarr; instant database.</p>
+    </div>
+    <div class="info-card">
+      <h4>🐙 GitHub Repo</h4>
+      <p><code>github.com/AdhamAbubakr/Adham-s-Marketing-Portfolio</code> &mdash; full git history, every commit, every revert path. The repo IS the source of truth.</p>
+    </div>
+    <div class="info-card">
+      <h4>🤖 AI-CONTEXT.md</h4>
+      <p>Hand this to any new AI session (Claude, ChatGPT, Gemini) and it can pick up exactly where this work left off.</p>
+    </div>
+  </div>
+
+  <h2>If Netlify goes down</h2>
+  <ol style="padding-left:1.4rem">
+    <li>Sign in to Vercel / Cloudflare Pages with your GitHub</li>
+    <li>Import the repo &mdash; auto-deploys in 30 seconds</li>
+    <li>Update DNS to point to the new host</li>
+  </ol>
+
+  <h2>If Supabase data is corrupted</h2>
+  <ol style="padding-left:1.4rem">
+    <li>Restore from latest daily backup (Supabase Pro &mdash; included)</li>
+    <li>Or: create new project &rarr; run <code>database-backup.sql</code> &rarr; restore from any CSV exports you kept</li>
+  </ol>
+
+  <h2>If you lose access to your account</h2>
+  <ol style="padding-left:1.4rem">
+    <li>Recover GitHub via 2FA backup codes</li>
+    <li>Recover Netlify / Supabase via email reset</li>
+    <li>Worst case &mdash; rebuild from this PDF on a new host (one full day of work)</li>
+  </ol>
+
+  <div class="callout success" style="margin-top:2rem">
+    <strong>Your business survives any single failure.</strong> No single point of failure can take down your data, your code, AND your knowledge of the system at the same time. That&rsquo;s why we built it this way.
+  </div>
+</section>
+
+<!-- ==================== CLOSE ==================== -->
+<section class="page">
+  <div class="h-tag">10 &middot; Closing</div>
+  <h1 class="sec">What&rsquo;s Next</h1>
+  <p class="lede">You have a working MVP. The decision now is when to invest the next sprint of build time.</p>
+
+  <h2>Three paths forward</h2>
+  <ol style="padding-left:1.4rem">
+    <li><strong>Pilot first.</strong> Use what&rsquo;s built today with 1&ndash;2 real clients. Collect feedback. Refine before adding features.</li>
+    <li><strong>Build Phase 3 now.</strong> Brief form + strategy module + monthly PDF export. Brings the system to ~55%.</li>
+    <li><strong>Migrate first, then build.</strong> Move to Hostinger + Supabase Pro this month, then continue building on a stable paid foundation.</li>
+  </ol>
+
+  <h2>Recommendation</h2>
+  <p>Path 1 + Path 2 in parallel: onboard your first paying client on the existing system this week, while building Phase 3 in the background. By the time client #2 signs, you have brief forms and PDF reports ready.</p>
+
+  <div class="callout">
+    <strong>Last thought.</strong> We didn&rsquo;t build a portfolio &mdash; we built the operating system for a marketing agency. Treat it like infrastructure, not a website.
+  </div>
+
+  <div style="margin-top:3rem;padding-top:1.4rem;border-top:1px solid var(--border);font-size:.8rem;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem">
+    <span>Adham<span style="color:var(--magenta)">.</span> Marketing &mdash; Project Summary v1.0</span>
+    <span>Issued May 2026 &middot; © Adham Abo Bakr SalahElden</span>
+  </div>
+</section>
+
+</body>
+</html>
