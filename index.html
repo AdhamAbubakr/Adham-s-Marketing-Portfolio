@@ -91,6 +91,12 @@
   .nav-cta{background:var(--purple);color:#fff!important;padding:.5rem 1.2rem;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:600;transition:all .2s}
   .nav-cta:hover{background:var(--purple-light);transform:translateY(-1px);box-shadow:0 6px 18px rgba(124,58,237,.4)}
   .nav-cta::after{display:none}
+  .nav-link-soft{
+    color:var(--muted);text-decoration:none;font-size:.85rem;font-weight:500;
+    padding:.5rem .9rem;border-radius:8px;transition:all .2s;
+  }
+  .nav-link-soft:hover{color:var(--text);background:var(--card)}
+  @media (max-width:600px){.nav-link-soft{display:none}}
   @media (max-width:760px){.nav-links{display:none}}
 
   /* ---------- HERO ---------- */
@@ -537,7 +543,10 @@
     <li><a href="#resume">Resume</a></li>
     <li><a href="#process">Process</a></li>
   </ul>
-  <a href="#contact" class="nav-cta">Contact Me</a>
+  <div style="display:flex;gap:.6rem;align-items:center">
+    <a href="signup.html" class="nav-link-soft">Client Login</a>
+    <a href="#contact" class="nav-cta">Contact Me</a>
+  </div>
 </nav>
 
 <!-- HERO -->

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Client Sign Up — Adham. Marketing</title>
+<link rel="icon" type="image/svg+xml" href="brand/favicon.svg" />
+<meta name="robots" content="noindex,nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --purple:#7C3AED; --purple-light:#A855F7; --magenta:#EC4899; --cyan:#06B6D4;
+    --bg:#0A0118; --bg2:#11062A; --bg3:#1A0F2E;
+    --card:#1C1130;
+    --border:rgba(168,85,247,0.18); --border-strong:rgba(168,85,247,0.4);
+    --text:#F8F8FC; --muted:#9090A8; --green:#22D88F; --red:#EF4444;
+  }
+  body{
+    background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;
+    min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;
+    background-image:radial-gradient(ellipse 60% 50% at 70% 30%,rgba(124,58,237,0.18),transparent 70%),
+                     radial-gradient(ellipse 50% 50% at 20% 80%,rgba(236,72,153,0.10),transparent 65%);
+  }
+  .wrap{width:100%;max-width:520px}
+  .head{text-align:center;margin-bottom:2rem}
+  .mark{width:64px;height:64px;border-radius:14px;margin:0 auto 1.4rem;display:block;overflow:hidden;box-shadow:0 12px 32px rgba(124,58,237,.4)}
+  h1{font-family:'Space Grotesk',sans-serif;font-size:1.9rem;font-weight:700;margin-bottom:.4rem;letter-spacing:-.01em}
+  h1 .dot{color:var(--magenta)}
+  .head .sub{color:var(--muted);font-size:.95rem}
+
+  .card{
+    background:var(--card);border:1px solid var(--border-strong);border-radius:18px;
+    padding:2.2rem;box-shadow:0 30px 80px rgba(0,0,0,.4);
+  }
+
+  /* Tabs */
+  .auth-tabs{display:flex;background:var(--bg);border-radius:10px;padding:.3rem;margin-bottom:1.6rem;gap:.3rem}
+  .auth-tab{
+    flex:1;padding:.6rem;text-align:center;background:transparent;border:none;
+    color:var(--muted);font-weight:600;font-size:.88rem;cursor:pointer;border-radius:8px;
+    transition:all .2s;font-family:'Inter',sans-serif;
+  }
+  .auth-tab.active{background:var(--purple);color:#fff}
+
+  label{display:block;font-size:.78rem;font-weight:600;margin-bottom:.4rem;letter-spacing:.02em}
+  input,select{
+    width:100%;background:var(--bg);border:1px solid var(--border);
+    color:var(--text);padding:.8rem 1rem;border-radius:10px;
+    font-family:'Inter',sans-serif;font-size:.95rem;margin-bottom:1rem;
+    transition:border-color .2s, box-shadow .2s;
+  }
+  input:focus,select:focus{outline:none;border-color:var(--purple-light);box-shadow:0 0 0 3px rgba(168,85,247,.15)}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+  @media (max-width:480px){.row{grid-template-columns:1fr}}
+
+  button[type="submit"]{
+    width:100%;background:var(--purple);color:#fff;border:none;padding:.95rem;
+    border-radius:10px;font-weight:600;font-size:.95rem;cursor:pointer;
+    transition:all .2s;font-family:'Inter',sans-serif;margin-top:.5rem;
+    box-shadow:0 6px 20px rgba(124,58,237,.35);
+  }
+  button[type="submit"]:hover{background:var(--purple-light);transform:translateY(-1px)}
+  button[type="submit"]:disabled{opacity:.6;cursor:not-allowed}
+
+  .feedback{padding:.8rem 1rem;border-radius:10px;font-size:.85rem;margin-bottom:1rem;display:none}
+  .feedback.show{display:block}
+  .feedback.success{background:rgba(34,216,143,.1);border:1px solid rgba(34,216,143,.4);color:var(--green)}
+  .feedback.error{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.4);color:var(--red)}
+
+  .switch-link{text-align:center;margin-top:1.4rem;color:var(--muted);font-size:.85rem}
+  .switch-link a{color:var(--purple-light);text-decoration:none;font-weight:600}
+  .switch-link a:hover{color:var(--magenta)}
+  .footer-link{text-align:center;margin-top:1.5rem;font-size:.8rem;color:var(--muted)}
+  .footer-link a{color:var(--purple-light);text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <div class="mark">
+      <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+        <defs>
+          <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#7C3AED"/><stop offset="100%" stop-color="#A855F7"/>
+          </linearGradient>
+        </defs>
+        <rect width="80" height="80" rx="18" fill="url(#g1)"/>
+        <path d="M 40 16 L 64 64 L 54 64 L 50 56 L 30 56 L 26 64 L 16 64 Z M 33.5 48 L 46.5 48 L 40 35 Z" fill="#FFF"/>
+        <circle cx="62" cy="20" r="4" fill="#EC4899"/>
+      </svg>
+    </div>
+    <h1>Welcome to Adham<span class="dot">.</span></h1>
+    <p class="sub">Your client portal — track your campaigns, see live results, and stay in the loop.</p>
+  </div>
+
+  <div class="card">
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-mode="signup">Sign Up</button>
+      <button class="auth-tab" data-mode="login">Sign In</button>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <!-- SIGNUP FORM -->
+    <form id="signupForm">
+      <div class="row">
+        <div>
+          <label>Full Name *</label>
+          <input type="text" id="su_name" required placeholder="John Doe" />
+        </div>
+        <div>
+          <label>Brand / Company *</label>
+          <input type="text" id="su_brand" required placeholder="Acme Inc." />
+        </div>
+      </div>
+      <label>Email *</label>
+      <input type="email" id="su_email" required autocomplete="email" placeholder="you@company.com" />
+      <label>Password *</label>
+      <input type="password" id="su_password" required minlength="6" autocomplete="new-password" placeholder="At least 6 characters" />
+      <label>Phone / WhatsApp</label>
+      <input type="tel" id="su_phone" placeholder="+20 100 000 0000" />
+      <label>Country</label>
+      <input type="text" id="su_country" placeholder="Egypt" />
+      <button type="submit" id="signupBtn">Create My Account →</button>
+    </form>
+
+    <!-- LOGIN FORM -->
+    <form id="loginForm" style="display:none">
+      <label>Email</label>
+      <input type="email" id="li_email" required autocomplete="email" />
+      <label>Password</label>
+      <input type="password" id="li_password" required autocomplete="current-password" />
+      <button type="submit" id="loginBtn">Sign In →</button>
+    </form>
+
+    <div class="switch-link">
+      <span id="switchText">Already have an account? <a href="#" onclick="setMode('login');return false">Sign in</a></span>
+    </div>
+  </div>
+
+  <div class="footer-link">
+    <a href="/">← Back to portfolio</a>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.min.js"></script>
+<script src="supabase-config.js"></script>
+<script>
+const supabase = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+const fb = document.getElementById('feedback');
+const signupForm = document.getElementById('signupForm');
+const loginForm = document.getElementById('loginForm');
+
+function show(msg, type){
+  fb.className = `feedback show ${type}`;
+  fb.textContent = msg;
+  fb.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+function clearFb(){ fb.className = 'feedback'; fb.textContent = ''; }
+
+function setMode(mode){
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.toggle('active', t.dataset.mode === mode));
+  signupForm.style.display = mode === 'signup' ? '' : 'none';
+  loginForm.style.display = mode === 'login' ? '' : 'none';
+  document.getElementById('switchText').innerHTML = mode === 'signup'
+    ? `Already have an account? <a href="#" onclick="setMode('login');return false">Sign in</a>`
+    : `New here? <a href="#" onclick="setMode('signup');return false">Create an account</a>`;
+  clearFb();
+}
+window.setMode = setMode;
+document.querySelectorAll('.auth-tab').forEach(t => t.addEventListener('click', () => setMode(t.dataset.mode)));
+
+// SIGNUP
+signupForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  clearFb();
+  const btn = document.getElementById('signupBtn');
+  btn.disabled = true; btn.textContent = 'Creating account…';
+  const email = document.getElementById('su_email').value.trim();
+  const password = document.getElementById('su_password').value;
+  const fullName = document.getElementById('su_name').value.trim();
+  const brand = document.getElementById('su_brand').value.trim();
+  const phone = document.getElementById('su_phone').value.trim();
+  const country = document.getElementById('su_country').value.trim();
+
+  const { data, error } = await supabase.auth.signUp({
+    email, password,
+    options: { data: { full_name: fullName, brand, phone, country } }
+  });
+
+  if(error){
+    show('⚠️ ' + error.message, 'error');
+    btn.disabled = false; btn.textContent = 'Create My Account →';
+    return;
+  }
+
+  // Link to existing client (if Adham already added them) OR create new
+  if(data.user){
+    // Look for existing client by contact_email
+    const { data: existing } = await supabase.from('clients')
+      .select('id,auth_user_id')
+      .eq('contact_email', email)
+      .is('auth_user_id', null)
+      .limit(1);
+
+    if(existing && existing.length){
+      // Link the auth user to the pre-created client
+      await supabase.from('clients').update({
+        auth_user_id: data.user.id,
+        contact_name: fullName,
+        contact_phone: phone || undefined,
+      }).eq('id', existing[0].id);
+    } else {
+      // Create a fresh client record
+      const slug = brand.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') + '-' + Date.now().toString(36);
+      await supabase.from('clients').insert([{
+        name: brand,
+        slug,
+        country: country || null,
+        contact_name: fullName,
+        contact_email: email,
+        contact_phone: phone || null,
+        auth_user_id: data.user.id,
+        status: 'active',
+        services: [],
+        platforms: []
+      }]);
+    }
+  }
+
+  show('✅ Account created! ' + (data.session ? 'Redirecting…' : 'Check your email to verify, then sign in.'), 'success');
+  if(data.session){
+    setTimeout(() => location.href = '/portal.html', 1200);
+  } else {
+    setTimeout(() => setMode('login'), 1800);
+  }
+  btn.disabled = false; btn.textContent = 'Create My Account →';
+});
+
+// LOGIN
+loginForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  clearFb();
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true; btn.textContent = 'Signing in…';
+  const email = document.getElementById('li_email').value.trim();
+  const password = document.getElementById('li_password').value;
+
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if(error){
+    show('⚠️ ' + error.message, 'error');
+    btn.disabled = false; btn.textContent = 'Sign In →';
+    return;
+  }
+
+  // Check role and redirect appropriately
+  const { data: roleRow } = await supabase.from('user_roles').select('role').eq('user_id', data.user.id).single();
+  const role = roleRow?.role || 'client';
+
+  show('✅ Signed in! Redirecting…', 'success');
+  setTimeout(() => location.href = role === 'admin' ? '/admin.html' : '/portal.html', 600);
+});
+
+// Already logged in? Skip the page.
+(async () => {
+  const { data:{ session } } = await supabase.auth.getSession();
+  if(session){
+    const { data: roleRow } = await supabase.from('user_roles').select('role').eq('user_id', session.user.id).single();
+    location.href = (roleRow?.role === 'admin') ? '/admin.html' : '/portal.html';
+  }
+})();
+</script>
+</body>
+</html>
