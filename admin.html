@@ -394,6 +394,8 @@
     <div class="tabs-inner">
       <a href="#overview" class="tab" data-tab="overview">📊 Overview</a>
       <a href="#clients" class="tab" data-tab="clients">👥 Clients</a>
+      <a href="#briefs" class="tab" data-tab="briefs">📝 Briefs</a>
+      <a href="#strategies" class="tab" data-tab="strategies">🧠 Strategies</a>
       <a href="#leads" class="tab" data-tab="leads">📋 Leads</a>
       <a href="#pixels" class="tab" data-tab="pixels">📡 Pixels</a>
     </div>
@@ -466,6 +468,38 @@
         <div id="clientDetailContent"></div>
       </div>
     </div><!-- /view-clients -->
+
+    <!-- ===== VIEW: BRIEFS ===== -->
+    <div class="view" data-view="briefs" hidden>
+      <div class="view-header">
+        <div>
+          <h2 class="view-title">📝 Client Briefs</h2>
+          <p class="view-sub">Every brief submitted by your clients. Click to review answers and start a strategy.</p>
+        </div>
+      </div>
+      <div id="briefsList" class="table-card">
+        <div class="empty"><div class="spinner"></div><div style="margin-top:.7rem">Loading briefs&hellip;</div></div>
+      </div>
+    </div><!-- /view-briefs -->
+
+    <!-- ===== VIEW: STRATEGIES ===== -->
+    <div class="view" data-view="strategies" hidden>
+      <div id="strategiesListView">
+        <div class="view-header">
+          <div>
+            <h2 class="view-title">🧠 Marketing Strategies</h2>
+            <p class="view-sub">All strategies you've built for clients. Drafts are private. Sent strategies appear in the client's portal.</p>
+          </div>
+        </div>
+        <div id="strategiesList" class="table-card">
+          <div class="empty"><div class="spinner"></div><div style="margin-top:.7rem">Loading strategies&hellip;</div></div>
+        </div>
+      </div>
+      <div id="strategyEditorView" hidden>
+        <a href="#strategies" class="back-link">← Back to all strategies</a>
+        <div id="strategyEditorContent"></div>
+      </div>
+    </div><!-- /view-strategies -->
 
     <!-- ===== VIEW: LEADS ===== -->
     <div class="view" data-view="leads" hidden>
@@ -1094,6 +1128,16 @@ function setActiveView(){
       loadClients();
     }
   }
+  if(tab === 'briefs'){ loadBriefs(); }
+  if(tab === 'strategies'){
+    if(rest[0]){
+      openStrategyEditor(rest[0]);
+    } else {
+      document.getElementById('strategiesListView').hidden = false;
+      document.getElementById('strategyEditorView').hidden = true;
+      loadStrategies();
+    }
+  }
 }
 window.addEventListener('hashchange', setActiveView);
 
@@ -1446,6 +1490,225 @@ window.deleteMetric = async (id, clientId) => {
   if(!confirm('Delete this metric entry?')) return;
   await supabase.from('client_metrics').delete().eq('id', id);
   openClientDetail(clientId);
+};
+
+// =================================================================
+// BRIEFS — INBOX
+// =================================================================
+async function loadBriefs(){
+  const wrap = document.getElementById('briefsList');
+  const { data, error } = await supabase
+    .from('client_briefs')
+    .select('*, client:clients(id,name,contact_email,contact_name)')
+    .order('submitted_at', {ascending:false, nullsLast:true})
+    .order('updated_at', {ascending:false});
+
+  if(error){ wrap.innerHTML = `<div class="empty">⚠️ ${error.message}</div>`; return; }
+  if(!data || !data.length){
+    wrap.innerHTML = `<div class="empty"><div class="empty-icon">📭</div>No briefs yet. They'll show up here when clients submit.</div>`;
+    return;
+  }
+
+  wrap.innerHTML = `
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Status</th><th>Client</th><th>Step</th><th>Submitted</th><th></th></tr></thead>
+        <tbody>
+          ${data.map(b => `
+            <tr>
+              <td><span class="badge-${b.status==='submitted'?'new':b.status==='draft'?'contacted':'converted'}" style="display:inline-block;padding:.22rem .55rem;border-radius:50px;font-size:.7rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;background:${b.status==='draft'?'rgba(234,179,8,0.15)':b.status==='submitted'?'rgba(168,85,247,0.18)':'rgba(34,216,143,0.15)'};color:${b.status==='draft'?'var(--yellow)':b.status==='submitted'?'var(--purple-light)':'var(--green)'}">${b.status}</span></td>
+              <td><strong>${escapeHtml(b.client?.name || '—')}</strong><div class="lead-meta">${escapeHtml(b.client?.contact_email || '')}</div></td>
+              <td>${b.current_step}/${b.total_steps}</td>
+              <td><div class="lead-meta">${b.submitted_at ? new Date(b.submitted_at).toLocaleString('en',{month:'short',day:'numeric',year:'2-digit',hour:'2-digit',minute:'2-digit'}) : 'not yet'}</div></td>
+              <td><button class="btn-secondary-soft" style="padding:.4rem .9rem;font-size:.8rem" onclick="viewBrief('${b.id}')">View →</button></td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+window.viewBrief = async (id) => {
+  const { data: b } = await supabase.from('client_briefs').select('*, client:clients(id,name,contact_email)').eq('id', id).single();
+  if(!b){ alert('Brief not found'); return; }
+
+  const answers = b.answers || {};
+  const sections = [
+    {title:'🏢 Business Basics', keys:['business_name','business_description','industry','website_url','years_active']},
+    {title:'🎯 Audience & Market', keys:['target_audience','pain_point','main_competitors','unique_selling_point','geographic_market']},
+    {title:'📊 Current State', keys:['current_marketing','whats_working','whats_not_working','platforms_active','follower_count']},
+    {title:'🚀 Goals & KPIs', keys:['main_goal','specific_target','success_metric','biggest_challenge']},
+    {title:'💎 Budget & Brand', keys:['monthly_budget_range','brand_voice','brand_dos','brand_donts','expected_start','additional_notes']},
+  ];
+  const labels = {
+    business_name:'Business Name', business_description:'Description', industry:'Industry', website_url:'Website',
+    years_active:'Years Active', target_audience:'Target Audience', pain_point:'Pain Point', main_competitors:'Competitors',
+    unique_selling_point:'Unique Selling Point', geographic_market:'Markets', current_marketing:'Current Marketing',
+    whats_working:'What\'s Working', whats_not_working:'What\'s Not Working', platforms_active:'Platforms',
+    follower_count:'Followers', main_goal:'Main Goal', specific_target:'Specific Target', success_metric:'Success Metric',
+    biggest_challenge:'Biggest Challenge', monthly_budget_range:'Monthly Budget', brand_voice:'Brand Voice',
+    brand_dos:'Brand DO\'s', brand_donts:'Brand DON\'Ts', expected_start:'Expected Start', additional_notes:'Notes'
+  };
+
+  const html = `
+    <div class="modal-backdrop" onclick="if(event.target===this)this.remove()">
+      <div class="modal" style="max-width:780px">
+        <div class="modal-head">
+          <h3>📝 Brief — ${escapeHtml(b.client?.name || 'Client')}</h3>
+          <button class="modal-close" onclick="this.closest('.modal-backdrop').remove()">&times;</button>
+        </div>
+        <div class="modal-body">
+          ${sections.map(sec => `
+            <h4 style="font-family:'Space Grotesk',sans-serif;font-size:1rem;color:var(--purple-light);margin:1.4rem 0 .8rem">${sec.title}</h4>
+            ${sec.keys.map(k => {
+              const v = answers[k];
+              if(!v || (Array.isArray(v) && !v.length)) return '';
+              return `<div style="margin-bottom:.9rem">
+                <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.25rem">${labels[k]||k}</div>
+                <div style="color:var(--text);font-size:.92rem;line-height:1.6">${Array.isArray(v) ? v.map(x=>`<span class="pf-pill" style="margin-right:.3rem">${escapeHtml(x)}</span>`).join('') : escapeHtml(v).replace(/\n/g,'<br/>')}</div>
+              </div>`;
+            }).join('')}
+          `).join('')}
+          <div class="modal-actions">
+            <button class="btn-secondary-soft" onclick="this.closest('.modal-backdrop').remove()">Close</button>
+            <a href="#strategies" onclick="this.closest('.modal-backdrop').remove();setTimeout(()=>createStrategyFromBrief('${b.id}','${b.client?.id}','${escapeHtml(b.client?.name||'')}'),100)" class="btn-primary-purple" style="text-decoration:none">🧠 Create Strategy from this →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  const div = document.createElement('div');
+  div.innerHTML = html;
+  document.body.appendChild(div.firstElementChild);
+};
+
+// =================================================================
+// STRATEGIES — LIST + EDITOR
+// =================================================================
+async function loadStrategies(){
+  const wrap = document.getElementById('strategiesList');
+  const { data, error } = await supabase
+    .from('marketing_strategies')
+    .select('*, client:clients(id,name)')
+    .order('updated_at', {ascending:false});
+  if(error){ wrap.innerHTML = `<div class="empty">⚠️ ${error.message}</div>`; return; }
+  if(!data || !data.length){
+    wrap.innerHTML = `<div class="empty"><div class="empty-icon">🧠</div>No strategies yet. Open a brief and click "Create Strategy" to start.</div>`;
+    return;
+  }
+  wrap.innerHTML = `
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Title</th><th>Client</th><th>Version</th><th>Status</th><th>PDF Unlocked</th><th>Updated</th><th></th></tr></thead>
+        <tbody>
+          ${data.map(s => `
+            <tr>
+              <td><strong>${escapeHtml(s.title)}</strong></td>
+              <td>${escapeHtml(s.client?.name || '—')}</td>
+              <td>v${s.version}</td>
+              <td><span class="badge ${s.status==='draft'?'paused':s.status==='sent'?'active':s.status==='approved'?'converted':'paused'}" style="display:inline-block;padding:.18rem .55rem;border-radius:50px;font-size:.7rem;font-weight:600;text-transform:uppercase">${s.status}</span></td>
+              <td>${s.is_paid_unlocked ? '✅' : '🔒'}</td>
+              <td><div class="lead-meta">${new Date(s.updated_at).toLocaleDateString('en',{month:'short',day:'numeric'})}</div></td>
+              <td><button class="btn-secondary-soft" style="padding:.4rem .9rem;font-size:.8rem" onclick="location.hash='#strategies/${s.id}'">Edit →</button></td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+window.createStrategyFromBrief = async (briefId, clientId, clientName) => {
+  if(!clientId){ alert('No client linked to this brief'); return; }
+  const { data, error } = await supabase.from('marketing_strategies').insert([{
+    client_id: clientId, brief_id: briefId,
+    title: `${clientName} — Marketing Strategy`,
+    content: {}, status: 'draft', version: 1
+  }]).select().single();
+  if(error){ alert('Error: '+error.message); return; }
+  location.hash = `#strategies/${data.id}`;
+};
+
+const STRATEGY_SECTIONS = [
+  {key:'executive_summary', label:'📌 Executive Summary', placeholder:'Top-line summary in 2-3 paragraphs…'},
+  {key:'target_audience', label:'🎯 Target Audience', placeholder:'Who, where, why they buy…'},
+  {key:'positioning', label:'💎 Positioning', placeholder:'How we position vs competitors…'},
+  {key:'channels', label:'📡 Channels', placeholder:'Which platforms and why…'},
+  {key:'content_pillars', label:'📚 Content Pillars', placeholder:'4-6 themes we\'ll talk about…'},
+  {key:'ads_plan', label:'🎬 Ads Plan', placeholder:'Funnel, targeting, creatives…'},
+  {key:'kpis', label:'📊 KPIs & Goals', placeholder:'Specific numbers we\'re aiming for…'},
+  {key:'timeline', label:'📅 Timeline', placeholder:'Month-by-month roll-out…'},
+];
+
+async function openStrategyEditor(id){
+  document.getElementById('strategiesListView').hidden = true;
+  document.getElementById('strategyEditorView').hidden = false;
+  const box = document.getElementById('strategyEditorContent');
+  box.innerHTML = `<div class="empty"><div class="spinner"></div></div>`;
+  const { data: s, error } = await supabase.from('marketing_strategies').select('*, client:clients(id,name,contact_email)').eq('id', id).single();
+  if(error || !s){ box.innerHTML = `<div class="empty">Strategy not found</div>`; return; }
+
+  const c = s.content || {};
+  box.innerHTML = `
+    <div class="cd-header">
+      <div class="cd-logo">🧠</div>
+      <div class="cd-info">
+        <div class="cd-name">${escapeHtml(s.title)}</div>
+        <div class="cd-meta">
+          <span>Client: <strong>${escapeHtml(s.client?.name || '—')}</strong></span>
+          <span>Version v${s.version}</span>
+          <span class="badge ${s.status==='draft'?'paused':s.status==='sent'?'active':'converted'}" style="padding:.18rem .55rem;border-radius:50px;font-size:.7rem;text-transform:uppercase">${s.status}</span>
+        </div>
+      </div>
+      <div class="cd-actions">
+        ${s.status === 'draft' ? `<button class="btn-primary-purple" onclick="sendStrategy('${s.id}')">📤 Send to Client</button>` : ''}
+        <button class="btn-secondary-soft" onclick="togglePaidUnlock('${s.id}', ${!s.is_paid_unlocked})">${s.is_paid_unlocked ? '🔒 Lock PDF' : '🔓 Unlock PDF'}</button>
+      </div>
+    </div>
+
+    <div class="cd-section">
+      <div style="margin-bottom:1rem">
+        <label style="display:block;font-size:.78rem;font-weight:600;margin-bottom:.4rem;color:var(--text)">Title</label>
+        <input id="strategyTitle" type="text" value="${escapeHtml(s.title)}" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:.7rem .9rem;border-radius:9px;font-size:1rem;font-family:'Inter',sans-serif" />
+      </div>
+      ${STRATEGY_SECTIONS.map(sec => `
+        <div style="margin-bottom:1.4rem">
+          <label style="display:block;font-size:.85rem;font-weight:600;margin-bottom:.5rem;color:var(--text);font-family:'Space Grotesk',sans-serif">${sec.label}</label>
+          <textarea data-section="${sec.key}" rows="4" placeholder="${sec.placeholder}" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:.85rem 1rem;border-radius:10px;font-size:.92rem;font-family:'Inter',sans-serif;line-height:1.6;resize:vertical">${escapeHtml(c[sec.key] || '')}</textarea>
+        </div>
+      `).join('')}
+      <div style="display:flex;gap:.7rem;justify-content:flex-end;padding-top:1rem;border-top:1px solid var(--border)">
+        <button class="btn-secondary-soft" onclick="location.hash='#strategies'">Cancel</button>
+        <button class="btn-primary-purple" id="saveStrategyBtn" data-id="${s.id}">💾 Save Draft</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('saveStrategyBtn').addEventListener('click', async (e) => {
+    const id = e.target.dataset.id;
+    const title = document.getElementById('strategyTitle').value.trim();
+    const content = {};
+    document.querySelectorAll('[data-section]').forEach(t => { content[t.dataset.section] = t.value.trim(); });
+    e.target.disabled = true; e.target.textContent = 'Saving…';
+    const { error } = await supabase.from('marketing_strategies').update({ title, content, updated_at: new Date().toISOString() }).eq('id', id);
+    if(error){ alert('Error: '+error.message); e.target.disabled=false; e.target.textContent='💾 Save Draft'; return; }
+    e.target.textContent = '✓ Saved';
+    setTimeout(() => { e.target.disabled = false; e.target.textContent = '💾 Save Draft'; }, 1500);
+  });
+}
+
+window.sendStrategy = async (id) => {
+  if(!confirm('Send this strategy to the client? They will see it in their portal.')) return;
+  const { error } = await supabase.from('marketing_strategies').update({ status:'sent', updated_at: new Date().toISOString() }).eq('id', id);
+  if(error){ alert('Error: '+error.message); return; }
+  openStrategyEditor(id);
+};
+
+window.togglePaidUnlock = async (id, value) => {
+  const { error } = await supabase.from('marketing_strategies').update({ is_paid_unlocked: value }).eq('id', id);
+  if(error){ alert('Error: '+error.message); return; }
+  openStrategyEditor(id);
 };
 
 // =================================================================

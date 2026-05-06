@@ -138,6 +138,38 @@
   }
   .cta-box a{color:var(--purple-light);text-decoration:none;font-weight:600}
   .cta-box a:hover{color:var(--magenta)}
+
+  /* BRIEF FORM */
+  .brief-progress{display:flex;gap:.4rem;margin:1rem 0 1.6rem}
+  .brief-pip{flex:1;height:6px;background:var(--bg3);border-radius:3px;transition:background .3s}
+  .brief-pip.done{background:linear-gradient(90deg,var(--purple),var(--magenta))}
+  .brief-form{display:flex;flex-direction:column;gap:1rem}
+  .brief-field label{display:block;font-size:.85rem;font-weight:600;margin-bottom:.4rem;color:var(--text)}
+  .brief-field input,.brief-field textarea,.brief-field select{
+    width:100%;background:var(--bg);border:1px solid var(--border);
+    color:var(--text);padding:.75rem .9rem;border-radius:10px;
+    font-family:'Inter',sans-serif;font-size:.92rem;
+  }
+  .brief-field input:focus,.brief-field textarea:focus,.brief-field select:focus{
+    outline:none;border-color:var(--purple-light);box-shadow:0 0 0 3px rgba(168,85,247,.12)
+  }
+  .brief-field textarea{resize:vertical;min-height:90px}
+  .brief-field .checks{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.3rem}
+  .brief-field .checks label{display:inline-flex;align-items:center;gap:.4rem;background:var(--bg3);padding:.5rem .8rem;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-size:.85rem;font-weight:500}
+  .brief-field .checks input{width:auto;margin:0}
+  .brief-actions{display:flex;justify-content:space-between;align-items:center;margin-top:1.4rem;padding-top:1.4rem;border-top:1px solid var(--border)}
+  .btn-secondary-soft{background:transparent;color:var(--muted);border:1px solid var(--border-strong);padding:.7rem 1.2rem;border-radius:10px;cursor:pointer;font-family:'Inter',sans-serif;font-size:.9rem;font-weight:500}
+  .btn-secondary-soft:hover{color:var(--text);border-color:var(--purple)}
+
+  /* STRATEGY VIEW */
+  .strategy-sections{display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.4rem}
+  .strategy-block{background:var(--bg3);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+  .strategy-block summary{padding:1rem 1.2rem;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:.95rem;list-style:none;display:flex;justify-content:space-between;align-items:center}
+  .strategy-block summary::after{content:'+';font-size:1.4rem;color:var(--muted);font-weight:300}
+  .strategy-block[open] summary::after{content:'−'}
+  .strategy-block summary:hover{background:var(--card-hover)}
+  .strategy-block-body{padding:0 1.2rem 1.2rem;color:var(--muted);line-height:1.7;font-size:.92rem}
+  .strategy-actions{display:flex;gap:.7rem;flex-wrap:wrap;align-items:center;justify-content:flex-end}
 </style>
 </head>
 <body>
@@ -227,11 +259,232 @@ function renderEmpty(email){
   `;
 }
 
+// =================================================================
+// BRIEF FORM — multi-step questionnaire
+// =================================================================
+const BRIEF_STEPS = [
+  {
+    title: 'Step 1 — Business Basics',
+    icon: '🏢',
+    fields: [
+      {key:'business_name', label:'Business Name', type:'text', required:true, placeholder:'Acme Inc.'},
+      {key:'business_description', label:'In 1-2 sentences, what does your business do?', type:'textarea', required:true},
+      {key:'industry', label:'Industry / Niche', type:'text', required:true, placeholder:'E-commerce / SaaS / Restaurant…'},
+      {key:'website_url', label:'Website URL (if any)', type:'url', placeholder:'https://yourbrand.com'},
+      {key:'years_active', label:'How long has the business been operating?', type:'select', options:['Less than 6 months','6-12 months','1-2 years','3-5 years','5+ years']},
+    ]
+  },
+  {
+    title: 'Step 2 — Audience & Market',
+    icon: '🎯',
+    fields: [
+      {key:'target_audience', label:'Who is your ideal customer? (age, location, interests)', type:'textarea', required:true, placeholder:'e.g. Women 25-40 in Cairo who love wellness…'},
+      {key:'pain_point', label:'What problem do you solve for them?', type:'textarea', required:true},
+      {key:'main_competitors', label:'Top 3 competitors (names or URLs)', type:'textarea'},
+      {key:'unique_selling_point', label:'What makes you different from them?', type:'textarea', required:true},
+      {key:'geographic_market', label:'Geographic markets you serve', type:'text', placeholder:'Egypt, GCC, MENA, global…'},
+    ]
+  },
+  {
+    title: 'Step 3 — Current State',
+    icon: '📊',
+    fields: [
+      {key:'current_marketing', label:'What marketing are you doing now? (channels, agencies, in-house)', type:'textarea'},
+      {key:'whats_working', label:'What\'s working well?', type:'textarea'},
+      {key:'whats_not_working', label:'What\'s NOT working?', type:'textarea'},
+      {key:'platforms_active', label:'Which platforms are you active on?', type:'checkbox', options:['Instagram','Facebook','TikTok','X / Twitter','LinkedIn','YouTube','Snapchat','Other']},
+      {key:'follower_count', label:'Approximate total followers across all platforms', type:'select', options:['Under 1K','1-5K','5-20K','20-100K','100K+']},
+    ]
+  },
+  {
+    title: 'Step 4 — Goals & KPIs',
+    icon: '🚀',
+    fields: [
+      {key:'main_goal', label:'What is your #1 goal for the next 3-6 months?', type:'select', required:true, options:['More sales / revenue','More leads','Brand awareness','Audience growth','Launch a new product','Enter a new market','Other']},
+      {key:'specific_target', label:'Specific number or target? (e.g. "$50K/month", "10K followers")', type:'text', placeholder:'$50K monthly revenue · 10K followers · 500 leads…'},
+      {key:'success_metric', label:'How will you measure success?', type:'textarea'},
+      {key:'biggest_challenge', label:'Biggest challenge you\'re facing right now', type:'textarea'},
+    ]
+  },
+  {
+    title: 'Step 5 — Budget & Brand',
+    icon: '💎',
+    fields: [
+      {key:'monthly_budget_range', label:'Monthly budget for marketing (ads + agency)', type:'select', required:true, options:['Less than $500','$500 - $1,500','$1,500 - $5,000','$5,000 - $15,000','$15,000+','Not sure yet']},
+      {key:'brand_voice', label:'Describe your brand voice in 3 words', type:'text', placeholder:'Bold, premium, playful…'},
+      {key:'brand_dos', label:'Brand DO\'s (things to always include/show)', type:'textarea'},
+      {key:'brand_donts', label:'Brand DON\'Ts (things to avoid)', type:'textarea'},
+      {key:'expected_start', label:'When do you want to start?', type:'select', options:['ASAP','Within 2 weeks','Within a month','Flexible']},
+      {key:'additional_notes', label:'Anything else you want us to know?', type:'textarea'},
+    ]
+  }
+];
+
+let briefState = { step:1, answers:{}, briefId:null };
+
+async function renderBriefForm(client){
+  // Check existing brief
+  const { data: existing } = await supabase.from('client_briefs')
+    .select('*').eq('client_id', client.id).order('created_at',{ascending:false}).limit(1);
+  if(existing && existing.length){
+    briefState = { step: existing[0].current_step || 1, answers: existing[0].answers || {}, briefId: existing[0].id };
+  }
+  drawBriefStep(client);
+}
+
+function drawBriefStep(client){
+  const stepIdx = briefState.step - 1;
+  const step = BRIEF_STEPS[stepIdx];
+  const total = BRIEF_STEPS.length;
+  content.innerHTML = `
+    <div class="welcome">
+      <div class="welcome-logo">${client.logo_url ? `<img src="${esc(client.logo_url)}" alt=""/>` : esc(client.name.charAt(0))}</div>
+      <div class="welcome-text">
+        <div class="welcome-hi">Onboarding · ${briefState.step}/${total}</div>
+        <div class="welcome-name">Tell us about your business</div>
+        <div class="welcome-meta">The more we know, the better the strategy we build for you.</div>
+      </div>
+    </div>
+
+    <div class="services-pick">
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:.4rem">
+        <div style="font-size:2rem">${step.icon}</div>
+        <h2 style="margin:0">${step.title}</h2>
+      </div>
+      <div class="brief-progress">
+        ${BRIEF_STEPS.map((_,i) => `<div class="brief-pip ${i+1<=briefState.step?'done':''}"></div>`).join('')}
+      </div>
+      <form id="briefForm" class="brief-form">
+        ${step.fields.map(f => renderField(f)).join('')}
+        <div class="brief-actions">
+          ${briefState.step > 1 ? `<button type="button" class="btn-secondary-soft" id="briefBackBtn">← Back</button>` : '<span></span>'}
+          ${briefState.step < total
+            ? `<button type="submit" class="btn-save">Save &amp; Continue →</button>`
+            : `<button type="submit" class="btn-save">🚀 Submit Brief</button>`}
+        </div>
+      </form>
+    </div>
+  `;
+
+  document.getElementById('briefBackBtn')?.addEventListener('click', () => {
+    briefState.step--;
+    drawBriefStep(client);
+  });
+
+  document.getElementById('briefForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    // Capture answers from this step
+    step.fields.forEach(f => {
+      const els = document.querySelectorAll(`[name="${f.key}"]`);
+      if(f.type === 'checkbox'){
+        briefState.answers[f.key] = Array.from(els).filter(el => el.checked).map(el => el.value);
+      } else if(els.length){
+        briefState.answers[f.key] = els[0].value.trim();
+      }
+    });
+
+    // Save to DB
+    const isLast = briefState.step === total;
+    const payload = {
+      client_id: client.id,
+      answers: briefState.answers,
+      current_step: isLast ? total : briefState.step + 1,
+      total_steps: total,
+      status: isLast ? 'submitted' : 'draft',
+      submitted_at: isLast ? new Date().toISOString() : null,
+      updated_at: new Date().toISOString()
+    };
+
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    const oldText = submitBtn.textContent;
+    submitBtn.textContent = 'Saving…';
+
+    let resp;
+    if(briefState.briefId){
+      resp = await supabase.from('client_briefs').update(payload).eq('id', briefState.briefId);
+    } else {
+      resp = await supabase.from('client_briefs').insert([payload]).select().single();
+      if(resp.data) briefState.briefId = resp.data.id;
+    }
+
+    if(resp.error){ alert('Error: ' + resp.error.message); submitBtn.disabled=false; submitBtn.textContent=oldText; return; }
+
+    if(isLast){
+      // Notify admin via Web3Forms
+      if(window.WEB3FORMS_KEY){
+        try {
+          await fetch('https://api.web3forms.com/submit', {
+            method:'POST',
+            headers:{'Content-Type':'application/json','Accept':'application/json'},
+            body: JSON.stringify({
+              access_key: window.WEB3FORMS_KEY,
+              subject: `📝 New Brief Submitted: ${client.name}`,
+              from_name: 'Athar Portal',
+              brand: client.name,
+              email: client.contact_email,
+              message: `Client ${client.name} (${client.contact_email}) just submitted their brief. View in admin: https://adhamabobakr.netlify.app/admin.html`
+            })
+          });
+        } catch(e){ console.warn('Email notify failed', e); }
+      }
+      content.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">🎉</div>
+          <h2>Brief submitted — thank you!</h2>
+          <p>The Athar team will review your answers and get back to you within 48 hours with a marketing strategy. You'll see it right here in your portal.</p>
+          <button class="btn-save" onclick="location.reload()">Go to my dashboard →</button>
+        </div>
+      `;
+    } else {
+      briefState.step++;
+      drawBriefStep(client);
+    }
+  });
+}
+
+function renderField(f){
+  const v = briefState.answers[f.key] || '';
+  const req = f.required ? 'required' : '';
+  if(f.type === 'textarea'){
+    return `<div class="brief-field"><label>${esc(f.label)}${f.required?' *':''}</label><textarea name="${f.key}" rows="3" ${req} placeholder="${esc(f.placeholder||'')}">${esc(v)}</textarea></div>`;
+  }
+  if(f.type === 'select'){
+    return `<div class="brief-field"><label>${esc(f.label)}${f.required?' *':''}</label><select name="${f.key}" ${req}>
+      <option value="">Choose…</option>
+      ${f.options.map(o => `<option value="${esc(o)}" ${v===o?'selected':''}>${esc(o)}</option>`).join('')}
+    </select></div>`;
+  }
+  if(f.type === 'checkbox'){
+    const arr = Array.isArray(v) ? v : [];
+    return `<div class="brief-field"><label>${esc(f.label)}${f.required?' *':''}</label><div class="checks">
+      ${f.options.map(o => `<label><input type="checkbox" name="${f.key}" value="${esc(o)}" ${arr.includes(o)?'checked':''}/> ${esc(o)}</label>`).join('')}
+    </div></div>`;
+  }
+  return `<div class="brief-field"><label>${esc(f.label)}${f.required?' *':''}</label><input type="${f.type||'text'}" name="${f.key}" value="${esc(v)}" placeholder="${esc(f.placeholder||'')}" ${req}/></div>`;
+}
+
 async function renderPortal(client, user){
+  // Check if brief is submitted
+  const { data: briefs } = await supabase.from('client_briefs')
+    .select('id,status').eq('client_id', client.id).order('created_at',{ascending:false}).limit(1);
+
+  const briefSubmitted = briefs && briefs.length && briefs[0].status !== 'draft';
+
+  // If services not picked → service selection (existing logic)
+  // If brief not submitted → show brief form
+  // Else → dashboard
+  const services = client.services || [];
+  if(services.length && !briefSubmitted){
+    renderBriefForm(client);
+    return;
+  }
+
   // Fetch related data
-  const [{data:campaigns}, {data:metrics}] = await Promise.all([
+  const [{data:campaigns}, {data:metrics}, {data:strategies}] = await Promise.all([
     supabase.from('client_campaigns').select('*').eq('client_id', client.id).order('created_at',{ascending:false}),
-    supabase.from('client_metrics').select('*').eq('client_id', client.id).order('date',{ascending:true})
+    supabase.from('client_metrics').select('*').eq('client_id', client.id).order('date',{ascending:true}),
+    supabase.from('marketing_strategies').select('*').eq('client_id', client.id).in('status',['sent','approved']).order('version',{ascending:false}).limit(1)
   ]);
 
   // Welcome
@@ -247,7 +500,6 @@ async function renderPortal(client, user){
   `;
 
   // Service selection (if no service yet)
-  const services = client.services || [];
   if(!services.length){
     html += `
       <div class="services-pick">
@@ -378,6 +630,45 @@ async function renderPortal(client, user){
     `;
   }
 
+  // === MARKETING STRATEGY (if delivered) ===
+  const strategy = (strategies && strategies[0]) || null;
+  if(strategy){
+    const sections = strategy.content || {};
+    const sectionList = [
+      ['executive_summary','📌 Executive Summary'],
+      ['target_audience','🎯 Target Audience'],
+      ['positioning','💎 Positioning'],
+      ['channels','📡 Channels'],
+      ['content_pillars','📚 Content Pillars'],
+      ['ads_plan','🎬 Ads Plan'],
+      ['kpis','📊 KPIs &amp; Goals'],
+      ['timeline','📅 Timeline'],
+    ];
+    html += `
+      <div class="svc-section">
+        <div class="svc-section-head">
+          <h3>🧠 Your Marketing Strategy</h3>
+          <span class="svc-status-pill" style="background:rgba(34,216,143,.15);color:var(--green)">v${strategy.version} · ${strategy.status}</span>
+        </div>
+        <h4 style="font-family:'Space Grotesk',sans-serif;font-size:1.3rem;margin-bottom:1rem;color:var(--text)">${esc(strategy.title)}</h4>
+        <div class="strategy-sections">
+          ${sectionList.filter(([k,_]) => sections[k]).map(([k,label]) => `
+            <details class="strategy-block" ${k==='executive_summary'?'open':''}>
+              <summary>${label}</summary>
+              <div class="strategy-block-body">${esc(sections[k]).replace(/\n/g,'<br/>')}</div>
+            </details>
+          `).join('')}
+        </div>
+        <div class="strategy-actions">
+          ${strategy.is_paid_unlocked && strategy.pdf_url
+            ? `<a href="${esc(strategy.pdf_url)}" target="_blank" class="btn-save" style="text-decoration:none;display:inline-block">⬇ Download PDF</a>`
+            : `<div class="cta-box" style="margin-top:0">PDF download unlocks once payment is confirmed. Talk to the Athar team to proceed.</div>`}
+          ${strategy.status === 'sent' ? `<button class="btn-secondary-soft" id="approveStrategyBtn" data-id="${strategy.id}">✅ Approve Strategy</button>` : ''}
+        </div>
+      </div>
+    `;
+  }
+
   // CTA to update services
   html += `<div class="cta-box" style="margin-top:1.5rem">Need to add or change a service? <a href="#" id="changeServicesLink">Update your services →</a></div>`;
 
@@ -390,6 +681,17 @@ async function renderPortal(client, user){
   document.getElementById('changeServicesLink')?.addEventListener('click', async (e) => {
     e.preventDefault();
     await supabase.from('clients').update({services:[]}).eq('id', client.id);
+    location.reload();
+  });
+
+  // Approve strategy
+  document.getElementById('approveStrategyBtn')?.addEventListener('click', async (e) => {
+    const id = e.target.dataset.id;
+    if(!confirm('Approve this strategy as final?')) return;
+    e.target.disabled = true; e.target.textContent = 'Approving…';
+    await supabase.from('marketing_strategies').update({
+      status:'approved', approved_at: new Date().toISOString()
+    }).eq('id', id);
     location.reload();
   });
 }
