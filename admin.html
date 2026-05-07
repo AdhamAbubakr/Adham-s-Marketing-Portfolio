@@ -2474,16 +2474,25 @@ function readServicesFromModal() {
 }
 
 async function loadContracts(){
+  // Always refetch clients fresh (independent of content-view cache to avoid column mismatches)
+  const { data: cs, error: csErr } = await supabase
+    .from('clients')
+    .select('id,name,contact_email,contact_name,industry,country')
+    .order('name');
+  if(csErr){ console.error('Clients fetch error', csErr); }
+  cachedClientsForContent = cs || [];
+
+  const dropdown = document.getElementById('cn_client_id');
   if(!cachedClientsForContent.length){
-    const { data: cs } = await supabase.from('clients').select('id,name,email').order('name');
-    cachedClientsForContent = cs || [];
+    dropdown.innerHTML = '<option value="">No clients yet — add one in the Clients tab first</option>';
+  } else {
+    dropdown.innerHTML = '<option value="">Choose client…</option>' + cachedClientsForContent.map(c => `<option value="${c.id}">${escapeHtml(c.name)}${c.contact_email?' — '+escapeHtml(c.contact_email):''}</option>`).join('');
   }
-  document.getElementById('cn_client_id').innerHTML = '<option value="">Choose client…</option>' + cachedClientsForContent.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
 
   const wrap = document.getElementById('contractsList');
   const { data, error } = await supabase
     .from('contracts')
-    .select('*, client:clients(id,name,email,business_name)')
+    .select('*, client:clients(id,name,contact_email,contact_name)')
     .order('updated_at',{ascending:false});
   if(error){ wrap.innerHTML = `<div class="empty">⚠️ ${error.message}</div>`; return; }
   allContracts = data || [];
@@ -2516,7 +2525,7 @@ async function loadContracts(){
             return `<tr>
               <td style="font-family:'Space Grotesk',sans-serif;font-size:.8rem;color:var(--muted)">${escapeHtml(num)}</td>
               <td><strong>${escapeHtml(c.title)}</strong></td>
-              <td>${escapeHtml(c.client?.name || '—')}<br/><span style="font-size:.7rem;color:var(--muted)">${escapeHtml(c.client?.email || '')}</span></td>
+              <td>${escapeHtml(c.client?.name || '—')}<br/><span style="font-size:.7rem;color:var(--muted)">${escapeHtml(c.client?.contact_email || '')}</span></td>
               <td>${c.total_value ? c.currency + ' ' + Number(c.total_value).toLocaleString() : '—'}</td>
               <td><span style="display:inline-block;padding:.18rem .55rem;border-radius:50px;font-size:.7rem;font-weight:600;background:${sc.bg};color:${sc.color}">${sc.label}</span></td>
               <td>
@@ -2548,10 +2557,10 @@ function buildContractFromModal(){
   const client = cachedClientsForContent.find(c => c.id === clientId);
   return {
     title: document.getElementById('cn_title').value.trim(),
-    client_full_name: document.getElementById('cn_client_full_name').value.trim() || client?.name,
+    client_full_name: document.getElementById('cn_client_full_name').value.trim() || client?.contact_name || client?.name,
     client_default_name: client?.name,
-    business_name: client?.business_name,
-    client_email: client?.email,
+    business_name: client?.name,
+    client_email: client?.contact_email,
     type: document.getElementById('cn_type').value,
     total_value: parseFloat(document.getElementById('cn_total_value').value) || null,
     currency: document.getElementById('cn_currency').value,
@@ -2637,9 +2646,9 @@ window.downloadCtr = (id) => {
   if(!c) return;
   const built = {
     ...c,
-    client_email: c.client?.email,
-    business_name: c.client?.business_name,
-    client_default_name: c.client?.name,
+    client_email: c.client?.contact_email,
+    business_name: c.client?.name,
+    client_default_name: c.client?.contact_name || c.client?.name,
     issued_date: c.sent_at ? new Date(c.sent_at).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB')
   };
   window.downloadContractPDF(built);
@@ -2649,16 +2658,18 @@ window.downloadCtr = (id) => {
 window.sendContract = async (id) => {
   const c = allContracts.find(x => x.id === id);
   if(!c) return;
-  if(!c.client?.email){ alert('Client has no email on file.'); return; }
+  const clientEmail = c.client?.contact_email;
+  const clientName = c.client?.name;
+  if(!clientEmail){ alert('Client has no contact_email on file. Edit the client and add an email first.'); return; }
   if(!c.services || !c.services.length){ alert('Add services before sending. Edit the contract first.'); return; }
-  if(!confirm(`Send "${c.title}" to ${c.client.name} (${c.client.email})?\n\nA PDF will be generated and a notification email sent. The client downloads, prints, signs, and uploads the signed copy via their portal.`)) return;
+  if(!confirm(`Send "${c.title}" to ${clientName} (${clientEmail})?\n\nA PDF will be generated and a notification email sent. The client downloads, prints, signs, and uploads the signed copy via their portal.`)) return;
 
   try{
     const built = {
       ...c,
-      client_email: c.client.email,
-      business_name: c.client.business_name,
-      client_default_name: c.client.name,
+      client_email: clientEmail,
+      business_name: clientName,
+      client_default_name: c.client?.contact_name || clientName,
       issued_date: new Date().toLocaleDateString('en-GB')
     };
     const blob = window.contractPDFBlob(built);
@@ -2686,9 +2697,9 @@ window.sendContract = async (id) => {
             access_key: window.WEB3FORMS_KEY,
             subject: `📄 Your Barkar contract is ready — ${c.contract_number || c.title}`,
             from_name: 'Barkar',
-            email: c.client.email,
-            name: c.client.name,
-            message: `Hi ${c.client.name},\n\nYour service agreement with Barkar is ready.\n\n📄 Download the contract PDF:\n${pdfUrl}\n\nNext steps:\n1. Print the PDF.\n2. Tick the services you want under "SERVICES SELECTED".\n3. Fill in your full name, national ID, sign on the Party B line.\n4. Write the hand-written declaration confirming the services agreed.\n5. Scan or photograph the signed copy.\n6. Log in to your client portal at https://barkar.net/portal.html and upload the signed copy.\n\nWe'll then verify and unlock the rest of your dashboard so you can pick the team and start execution.\n\nAny questions? Reply to this email.\n\n— Barkar Team\n${pdfUrl}`
+            email: clientEmail,
+            name: clientName,
+            message: `Hi ${clientName},\n\nYour service agreement with Barkar is ready.\n\n📄 Download the contract PDF:\n${pdfUrl}\n\nNext steps:\n1. Print the PDF.\n2. Tick the services you want under "SERVICES SELECTED".\n3. Fill in your full name, national ID, sign on the Party B line.\n4. Write the hand-written declaration confirming the services agreed.\n5. Scan or photograph the signed copy.\n6. Log in to your client portal at https://barkar.net/portal.html and upload the signed copy.\n\nWe'll then verify and unlock the rest of your dashboard so you can pick the team and start execution.\n\nAny questions? Reply to this email.\n\n— Barkar Team\n${pdfUrl}`
           })
         });
       }catch(e){ console.warn('Email notification failed', e); }
