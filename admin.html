@@ -1051,7 +1051,7 @@
         </div>
 
         <div class="field"><label>Services to include in contract (these appear as checkboxes for the client to tick)</label>
-          <div id="cn_services_list" style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;padding:.7rem;background:var(--card);border:1px solid var(--border);border-radius:8px"></div>
+          <div id="cn_services_list" style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;padding:1rem;background:var(--card);border:1px solid var(--border);border-radius:10px"></div>
           <div style="font-size:.78rem;color:var(--muted);margin-top:.4rem">Tick at least one service above. The client signs the printed PDF and re-confirms by ticking the boxes themselves.</div>
         </div>
 
@@ -2466,15 +2466,43 @@ let allContracts = [];
 function renderServiceCheckboxes(selectedKeys = []) {
   const wrap = document.getElementById('cn_services_list');
   if(!wrap || !window.BARKAR_SERVICES) return;
-  wrap.innerHTML = window.BARKAR_SERVICES.map(s => `
-    <label style="display:flex;gap:.5rem;align-items:flex-start;cursor:pointer;padding:.4rem;border-radius:6px;transition:background .2s" onmouseover="this.style.background='var(--card-hover)'" onmouseout="this.style.background='transparent'">
-      <input type="checkbox" value="${s.key}" data-label="${escapeHtml(s.label)}" data-desc="${escapeHtml(s.desc)}" ${selectedKeys.includes(s.key)?'checked':''} style="margin-top:.25rem" />
-      <span>
-        <strong style="display:block;font-size:.88rem;color:var(--text)">${escapeHtml(s.label)}</strong>
-        <span style="font-size:.74rem;color:var(--muted)">${escapeHtml(s.desc)}</span>
+  wrap.innerHTML = window.BARKAR_SERVICES.map(s => {
+    const checked = selectedKeys.includes(s.key);
+    return `
+    <label class="svc-check ${checked?'is-checked':''}" style="display:flex;gap:.85rem;align-items:center;cursor:pointer;padding:.85rem 1rem;border-radius:10px;background:${checked?'rgba(124,58,237,.12)':'var(--bg2)'};border:1px solid ${checked?'var(--purple)':'var(--border)'};transition:all .2s">
+      <input type="checkbox" value="${s.key}" data-label="${escapeHtml(s.label)}" data-desc="${escapeHtml(s.desc)}" ${checked?'checked':''} style="width:20px;height:20px;accent-color:var(--purple);flex-shrink:0;cursor:pointer" />
+      <span style="display:flex;flex-direction:column;gap:.2rem;line-height:1.35">
+        <strong style="font-size:.92rem;color:var(--text);font-weight:600">${escapeHtml(s.label)}</strong>
+        <span style="font-size:.78rem;color:var(--muted)">${escapeHtml(s.desc)}</span>
       </span>
-    </label>
-  `).join('');
+    </label>`;
+  }).join('');
+
+  // Wire visual update on toggle
+  wrap.querySelectorAll('input[type=checkbox]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const lab = cb.closest('.svc-check');
+      if(cb.checked){
+        lab.classList.add('is-checked');
+        lab.style.background = 'rgba(124,58,237,.12)';
+        lab.style.borderColor = 'var(--purple)';
+      } else {
+        lab.classList.remove('is-checked');
+        lab.style.background = 'var(--bg2)';
+        lab.style.borderColor = 'var(--border)';
+      }
+    });
+  });
+
+  // Hover effect (only when not checked, so we don't override the checked state)
+  wrap.querySelectorAll('.svc-check').forEach(lab => {
+    lab.addEventListener('mouseenter', () => {
+      if(!lab.classList.contains('is-checked')) lab.style.background = 'var(--card-hover)';
+    });
+    lab.addEventListener('mouseleave', () => {
+      if(!lab.classList.contains('is-checked')) lab.style.background = 'var(--bg2)';
+    });
+  });
 }
 
 // Get the picked services (full objects) from the modal
