@@ -197,15 +197,19 @@
   .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:var(--purple);transition:width .25s}
   .nav-links a:hover{color:var(--text)}
   .nav-links a:hover::after{width:100%}
-  .nav-cta{background:var(--purple);color:#fff!important;padding:.5rem 1.2rem;border-radius:8px;text-decoration:none;font-size:.85rem;font-weight:600;transition:all .2s}
-  .nav-cta:hover{background:var(--purple-light);transform:translateY(-1px);box-shadow:0 6px 18px rgba(124,58,237,.4)}
-  .nav-cta::after{display:none}
-  .nav-link-soft{
-    color:var(--muted);text-decoration:none;font-size:.85rem;font-weight:500;
-    padding:.5rem .9rem;border-radius:8px;transition:all .2s;
+  .nav-cta, .nav-link-soft{
+    background:var(--purple);color:#fff!important;
+    padding:.5rem 1.2rem;border-radius:8px;
+    text-decoration:none;font-size:.85rem;font-weight:600;
+    transition:all .2s;
+    display:inline-flex;align-items:center;justify-content:center;
   }
-  .nav-link-soft:hover{color:var(--text);background:var(--card)}
-  @media (max-width:600px){.nav-link-soft{display:none}}
+  .nav-cta:hover, .nav-link-soft:hover{
+    background:var(--purple-light);transform:translateY(-1px);
+    box-shadow:0 6px 18px rgba(124,58,237,.4);
+    color:#fff!important;
+  }
+  .nav-cta::after, .nav-link-soft::after{display:none}
   @media (max-width:760px){.nav-links{display:none}}
 
   /* ---------- HERO ---------- */
@@ -735,14 +739,15 @@
   </a>
   <ul class="nav-links">
     <li><a href="#top">Home</a></li>
+    <li><a href="#impact">Impact</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#services">Services</a></li>
     <li><a href="#case-studies">Case Studies</a></li>
     <li><a href="#partners">Partners</a></li>
     <li><a href="#skills">Skills</a></li>
-    <li><a href="#resume">Resume</a></li>
     <li><a href="#team">Team</a></li>
     <li><a href="#process">Process</a></li>
+    <li><a href="#contact">Contact</a></li>
   </ul>
   <div style="display:flex;gap:.6rem;align-items:center">
     <a href="signup.html" class="nav-link-soft">Sign Up</a>
@@ -832,7 +837,7 @@
     <span class="mq-item"><span class="mq-dot"></span>Ayam Zaman</span>
     <span class="mq-item"><span class="mq-dot"></span>Nader Sunglasses</span>
     <span class="mq-item"><span class="mq-dot"></span>أكاديمية التفوق</span>
-    <span class="mq-item"><span class="mq-dot"></span>ببساطة أتعلم</span>
+    <span class="mq-item"><span class="mq-dot"></span>اتعلم ببساطة</span>
     <!-- duplicate for seamless loop -->
     <span class="mq-item"><span class="mq-dot"></span>SAMA Cape Town</span>
     <span class="mq-item"><span class="mq-dot"></span>SAMA Transport</span>
@@ -847,7 +852,7 @@
     <span class="mq-item"><span class="mq-dot"></span>Ayam Zaman</span>
     <span class="mq-item"><span class="mq-dot"></span>Nader Sunglasses</span>
     <span class="mq-item"><span class="mq-dot"></span>أكاديمية التفوق</span>
-    <span class="mq-item"><span class="mq-dot"></span>ببساطة أتعلم</span>
+    <span class="mq-item"><span class="mq-dot"></span>اتعلم ببساطة</span>
   </div>
 </div>
 
@@ -1151,8 +1156,8 @@
       </div>
 
       <div class="partner-card">
-        <div class="partner-logo pl-besta">بأ</div>
-        <div class="partner-name">ببساطة أتعلم</div>
+        <div class="partner-logo pl-besta">اب</div>
+        <div class="partner-name">اتعلم ببساطة</div>
         <div class="partner-cat">Education</div>
         <span class="partner-region">Remote</span>
       </div>
@@ -1203,148 +1208,6 @@
           <div class="tool-pill">Looker</div>
           <div class="tool-pill">Notion</div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- RESUME -->
-<section id="resume" style="background:linear-gradient(180deg,rgba(17,6,42,.5),rgba(10,1,24,.3))">
-  <div class="section-inner">
-    <div class="section-tag">📄 Founder&rsquo;s Track Record</div>
-    <h2>Experience &amp; <span class="h1-grad">Credentials</span></h2>
-    <p class="section-desc">Barkar was founded by <strong style="color:var(--text)">Adham Abo Bakr SalahElden</strong> &mdash; here&rsquo;s the timeline of brands, roles, and certifications behind the agency. Prefer the PDF? Download below.</p>
-
-    <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:3rem">
-      <a href="Adham-Abo-Bakr-Resume.pdf" download class="btn-primary">⬇️ Download CV (PDF)</a>
-      <a href="Adham-Abo-Bakr-Resume.pdf" target="_blank" rel="noopener" class="btn-secondary">👁️ View Online</a>
-    </div>
-
-    <!-- TIMELINE -->
-    <div class="timeline fade-in">
-      <div class="tl-item">
-        <div class="tl-dot"></div>
-        <div class="tl-content">
-          <div class="tl-meta"><span class="tl-date">Jan 2025 – Present</span><span class="tl-loc">South Africa · KSA</span></div>
-          <h3 class="tl-title">Social Media Specialist · <span class="tl-company">SAMA Cape Town</span></h3>
-          <ul class="tl-list">
-            <li>Owned the full digital marketing strategy from content and performance planning to execution across all social platforms.</li>
-            <li>Produced and edited campaign videos and visuals; launched paid campaigns on TikTok Ads, Google Ads, Snapchat Ads, and X (Twitter).</li>
-            <li>Managed website tracking pixels, tags, and Zoho CRM (leads, pipelines, automations) for end-to-end campaign attribution.</li>
-            <li>Led integrations with VistaSocial to centralize publishing, scheduling, and performance insights.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="tl-item">
-        <div class="tl-dot"></div>
-        <div class="tl-content">
-          <div class="tl-meta"><span class="tl-date">Jul 2025 – Present</span><span class="tl-loc">Kuwait</span></div>
-          <h3 class="tl-title">Marketing Manager · <span class="tl-company">Ayam Zaman</span></h3>
-          <ul class="tl-list">
-            <li>Planned and executed Meta Ads &amp; TikTok Ads campaigns with clear conversion objectives.</li>
-            <li>Reduced cost per result by 35% through A/B testing and precise audience targeting.</li>
-            <li>Developed monthly performance &amp; ROI reports for stakeholders.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="tl-item">
-        <div class="tl-dot"></div>
-        <div class="tl-content">
-          <div class="tl-meta"><span class="tl-date">Jul 2025 – Present</span><span class="tl-loc">Kuwait · Freelance</span></div>
-          <h3 class="tl-title">Content Development Manager · <span class="tl-company">Nader Sunglasses</span></h3>
-          <ul class="tl-list">
-            <li>Owned content strategy and visual direction across Meta and TikTok.</li>
-            <li>Increased engagement rate by 70% via storytelling-based visuals and influencer collaborations.</li>
-            <li>Created multi-language ad copies and scripts tailored for the Gulf audience.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="tl-item">
-        <div class="tl-dot"></div>
-        <div class="tl-content">
-          <div class="tl-meta"><span class="tl-date">Jul 2025 – Present</span><span class="tl-loc">Remote</span></div>
-          <h3 class="tl-title">Social Media Specialist &amp; Media Buyer · <span class="tl-company">ببساطة أتعلم</span></h3>
-          <ul class="tl-list">
-            <li>Planned and executed Meta &amp; TikTok Ads with clear conversion objectives.</li>
-            <li>Reduced cost per result by 35% through A/B testing and precision targeting.</li>
-            <li>Delivered monthly ROI &amp; performance reports for multiple clients.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="tl-item">
-        <div class="tl-dot"></div>
-        <div class="tl-content">
-          <div class="tl-meta"><span class="tl-date">Apr 2025 – Present</span><span class="tl-loc">Egypt · Freelance</span></div>
-          <h3 class="tl-title">Media Buyer · <span class="tl-company">Wolves Store</span></h3>
-          <ul class="tl-list">
-            <li>Managed paid ad campaigns driving consistent sales growth on Meta and TikTok.</li>
-            <li>Designed monthly budget plans and optimized daily ad spend performance.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="tl-item">
-        <div class="tl-dot"></div>
-        <div class="tl-content">
-          <div class="tl-meta"><span class="tl-date">Jun 2024 – Present</span><span class="tl-loc">Egypt</span></div>
-          <h3 class="tl-title">Social Media Specialist · <span class="tl-company">Kayanac ERP</span></h3>
-          <ul class="tl-list">
-            <li>Built complete online presence for the ERP brand across all platforms.</li>
-            <li>Produced professional ad copies, product visuals, and B2B marketing videos.</li>
-            <li>Achieved <strong>400% growth in reach</strong> and doubled website traffic through targeted campaigns.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="tl-item">
-        <div class="tl-dot"></div>
-        <div class="tl-content">
-          <div class="tl-meta"><span class="tl-date">Feb 2024 – Present</span><span class="tl-loc">Egypt</span></div>
-          <h3 class="tl-title">Media Buyer · <span class="tl-company">Groomi Wear</span></h3>
-          <ul class="tl-list">
-            <li>Managed e-commerce ad campaigns with consistent <strong>ROAS above 4×</strong>.</li>
-            <li>Coordinated content creation with influencers and local models for product launches.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="tl-item">
-        <div class="tl-dot"></div>
-        <div class="tl-content">
-          <div class="tl-meta"><span class="tl-date">Feb 2024 – Mar 2025</span><span class="tl-loc">Egypt · Full-Time</span></div>
-          <h3 class="tl-title">Social Media Specialist · <span class="tl-company">أكاديمية التفوق</span></h3>
-          <ul class="tl-list">
-            <li>Managed full digital presence: content planning + ad campaigns.</li>
-            <li>Increased <strong>lead generation by 60%</strong> through video content and paid campaigns.</li>
-            <li>Tracked traffic via Google Analytics &amp; Metricool; led the content team and full media plan strategy.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <!-- EDUCATION + CERTS -->
-    <div class="edu-grid fade-in">
-      <div class="edu-card">
-        <div class="edu-icon">🎓</div>
-        <div class="edu-date">Aug 2019 – Oct 2025</div>
-        <div class="edu-title">Bachelor of Mechatronics Engineering</div>
-        <div class="edu-school">Zagazig University · Faculty of Engineering</div>
-      </div>
-      <div class="edu-card">
-        <div class="edu-icon">📚</div>
-        <div class="edu-date">May 2024 – Sep 2024</div>
-        <div class="edu-title">Full Digital Marketing Course</div>
-        <div class="edu-school">MMA Academy · Alexandria, Egypt</div>
-      </div>
-      <div class="edu-card">
-        <div class="edu-icon">🌐</div>
-        <div class="edu-date">Languages</div>
-        <div class="edu-title">Arabic · English</div>
-        <div class="edu-school">Native Arabic · Professional English</div>
       </div>
     </div>
   </div>
