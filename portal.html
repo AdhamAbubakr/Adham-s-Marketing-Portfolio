@@ -963,7 +963,7 @@ async function renderPortal(client, user){
               <div style="margin-top:.8rem">
                 <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem">Services included</div>
                 <div style="display:flex;flex-wrap:wrap;gap:.4rem">
-                  ${c.services.map(s => `<span style="font-size:.75rem;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.3);color:var(--purple-light);padding:.25rem .6rem;border-radius:50px">${esc(s.label)}</span>`).join('')}
+                  ${c.services.map(s => `<span style="font-size:.75rem;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.3);color:var(--purple-light);padding:.3rem .7rem;border-radius:50px;display:inline-flex;align-items:center;gap:.4rem">${s.icon?`<span style="font-size:.95rem">${s.icon}</span>`:''}${esc(s.label)}</span>`).join('')}
                 </div>
               </div>` : ''}
 

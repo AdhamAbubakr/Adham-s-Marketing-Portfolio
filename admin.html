@@ -2470,8 +2470,9 @@ function renderServiceCheckboxes(selectedKeys = []) {
     const checked = selectedKeys.includes(s.key);
     return `
     <label class="svc-check ${checked?'is-checked':''}" style="display:flex;gap:.85rem;align-items:center;cursor:pointer;padding:.85rem 1rem;border-radius:10px;background:${checked?'rgba(124,58,237,.12)':'var(--bg2)'};border:1px solid ${checked?'var(--purple)':'var(--border)'};transition:all .2s">
-      <input type="checkbox" value="${s.key}" data-label="${escapeHtml(s.label)}" data-desc="${escapeHtml(s.desc)}" ${checked?'checked':''} style="width:20px;height:20px;accent-color:var(--purple);flex-shrink:0;cursor:pointer" />
-      <span style="display:flex;flex-direction:column;gap:.2rem;line-height:1.35">
+      <input type="checkbox" value="${s.key}" data-label="${escapeHtml(s.label)}" data-desc="${escapeHtml(s.desc)}" data-icon="${escapeHtml(s.icon||'')}" ${checked?'checked':''} style="width:20px;height:20px;accent-color:var(--purple);flex-shrink:0;cursor:pointer" />
+      <span style="width:38px;height:38px;border-radius:9px;background:linear-gradient(135deg,var(--purple),var(--purple-deep));display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0;box-shadow:0 4px 12px rgba(124,58,237,.25)">${s.icon||'⚡'}</span>
+      <span style="display:flex;flex-direction:column;gap:.2rem;line-height:1.35;min-width:0">
         <strong style="font-size:.92rem;color:var(--text);font-weight:600">${escapeHtml(s.label)}</strong>
         <span style="font-size:.78rem;color:var(--muted)">${escapeHtml(s.desc)}</span>
       </span>
@@ -2508,7 +2509,7 @@ function renderServiceCheckboxes(selectedKeys = []) {
 // Get the picked services (full objects) from the modal
 function readServicesFromModal() {
   const checks = document.querySelectorAll('#cn_services_list input[type=checkbox]:checked');
-  return Array.from(checks).map(c => ({ key: c.value, label: c.dataset.label, desc: c.dataset.desc }));
+  return Array.from(checks).map(c => ({ key: c.value, label: c.dataset.label, desc: c.dataset.desc, icon: c.dataset.icon || '' }));
 }
 
 async function loadContracts(){

@@ -36,14 +36,14 @@
   // Default available services (admin can override per contract)
   // ============================================================
   window.BARKAR_SERVICES = [
-    { key: 'social_media', label: 'Social Media Management',  desc: 'Content strategy, calendar, community, growth' },
-    { key: 'paid_ads',     label: 'Paid Ads & Performance',   desc: 'Meta, Google, TikTok ads — full-funnel' },
-    { key: 'ecommerce',    label: 'E-commerce Website Design', desc: 'Shopify / WordPress / WooCommerce' },
-    { key: 'content',      label: 'Content & Creative Design', desc: 'Graphics, video editing, brand identity' },
-    { key: 'crm',          label: 'CRM & Marketing Automation', desc: 'Zoho, N8N, chatbots, lead pipelines' },
-    { key: 'analytics',    label: 'Analytics & Reporting',     desc: 'GA4, dashboards, weekly KPIs' },
-    { key: 'seo',          label: 'SEO & Search Visibility',   desc: 'Technical SEO, content, link building' },
-    { key: 'strategy',     label: 'Marketing Strategy',        desc: 'Discovery, positioning, channel mix' }
+    { key: 'social_media', icon: '📱', label: 'Social Media Management',  desc: 'Content strategy, calendar, community, growth' },
+    { key: 'paid_ads',     icon: '🎯', label: 'Paid Ads & Performance',   desc: 'Meta, Google, TikTok ads — full-funnel' },
+    { key: 'ecommerce',    icon: '🛒', label: 'E-commerce Website Design', desc: 'Shopify / WordPress / WooCommerce' },
+    { key: 'content',      icon: '🎨', label: 'Content & Creative Design', desc: 'Graphics, video editing, brand identity' },
+    { key: 'crm',          icon: '🤖', label: 'CRM & Marketing Automation', desc: 'Zoho, N8N, chatbots, lead pipelines' },
+    { key: 'analytics',    icon: '📊', label: 'Analytics & Reporting',     desc: 'GA4, dashboards, weekly KPIs' },
+    { key: 'seo',          icon: '🔍', label: 'SEO & Search Visibility',   desc: 'Technical SEO, content, link building' },
+    { key: 'strategy',     icon: '🧠', label: 'Marketing Strategy',        desc: 'Discovery, positioning, channel mix' }
   ];
 
   // ============================================================
