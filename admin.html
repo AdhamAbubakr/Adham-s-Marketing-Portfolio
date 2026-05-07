@@ -1456,6 +1456,7 @@ async function loadClients(){
           <span class="client-status ${c.status}">${c.status}</span>
         </div>
         <button class="client-edit-btn" onclick="event.stopPropagation();openClientModal('${c.id}')" title="Edit">✏️</button>
+        <button class="client-edit-btn" onclick="event.stopPropagation();deleteClient('${c.id}', '${escapeHtml(c.contact_email||'')}', '${escapeHtml(c.name||'')}')" title="Delete">🗑️</button>
       </div>
       <div class="client-platforms">
         ${(c.platforms || []).map(p => `<span class="pf-pill">${p}</span>`).join('') || '<span class="pf-pill" style="opacity:.5">no platforms set</span>'}
@@ -2251,9 +2252,49 @@ teamForm.addEventListener('submit', async (e) => {
 });
 
 window.deleteTeamMember = async (id) => {
-  if(!confirm('Remove this team member?')) return;
-  await supabase.from('team_members').delete().eq('id', id);
+  const member = allTeam.find(m => m.id === id);
+  if(!member) return;
+
+  const fullDelete = confirm(`Permanently delete "${member.full_name}"?\n\nClick OK to delete completely (auth + profile + tasks).\nClick Cancel to keep this member.`);
+  if(!fullDelete) return;
+
+  if(member.email){
+    // Try full deletion via RPC (admin only — bypasses RLS via SECURITY DEFINER)
+    const { data, error } = await supabase.rpc('delete_user_completely', { target_email: member.email });
+    if(error){
+      // Fallback: just delete from team_members table
+      console.warn('RPC failed (run delete-user-fix.sql in Supabase):', error.message);
+      await supabase.from('team_members').delete().eq('id', id);
+      alert('⚠️ Profile deleted. To also remove the auth account, run delete-user-fix.sql in Supabase, or delete manually from the Auth Users page.');
+    } else if(data && !data.success){
+      alert('⚠️ ' + (data.error || 'Could not fully delete'));
+    }
+  } else {
+    await supabase.from('team_members').delete().eq('id', id);
+  }
   loadTeam();
+};
+
+window.deleteClient = async (id, email, name) => {
+  const fullDelete = confirm(`Permanently delete client "${name}"?\n\nThis will remove:\n• Client profile\n• Their auth account (if any)\n• Their briefs, strategies, content, tasks\n\nClick OK to confirm.`);
+  if(!fullDelete) return;
+
+  if(email){
+    const { data, error } = await supabase.rpc('delete_user_completely', { target_email: email });
+    if(error){
+      console.warn('RPC failed (run delete-user-fix.sql in Supabase):', error.message);
+      // Fallback: just delete client record
+      await supabase.from('clients').delete().eq('id', id);
+      alert('⚠️ Client record deleted. To also remove their auth account, run delete-user-fix.sql in Supabase, or delete manually from the Auth Users page.');
+    } else if(data && !data.success){
+      // Client may not have auth account — just delete record
+      await supabase.from('clients').delete().eq('id', id);
+    }
+  } else {
+    // No email = no auth account, just delete record
+    await supabase.from('clients').delete().eq('id', id);
+  }
+  loadClients();
 };
 
 // =================================================================
