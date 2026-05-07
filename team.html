@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#0A0118" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
 <title>Team Portal — Barkar.</title>
 <link rel="icon" type="image/svg+xml" href="brand/favicon.svg" />
 <meta name="robots" content="noindex,nofollow" />
@@ -106,6 +108,58 @@
   .role-action-icon{font-size:2rem;margin-bottom:.6rem}
   .role-action-label{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:.95rem;margin-bottom:.3rem}
   .role-action-desc{font-size:.78rem;color:var(--muted);line-height:1.5}
+
+  /* ============================================================
+     RESPONSIVE — Tablet & Mobile
+     ============================================================ */
+  @media (max-width:760px){
+    .topbar{padding:.85rem 1rem;flex-wrap:wrap;gap:.6rem}
+    .topbar-logo{width:30px;height:30px}
+    .topbar-brand{font-size:.92rem}
+    .topbar-pill{font-size:.7rem;padding:.2rem .55rem}
+    .topbar-right{gap:.5rem;flex-wrap:wrap}
+    .topbar-email{display:none}
+    .topbar-back{font-size:.78rem;padding:.4rem .7rem}
+    .logout-btn{font-size:.78rem;padding:.4rem .7rem}
+    .container{padding:1.2rem 1rem}
+    .welcome-h{font-size:clamp(1.4rem,5vw,1.8rem)}
+    .stats-grid{gap:.8rem}
+    .stat-card{padding:1rem .9rem}
+    .stat-num{font-size:1.4rem}
+    .stat-label{font-size:.7rem}
+    .role-actions{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.7rem}
+    .role-action-card{padding:1rem .8rem}
+    .role-action-icon{font-size:1.7rem}
+    .role-action-label{font-size:.88rem}
+    .role-action-desc{font-size:.72rem}
+    .filter-bar{flex-wrap:wrap;gap:.4rem}
+    .filter-btn{font-size:.78rem;padding:.4rem .7rem}
+    .task-card{padding:1rem .9rem}
+    .modal{max-width:100% !important;width:100%;max-height:94vh;overflow-y:auto;border-radius:14px}
+    .modal-head{padding:1rem 1.1rem;position:sticky;top:0;background:var(--card);z-index:1}
+    input, select, textarea{font-size:16px}
+  }
+
+  @media (max-width:480px){
+    .stats-grid{grid-template-columns:1fr 1fr}
+    .stat-card{padding:.85rem .7rem}
+    .stat-num{font-size:1.2rem}
+    .container{padding:1rem .8rem}
+  }
+
+  @media (max-width:380px){
+    .stats-grid{grid-template-columns:1fr}
+  }
+
+  @media (hover:none) and (pointer:coarse){
+    a, button, input, select{-webkit-tap-highlight-color:rgba(124,58,237,.18)}
+  }
+  @supports (-webkit-touch-callout: none){
+    input, select, textarea{font-size:16px !important}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
+  }
 </style>
 </head>
 <body>

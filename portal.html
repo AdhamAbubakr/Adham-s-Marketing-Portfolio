@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#0A0118" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
 <title>Client Portal — Barkar.</title>
 <link rel="icon" type="image/svg+xml" href="brand/favicon.svg" />
 <meta name="robots" content="noindex,nofollow" />
@@ -227,6 +229,70 @@
   .strategy-block summary:hover{background:var(--card-hover)}
   .strategy-block-body{padding:0 1.2rem 1.2rem;color:var(--muted);line-height:1.7;font-size:.92rem}
   .strategy-actions{display:flex;gap:.7rem;flex-wrap:wrap;align-items:center;justify-content:flex-end}
+
+  /* ============================================================
+     RESPONSIVE — Tablet & Mobile
+     ============================================================ */
+  @media (max-width:760px){
+    .topbar{padding:.75rem 1rem;flex-wrap:wrap;gap:.6rem}
+    .topbar-left{gap:.5rem}
+    .topbar-logo{width:30px;height:30px}
+    .topbar-brand{font-size:.95rem}
+    .topbar-pill{font-size:.7rem;padding:.2rem .6rem}
+    .topbar-right{gap:.5rem;flex-wrap:wrap}
+    .topbar-email{display:none}
+    .topbar-back{font-size:.78rem;padding:.4rem .7rem}
+    .logout-btn{font-size:.78rem;padding:.4rem .7rem}
+    .container{padding:1.2rem 1rem}
+    .welcome-h{font-size:clamp(1.4rem,5vw,1.8rem)}
+    .welcome-name{font-size:clamp(1.1rem,4vw,1.4rem)}
+    .stats-grid{gap:.8rem}
+    .stat-card{padding:1.1rem 1rem}
+    .stat-num{font-size:1.4rem}
+    .stat-label{font-size:.72rem}
+    .charts-grid{gap:1rem}
+    .chart-card{padding:1.2rem 1rem}
+    .svc-section{padding:1.2rem 1rem}
+    .svc-section h3{font-size:1rem}
+    .contract-card{padding:1.1rem 1rem}
+    .contract-title{font-size:.95rem}
+    .contract-meta{font-size:.78rem;flex-wrap:wrap}
+    .strategy-block summary{padding:.85rem 1rem;font-size:.88rem}
+    .strategy-block-body{padding:0 1rem 1rem;font-size:.85rem}
+    .strategy-actions{justify-content:flex-start;gap:.5rem}
+  }
+
+  @media (max-width:560px){
+    .stats-grid{grid-template-columns:1fr 1fr;gap:.6rem}
+    .stat-card{padding:.95rem .8rem}
+    .stat-num{font-size:1.25rem}
+    .stat-icon{font-size:1.4rem;margin-bottom:.4rem}
+    /* Forms — bigger touch targets, no iOS zoom */
+    input, select, textarea, button{font-size:16px !important}
+    input, select, textarea{padding:.85rem .9rem;min-height:46px}
+    button{min-height:46px}
+    /* Service tiles in inquiry */
+    .service-tile{padding:1rem .8rem}
+    /* Inquiry hero */
+    .inquiry-grid{gap:1rem}
+    .inquiry-card{padding:1.4rem 1rem}
+  }
+
+  @media (max-width:400px){
+    .stats-grid{grid-template-columns:1fr}
+    .topbar-pill{display:none}
+  }
+
+  /* Touch device tweaks */
+  @media (hover:none) and (pointer:coarse){
+    a, button, input, select{-webkit-tap-highlight-color:rgba(124,58,237,.18)}
+  }
+  @supports (-webkit-touch-callout: none){
+    input, select, textarea{font-size:16px !important}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
+  }
 </style>
 </head>
 <body>

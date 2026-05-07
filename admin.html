@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#0A0118" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
 <title>Barkar. — Admin Dashboard</title>
 <link rel="icon" type="image/svg+xml" href="brand/favicon.svg" />
 <meta name="robots" content="noindex,nofollow" />
@@ -360,6 +362,71 @@
   .loading{text-align:center;padding:3rem;color:var(--muted)}
   .spinner{display:inline-block;width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--purple-light);border-radius:50%;animation:spin .8s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* ============================================================
+     RESPONSIVE — Tablet & Mobile
+     ============================================================ */
+  @media (max-width:900px){
+    .container{padding:1.4rem 1rem}
+    .topbar{padding:.85rem 1rem;flex-wrap:wrap;gap:.6rem}
+    .tabs{gap:.4rem;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:.4rem;flex-wrap:nowrap}
+    .tabs::-webkit-scrollbar{height:3px}
+    .tab{flex-shrink:0;font-size:.84rem;padding:.55rem .85rem}
+    .view-header{flex-wrap:wrap;gap:.7rem}
+    .modal{max-width:94vw !important;max-height:90vh;overflow-y:auto}
+  }
+
+  @media (max-width:760px){
+    .topbar-logo{width:30px;height:30px}
+    .topbar-brand{font-size:.92rem}
+    .topbar-pill{font-size:.7rem;padding:.2rem .55rem}
+    .topbar-right{gap:.4rem;flex-wrap:wrap}
+    .topbar-email{display:none}
+    .topbar-back{font-size:.74rem;padding:.35rem .65rem}
+    .logout-btn{font-size:.74rem;padding:.35rem .65rem}
+    .view-title{font-size:1.3rem}
+    .view-sub{font-size:.85rem}
+    .btn-primary-purple{font-size:.85rem;padding:.55rem 1rem}
+    .stats-grid{gap:.7rem}
+    .stat-card{padding:1rem .9rem}
+    .stat-num{font-size:1.4rem}
+    .stat-label{font-size:.7rem}
+    .chart-card{padding:1.2rem 1rem}
+    .clients-grid{grid-template-columns:1fr;gap:.8rem}
+    .client-card{padding:1.2rem 1rem}
+    /* Tables — horizontal scroll */
+    .table-card{overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .table-card table{min-width:580px;font-size:.84rem}
+    .table-card th, .table-card td{padding:.6rem .7rem}
+    /* Modals fill screen on mobile */
+    .modal-backdrop{padding:.6rem}
+    .modal{max-width:100% !important;width:100%;max-height:94vh;overflow-y:auto;border-radius:14px}
+    .modal-head{padding:1rem 1.1rem;position:sticky;top:0;background:var(--card);z-index:1}
+    .modal-body{padding:1.1rem}
+    .field-row{grid-template-columns:1fr !important;gap:0}
+    .modal-actions{flex-direction:column;gap:.5rem}
+    .modal-actions button{width:100%;justify-content:center}
+    /* Forms */
+    input, select, textarea{font-size:16px}
+  }
+
+  @media (max-width:480px){
+    .topbar{padding:.7rem .8rem}
+    .container{padding:1rem .8rem}
+    .stats-grid{grid-template-columns:1fr}
+    .lead-row{flex-direction:column;align-items:flex-start;gap:.5rem}
+    .pixel-row{grid-template-columns:1fr !important;gap:.6rem}
+  }
+
+  @media (hover:none) and (pointer:coarse){
+    a, button, input, select{-webkit-tap-highlight-color:rgba(124,58,237,.18)}
+  }
+  @supports (-webkit-touch-callout: none){
+    input, select, textarea{font-size:16px !important}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
+  }
 </style>
 </head>
 <body>

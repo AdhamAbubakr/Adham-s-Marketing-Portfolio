@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0A0118" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <title>Barkar. — Built different. · Founded by Adham Abo Bakr</title>
   <meta name="description" content="Barkar. is a digital marketing agency founded by Adham Abo Bakr SalahElden. Bold strategy, performance ads, social media, e-commerce, WordPress &amp; Shopify across MENA &amp; Africa." />
   <meta property="og:title" content="Barkar. — Built different." />
@@ -690,6 +693,207 @@
   }
   .footer-brand{font-family:'Space Grotesk',sans-serif;font-weight:600;background:linear-gradient(135deg,var(--purple-light),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
   .footer-copy{color:var(--muted);font-size:.85rem}
+
+  /* ============================================================
+     RESPONSIVE OVERRIDES — Tablet & Mobile
+     ============================================================ */
+
+  /* TABLET (≤900px) */
+  @media (max-width:900px){
+    section{padding:80px 5%}
+    nav{padding:0 4%}
+    .nav-links{gap:1.2rem}
+    .hero{padding:100px 5% 50px;min-height:auto}
+    .hero-stats{gap:1.6rem}
+    .hero-visual{height:340px}
+    .impact-card{padding:1.6rem 1.3rem}
+    .svc-card{padding:1.6rem 1.3rem}
+    .partners-grid{gap:.9rem}
+    .timeline::before{left:18px}
+  }
+
+  /* SMALL TABLET / LARGE PHONE (≤760px) */
+  @media (max-width:760px){
+    nav{height:60px;padding:0 4%}
+    .logo-mark{width:30px;height:30px}
+    .logo-text{font-size:.92rem}
+    .nav-cta, .nav-link-soft{padding:.45rem .9rem;font-size:.78rem}
+    .hero{padding:90px 5% 40px}
+    .hero-inner{gap:2rem}
+    .hero-badge{font-size:.7rem;padding:.35rem .8rem}
+    .hero-subtitle{font-size:.95rem}
+    .hero-location{font-size:.82rem}
+    .hero-desc{font-size:.92rem;line-height:1.75}
+    .hero-stats{gap:1.4rem}
+    .hero-stat-num{font-size:1.55rem}
+    .hero-stat-label{font-size:.7rem}
+    .hero-visual{height:300px}
+    .hv-card{padding:1.1rem}
+    .hv-1{width:200px;left:0}
+    .hv-2{width:170px;right:0}
+    .hv-3{width:185px;left:6%}
+    .section-tag{font-size:.7rem;padding:.28rem .8rem}
+    .section-desc{font-size:.94rem;margin-bottom:2.5rem}
+    .impact-grid{gap:1rem}
+    .impact-card{padding:1.4rem 1.1rem}
+    .impact-num{font-size:1.9rem}
+    .svc-card{padding:1.4rem 1.1rem}
+    .svc-icon{width:42px;height:42px;font-size:1.2rem}
+    .cs-grid{gap:1rem}
+    .cs-card{padding:1.4rem 1.2rem}
+    .cs-card-num{font-size:1.7rem}
+    .cs-hero{padding:2rem 1.4rem}
+    .cs-hero-num{font-size:clamp(2.6rem,12vw,4.5rem)}
+    .partner-card{padding:1.3rem 1rem 1.2rem}
+    .partner-logo{width:64px;height:64px;font-size:1.5rem}
+    .skill-row{margin-bottom:1.2rem}
+    .tools-grid{gap:.4rem}
+    .tool-pill{font-size:.75rem;padding:.35rem .7rem}
+    .process-step{padding:1.3rem 1.1rem}
+    .step-num{font-size:1.8rem}
+    .marquee-strip{padding:1.6rem 0}
+    .mq-item{padding:0 1.3rem;font-size:.95rem}
+    .partners-cta{padding:1.6rem 1.2rem}
+    .partners-cta-title{font-size:1.05rem}
+    .scroll-progress{height:2px}
+  }
+
+  /* PHONE (≤560px) */
+  @media (max-width:560px){
+    section{padding:64px 5%}
+    nav{padding:0 4%;height:58px}
+    .logo-text{font-size:.88rem}
+    .nav-cta, .nav-link-soft{padding:.4rem .8rem;font-size:.74rem;gap:.4rem}
+    .hero{padding:80px 5% 32px}
+    .hero-inner{gap:1.8rem;grid-template-columns:1fr}
+    .hero-badge{font-size:.66rem;letter-spacing:.04em}
+    h1{margin-bottom:.6rem}
+    .hero-btns{gap:.65rem;width:100%}
+    .hero-btns .btn-primary, .hero-btns .btn-secondary{flex:1;justify-content:center;padding:.85rem 1rem;font-size:.88rem;text-align:center;min-width:0}
+    .hero-stats{gap:1rem;justify-content:space-between;width:100%}
+    .hero-stats > div{flex:1;min-width:70px}
+    .hero-stat-num{font-size:1.35rem}
+    .hero-stat-label{font-size:.62rem;letter-spacing:.06em}
+    .hero-visual{height:260px;margin-top:1rem}
+    .hv-card{padding:.95rem;border-radius:14px}
+    .hv-num{font-size:1.5rem}
+    .hv-label{font-size:.6rem}
+    .hv-sub{font-size:.7rem}
+    .hv-1{width:170px}
+    .hv-2{width:150px}
+    .hv-3{width:160px}
+    h2{font-size:clamp(1.6rem,7vw,2.2rem)}
+    .section-desc{font-size:.9rem;line-height:1.7}
+    .impact-grid{grid-template-columns:1fr 1fr}
+    .impact-card{padding:1.2rem 1rem}
+    .impact-icon{font-size:1.5rem}
+    .impact-num{font-size:1.7rem}
+    .impact-label{font-size:.85rem}
+    .impact-sub{font-size:.7rem}
+    .about-grid{gap:1.8rem}
+    .about-img{padding:2rem;min-height:200px}
+    .about-meta{gap:.5rem}
+    .meta-pill{font-size:.74rem;padding:.32rem .7rem}
+    .services-grid{gap:1rem}
+    .svc-card{padding:1.3rem 1rem}
+    .svc-title{font-size:1rem}
+    .svc-desc{font-size:.84rem}
+    .svc-tags{gap:.35rem}
+    .svc-tag{font-size:.7rem;padding:.25rem .55rem}
+    .cs-grid{grid-template-columns:1fr 1fr;gap:.8rem}
+    .cs-card{padding:1.2rem 1rem}
+    .cs-card-icon{font-size:1.4rem}
+    .cs-card-num{font-size:1.4rem}
+    .cs-card-label{font-size:.84rem}
+    .cs-card-sub{font-size:.7rem}
+    .cs-hero{padding:1.7rem 1.1rem}
+    .cs-hero-label{font-size:.95rem}
+    .cs-hero-sub{font-size:.82rem}
+    .partners-grid{grid-template-columns:1fr 1fr;gap:.7rem}
+    .partner-card{padding:1.1rem .8rem 1rem}
+    .partner-logo{width:58px;height:58px;font-size:1.3rem;border-radius:14px}
+    .partner-name{font-size:.92rem}
+    .partner-cat{font-size:.66rem}
+    .partner-region{font-size:.62rem;padding:.18rem .45rem}
+    .skills-grid{gap:1.5rem}
+    .skill-name{font-size:.85rem}
+    .skill-pct{font-size:.78rem}
+    .process-steps{gap:.8rem}
+    .process-step{padding:1.2rem 1rem}
+    .step-num{font-size:1.6rem}
+    .step-title{font-size:.95rem}
+    .step-desc{font-size:.8rem}
+    .timeline{padding-left:34px}
+    .timeline::before{left:14px}
+    .tl-dot{left:8px}
+    .tl-content{padding:1.1rem 1.2rem}
+    .tl-meta{flex-direction:column;align-items:flex-start;gap:.2rem}
+    .tl-date{font-size:.7rem}
+    .tl-title{font-size:.98rem}
+    .tl-list li{font-size:.84rem}
+    .team-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.8rem}
+    .team-card{padding:1.2rem .9rem}
+    .team-avatar{width:64px;height:64px;font-size:1.4rem;margin-bottom:.7rem}
+    .team-name{font-size:.95rem}
+    .team-role{font-size:.7rem}
+    .team-bio{font-size:.76rem;min-height:auto}
+    .marquee-strip{padding:1.2rem 0}
+    .mq-item{padding:0 1rem;font-size:.88rem;border-right-width:0}
+    .mq-item + .mq-item{border-left:1px solid var(--border)}
+    .partners-cta{padding:1.4rem 1rem}
+    .partners-cta-title{font-size:1rem}
+    .partners-cta-sub{font-size:.84rem}
+    /* Contact */
+    .contact-grid-2col{gap:2rem}
+    .contact-form-wrap{padding:1.4rem 1.2rem}
+    .form-title{font-size:1.05rem}
+    .form-grid-2{grid-template-columns:1fr;gap:0}
+    .field input, .field textarea, .field select{font-size:16px;padding:.8rem .9rem}
+    /* Footer */
+    footer{padding:1.5rem 5%;flex-direction:column;gap:.8rem;text-align:center}
+    .footer-brand{font-size:.95rem}
+    .footer-copy{font-size:.78rem}
+    /* Reduce orb effect intensity on mobile for perf */
+    .pb-orb{opacity:.4 !important}
+    .pb-grain{display:none}
+  }
+
+  /* TINY PHONES (≤380px) */
+  @media (max-width:380px){
+    .nav-links{display:none !important}
+    .impact-grid, .cs-grid, .partners-grid{grid-template-columns:1fr}
+    .hero-visual{display:none}
+    .hero-stats{gap:.8rem}
+    .hero-stat-num{font-size:1.2rem}
+    .hero-btns{flex-direction:column}
+    .hero-btns .btn-primary, .hero-btns .btn-secondary{width:100%}
+  }
+
+  /* Make all interactive elements have proper touch targets (mobile) */
+  @media (hover:none) and (pointer:coarse){
+    a, button, input, select, textarea, label{
+      -webkit-tap-highlight-color: rgba(124,58,237,0.18);
+    }
+    /* Disable expensive hover/animations on touch devices */
+    .magnetic, .tilt{transform: none !important}
+    .nav-links a:hover::after{width:0}
+  }
+
+  /* Prevent iOS Safari from zooming on input focus */
+  @supports (-webkit-touch-callout: none){
+    input, select, textarea{font-size:16px !important}
+  }
+
+  /* Reduce motion */
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{
+      animation-duration:.01ms !important;
+      animation-iteration-count:1 !important;
+      transition-duration:.01ms !important;
+      scroll-behavior:auto !important;
+    }
+    .pb-orb, .blob, .marquee-track{animation:none !important}
+  }
 </style>
 </head>
 <body>
