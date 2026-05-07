@@ -262,28 +262,41 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
 });
 
 (async function init(){
-  const { data:{ session } } = await supabase.auth.getSession();
-  if(!session){ location.href = '/signup.html'; return; }
+  try {
+    console.log('[Client Portal] Init start');
+    const { data:{ session } } = await supabase.auth.getSession();
+    if(!session){ location.href = '/signup.html'; return; }
 
-  document.getElementById('userEmail').textContent = session.user.email;
+    document.getElementById('userEmail').textContent = session.user.email;
+    console.log('[Client Portal] User:', session.user.email);
 
-  // Role-based redirect
-  const { data: roleRow } = await supabase.from('user_roles').select('role').eq('user_id', session.user.id).single();
-  if(roleRow?.role === 'admin'){ location.href = '/admin.html'; return; }
-  if(roleRow?.role === 'team'){ location.href = '/team.html'; return; }
+    // Role-based redirect (use maybeSingle)
+    const { data: roleRow, error: roleErr } = await supabase.from('user_roles').select('role').eq('user_id', session.user.id).maybeSingle();
+    if(roleErr) console.warn('[Client Portal] Role query error:', roleErr);
+    console.log('[Client Portal] Role:', roleRow?.role || 'none');
 
-  // Find linked client record
-  const { data: client, error } = await supabase.from('clients').select('*').eq('auth_user_id', session.user.id).maybeSingle();
+    if(roleRow?.role === 'admin'){ location.href = '/admin.html'; return; }
+    if(roleRow?.role === 'team'){ location.href = '/team.html'; return; }
 
-  loading.hidden = true;
-  app.hidden = false;
+    // Find linked client record
+    const { data: client, error } = await supabase.from('clients').select('*').eq('auth_user_id', session.user.id).maybeSingle();
 
-  if(error || !client){
-    renderEmpty(session.user.email);
-    return;
+    loading.hidden = true;
+    app.hidden = false;
+
+    if(error || !client){
+      console.warn('[Client Portal] No linked client:', error);
+      renderEmpty(session.user.email);
+      return;
+    }
+
+    renderPortal(client, session.user);
+  } catch(err){
+    console.error('[Client Portal] Fatal:', err);
+    loading.hidden = true;
+    app.hidden = false;
+    content.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><h2>Something went wrong</h2><p>${(err && err.message) || 'Unknown error'}. Open Console (F12) for details.</p><button onclick="location.reload()" class="btn-save">Reload</button> <button onclick="supabase.auth.signOut().then(()=>location.href='/signup.html')" class="btn-secondary-soft">Sign out</button></div>`;
   }
-
-  renderPortal(client, session.user);
 })();
 
 function renderEmpty(email){

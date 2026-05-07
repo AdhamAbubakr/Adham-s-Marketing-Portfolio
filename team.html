@@ -123,33 +123,60 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
 });
 
 (async function init(){
-  const { data:{ session } } = await supabase.auth.getSession();
-  if(!session){ location.href = '/signup.html'; return; }
-  document.getElementById('userEmail').textContent = session.user.email;
+  try {
+    console.log('[Team Portal] Init start');
+    const { data:{ session }, error: sessionErr } = await supabase.auth.getSession();
+    if(sessionErr) console.error('[Team Portal] Session error:', sessionErr);
+    if(!session){ console.log('[Team Portal] No session — redirect to signup'); location.href = '/signup.html'; return; }
 
-  const { data: roleRow } = await supabase.from('user_roles').select('role').eq('user_id', session.user.id).single();
-  if(roleRow?.role === 'admin'){ location.href = '/admin.html'; return; }
-  if(roleRow?.role === 'client'){ location.href = '/portal.html'; return; }
+    document.getElementById('userEmail').textContent = session.user.email;
+    console.log('[Team Portal] User:', session.user.email);
 
-  // role = 'team' — find member record
-  const { data: member } = await supabase.from('team_members').select('*').eq('auth_user_id', session.user.id).maybeSingle();
+    // Use maybeSingle to avoid throwing if no row
+    const { data: roleRow, error: roleErr } = await supabase.from('user_roles').select('role').eq('user_id', session.user.id).maybeSingle();
+    if(roleErr) console.warn('[Team Portal] Role query error (non-fatal):', roleErr);
+    console.log('[Team Portal] Role:', roleRow?.role || 'none');
 
-  loading.hidden = true;
-  app.hidden = false;
+    if(roleRow?.role === 'admin'){ location.href = '/admin.html'; return; }
+    if(roleRow?.role === 'client'){ location.href = '/portal.html'; return; }
 
-  if(!member){
+    // role = 'team' or null — try to find member record
+    const { data: member, error: memberErr } = await supabase.from('team_members').select('*').eq('auth_user_id', session.user.id).maybeSingle();
+    if(memberErr) console.warn('[Team Portal] Member query error:', memberErr);
+    console.log('[Team Portal] Member:', member);
+
+    loading.hidden = true;
+    app.hidden = false;
+
+    if(!member){
+      content.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon" style="font-size:4rem">⏳</div>
+          <h2>Account being linked</h2>
+          <p>Your account isn't linked to a team profile yet. The Barkar team will link it shortly. Reach out via WhatsApp if it's urgent.</p>
+          <p style="font-size:.85rem;color:var(--muted);margin-top:1rem">Account: <strong>${session.user.email}</strong></p>
+          <a href="https://wa.me/201044724144" target="_blank" rel="noopener" style="background:var(--purple);color:#fff;padding:.85rem 1.6rem;border-radius:10px;font-weight:600;text-decoration:none;display:inline-block;margin-top:1rem">💬 WhatsApp</a>
+          <button onclick="supabase.auth.signOut().then(()=>location.href='/signup.html')" style="background:transparent;color:var(--muted);border:1px solid var(--border);padding:.7rem 1.4rem;border-radius:10px;cursor:pointer;font-family:'Inter',sans-serif;margin-left:.6rem">Sign out</button>
+        </div>
+      `;
+      return;
+    }
+
+    renderPortal(member, session.user);
+  } catch(err){
+    console.error('[Team Portal] Fatal error:', err);
+    loading.hidden = true;
+    app.hidden = false;
     content.innerHTML = `
       <div class="empty-state">
-        <div class="empty-icon" style="font-size:4rem">⏳</div>
-        <h2>Account being linked</h2>
-        <p>Your account isn't linked to a team profile yet. Adham will link it shortly. Reach out via WhatsApp if it's urgent.</p>
-        <a href="https://wa.me/201044724144" target="_blank" rel="noopener" style="background:var(--purple);color:#fff;padding:.85rem 1.6rem;border-radius:10px;font-weight:600;text-decoration:none;display:inline-block">💬 WhatsApp</a>
+        <div class="empty-icon" style="font-size:4rem">⚠️</div>
+        <h2>Something went wrong</h2>
+        <p>${(err && err.message) || 'Unknown error'}. Open Console (F12) for details.</p>
+        <button onclick="location.reload()" style="background:var(--purple);color:#fff;border:none;padding:.85rem 1.6rem;border-radius:10px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Reload</button>
+        <button onclick="supabase.auth.signOut().then(()=>location.href='/signup.html')" style="background:transparent;color:var(--muted);border:1px solid var(--border);padding:.7rem 1.4rem;border-radius:10px;cursor:pointer;font-family:'Inter',sans-serif;margin-left:.6rem">Sign out</button>
       </div>
     `;
-    return;
   }
-
-  renderPortal(member, session.user);
 })();
 
 let currentFilter = 'all';
