@@ -287,6 +287,9 @@ window.setMode = setMode;
 document.querySelectorAll('.auth-tab').forEach(t => t.addEventListener('click', () => setMode(t.dataset.mode)));
 
 // Type picker
+const CLIENT_REQUIRED = ['su_name','su_brand','su_email','su_password','su_password2'];
+const TEAM_REQUIRED   = ['su_team_name','su_team_role','su_team_email','su_team_password','su_team_password2'];
+
 document.querySelectorAll('.type-card').forEach(card => {
   card.addEventListener('click', () => {
     const type = card.dataset.type;
@@ -296,14 +299,13 @@ document.querySelectorAll('.type-card').forEach(card => {
     if(type === 'client'){
       document.getElementById('clientFields').style.display = '';
       document.getElementById('teamFields').style.display = 'none';
-      // Make client fields required
-      ['su_name','su_brand','su_email','su_password'].forEach(id => document.getElementById(id).required = true);
-      ['su_team_name','su_team_role','su_team_email','su_team_password'].forEach(id => document.getElementById(id).required = false);
+      CLIENT_REQUIRED.forEach(id => document.getElementById(id).required = true);
+      TEAM_REQUIRED.forEach(id => document.getElementById(id).required = false);
     } else {
       document.getElementById('clientFields').style.display = 'none';
       document.getElementById('teamFields').style.display = '';
-      ['su_name','su_brand','su_email','su_password'].forEach(id => document.getElementById(id).required = false);
-      ['su_team_name','su_team_role','su_team_email','su_team_password'].forEach(id => document.getElementById(id).required = true);
+      CLIENT_REQUIRED.forEach(id => document.getElementById(id).required = false);
+      TEAM_REQUIRED.forEach(id => document.getElementById(id).required = true);
     }
   });
 });
@@ -375,11 +377,14 @@ signupForm.addEventListener('submit', async (e) => {
     if(error){ show('⚠️ ' + error.message, 'error'); btn.disabled = false; btn.textContent = 'Create My Account →'; return; }
 
     if(data.user){
-      // Set role to 'team'
-      await supabase.from('user_roles').upsert({ user_id: data.user.id, role: 'team' }, { onConflict:'user_id' });
+      // Set role to 'team' — fails silently if SQL Phase 4-8 not run yet
+      const { error: roleErr } = await supabase.from('user_roles').upsert({ user_id: data.user.id, role: 'team' }, { onConflict:'user_id' });
+      if(roleErr){
+        console.warn('Role set failed (run phase4-8-schema.sql in Supabase to enable team role):', roleErr.message);
+      }
 
-      // Create team_members record
-      await supabase.from('team_members').insert([{
+      // Create team_members record — requires phase4-8-schema.sql to be run
+      const { error: tmErr } = await supabase.from('team_members').insert([{
         auth_user_id: data.user.id,
         full_name: fullName,
         role_title: roleTitle,
@@ -389,6 +394,11 @@ signupForm.addEventListener('submit', async (e) => {
         skills,
         status: 'active'
       }]);
+      if(tmErr){
+        show('⚠️ Account created, but team profile could not be saved. Admin needs to run the latest SQL schema. Error: ' + tmErr.message, 'error');
+        btn.disabled = false; btn.textContent = 'Create My Account →';
+        return;
+      }
     }
 
     show('✅ Team account created! ' + (data.session ? 'Redirecting…' : 'Check your email to verify, then sign in.'), 'success');
