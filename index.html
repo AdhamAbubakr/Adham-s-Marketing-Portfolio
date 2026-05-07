@@ -335,6 +335,74 @@
   @media (max-width:900px){.brands-list{grid-template-columns:repeat(3,1fr)}}
   @media (max-width:480px){.brands-list{grid-template-columns:repeat(2,1fr)}}
 
+  /* ---------- OUR PARTNERS ---------- */
+  .partners-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;margin-top:2.5rem;
+  }
+  @media (max-width:1024px){.partners-grid{grid-template-columns:repeat(3,1fr)}}
+  @media (max-width:720px){.partners-grid{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:420px){.partners-grid{grid-template-columns:1fr}}
+
+  .partner-card{
+    position:relative;background:var(--card);border:1px solid var(--border);border-radius:16px;
+    padding:1.6rem 1.2rem 1.4rem;text-align:center;transition:all .3s cubic-bezier(.4,0,.2,1);
+    overflow:hidden;cursor:default;
+  }
+  .partner-card::before{
+    content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 50%,var(--card-hover) 100%);
+    opacity:0;transition:opacity .3s;
+  }
+  .partner-card:hover{transform:translateY(-4px);border-color:var(--purple);box-shadow:0 10px 30px rgba(124,58,237,.18)}
+  .partner-card:hover::before{opacity:1}
+
+  .partner-logo{
+    position:relative;z-index:1;width:84px;height:84px;margin:0 auto 1rem;
+    border-radius:18px;display:flex;align-items:center;justify-content:center;
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:2rem;
+    color:#fff;letter-spacing:-.04em;
+    box-shadow:0 8px 22px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.15);
+  }
+  .partner-logo::after{
+    content:'';position:absolute;inset:0;border-radius:18px;
+    background:linear-gradient(135deg,rgba(255,255,255,.12),transparent 60%);pointer-events:none;
+  }
+  .partner-name{
+    position:relative;z-index:1;font-family:'Space Grotesk',sans-serif;font-weight:600;
+    font-size:1rem;color:var(--text);margin-bottom:.35rem;letter-spacing:-.01em;
+  }
+  .partner-cat{
+    position:relative;z-index:1;font-size:.75rem;color:var(--muted);
+    text-transform:uppercase;letter-spacing:.12em;font-weight:500;margin-bottom:.6rem;
+  }
+  .partner-region{
+    position:relative;z-index:1;display:inline-block;font-size:.7rem;color:var(--accent);
+    background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.25);
+    padding:.25rem .55rem;border-radius:999px;font-weight:600;letter-spacing:.04em;
+  }
+
+  /* Partner logo color variants */
+  .pl-sama{background:linear-gradient(135deg,#0EA5E9,#0369A1)}
+  .pl-samat{background:linear-gradient(135deg,#F59E0B,#D97706)}
+  .pl-groomi{background:linear-gradient(135deg,#EC4899,#BE185D)}
+  .pl-kayanac{background:linear-gradient(135deg,#10B981,#047857)}
+  .pl-kitaan{background:linear-gradient(135deg,#F43F5E,#9F1239)}
+  .pl-old{background:linear-gradient(135deg,#92400E,#451A03)}
+  .pl-infinity{background:linear-gradient(135deg,#6366F1,#3730A3)}
+  .pl-amazing{background:linear-gradient(135deg,#8B5CF6,#5B21B6)}
+  .pl-medu{background:linear-gradient(135deg,#06B6D4,#155E75)}
+  .pl-wolves{background:linear-gradient(135deg,#1F2937,#0F172A);border:1px solid #374151}
+  .pl-ayam{background:linear-gradient(135deg,#DC2626,#7F1D1D)}
+  .pl-tafawk{background:linear-gradient(135deg,#7C3AED,#4C1D95)}
+  .pl-nader{background:linear-gradient(135deg,#0F766E,#134E4A)}
+  .pl-besta{background:linear-gradient(135deg,#EA580C,#7C2D12)}
+
+  .partners-cta{
+    margin-top:3rem;text-align:center;padding:2rem;background:var(--card);
+    border:1px dashed var(--border-strong);border-radius:16px;
+  }
+  .partners-cta-title{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.15rem;margin-bottom:.5rem;color:var(--text)}
+  .partners-cta-sub{color:var(--muted);font-size:.92rem;margin-bottom:1.2rem}
+
   /* ---------- SKILLS ---------- */
   .skills-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:3rem}
   .skill-row{margin-bottom:1.6rem}
@@ -555,14 +623,15 @@
     <li><a href="#about">About</a></li>
     <li><a href="#services">Services</a></li>
     <li><a href="#case-studies">Case Studies</a></li>
+    <li><a href="#partners">Partners</a></li>
     <li><a href="#skills">Skills</a></li>
     <li><a href="#resume">Resume</a></li>
     <li><a href="#team">Team</a></li>
     <li><a href="#process">Process</a></li>
   </ul>
   <div style="display:flex;gap:.6rem;align-items:center">
-    <a href="signup.html" class="nav-link-soft">Client Login</a>
-    <a href="#contact" class="nav-cta">Contact Me</a>
+    <a href="signup.html" class="nav-link-soft">Sign Up</a>
+    <a href="#contact" class="nav-cta">Start a Project</a>
   </div>
 </nav>
 
@@ -580,14 +649,14 @@
         <span class="h1-line"><span>Built</span></span>
         <span class="h1-line"><span class="h1-grad">different.</span></span>
       </h1>
-      <div class="hero-subtitle">Barkar<span style="color:var(--magenta)">.</span> &mdash; founded by Adham Abo Bakr</div>
-      <div class="hero-location">📍 Egypt · Working with brands across MENA &amp; Africa</div>
+      <div class="hero-subtitle">Barkar<span style="color:var(--magenta)">.</span> &mdash; A Digital Marketing Agency</div>
+      <div class="hero-location">📍 HQ in Egypt · Serving brands across MENA &amp; Africa</div>
       <p class="hero-desc">
-        <strong style="color:var(--text)">Barkar</strong> isn&rsquo;t a word you&rsquo;ve heard before &mdash; and that&rsquo;s the point. We build brands that don&rsquo;t blend in. Performance ads, sharp social, Shopify &amp; WordPress that convert, and data that drives every move.
+        <strong style="color:var(--text)">Barkar</strong> isn&rsquo;t a word you&rsquo;ve heard before &mdash; and that&rsquo;s the point. We&rsquo;re a full-stack digital marketing agency that builds brands which don&rsquo;t blend in. Performance ads, sharp social, Shopify &amp; WordPress that convert, and data that drives every move.
       </p>
       <div class="hero-btns">
-        <a href="#case-studies" class="btn-primary">View My Work →</a>
-        <a href="#contact" class="btn-secondary">Let's Talk</a>
+        <a href="#partners" class="btn-primary">Our Partners →</a>
+        <a href="#contact" class="btn-secondary">Start a Project</a>
       </div>
       <div class="hero-stats">
         <div>
@@ -636,7 +705,7 @@
   <div class="section-inner">
     <div class="section-tag">📊 Combined Impact</div>
     <h2>Numbers That <span class="h1-grad">Speak Louder</span> Than Words</h2>
-    <p class="section-desc">Aggregate results across every brand I've worked with — from SAMA Cape Town to GROOMI, Kayanac, MEDU Science, and more. Real campaigns. Real outcomes.</p>
+    <p class="section-desc">Aggregate results across every brand we&rsquo;ve partnered with — from SAMA Cape Town to GROOMI, Kayanac, MEDU Science, and more. Real campaigns. Real outcomes.</p>
 
     <div class="impact-grid fade-in">
       <div class="impact-card">
@@ -707,7 +776,7 @@
         <div class="section-tag">About Barkar</div>
         <h2>The Agency That <span class="h1-grad">Speaks Data</span> Fluently</h2>
         <p class="section-desc" style="margin-bottom:1.4rem">
-          <strong style="color:var(--text)">Barkar</strong> is a digital marketing agency founded by <strong style="color:var(--text)">Adham Abo Bakr SalahElden</strong>, built on years of running real campaigns for real businesses: from <strong style="color:var(--text)">SAMA Cape Town</strong> (KSA &amp; South Africa) to <strong style="color:var(--text)">GROOMI</strong>, <strong style="color:var(--text)">Kayanac</strong>, <strong style="color:var(--text)">Kitaan</strong>, <strong style="color:var(--text)">MEDU Science</strong>, and many more.
+          <strong style="color:var(--text)">Barkar</strong> is a full-stack digital marketing agency built on years of running real campaigns for real businesses &mdash; from <strong style="color:var(--text)">SAMA Cape Town</strong> (KSA &amp; South Africa) to <strong style="color:var(--text)">GROOMI</strong>, <strong style="color:var(--text)">Kayanac</strong>, <strong style="color:var(--text)">Kitaan</strong>, <strong style="color:var(--text)">MEDU Science</strong>, and many more.
         </p>
         <p class="section-desc" style="margin-bottom:1.4rem">
           Our approach is simple: <strong style="color:var(--text)">strategy first, data always</strong>. We combine paid media (Meta, Google, TikTok), brand storytelling, e-commerce design (Shopify &amp; WordPress), and CRM automation to scale brands sustainably &mdash; and build brands that don&rsquo;t blend in.
@@ -727,7 +796,7 @@
 <!-- SERVICES -->
 <section id="services">
   <div class="section-inner">
-    <div class="section-tag">What I Do</div>
+    <div class="section-tag">What We Do</div>
     <h2>Services That <span class="h1-grad">Move The Needle</span></h2>
     <p class="section-desc">Full-stack digital marketing — from strategy and creative to launch, optimization, and reporting.</p>
 
@@ -777,7 +846,7 @@
   <div class="section-inner">
     <div class="section-tag">📈 Combined Case Studies</div>
     <h2>One Big Number From <span class="h1-grad">Every Brand</span></h2>
-    <p class="section-desc">Instead of fragmented per-project metrics, here's the cumulative impact across every brand I've worked with — pooled into a single, honest dashboard.</p>
+    <p class="section-desc">Instead of fragmented per-project metrics, here&rsquo;s the cumulative impact across every brand we&rsquo;ve partnered with — pooled into a single, honest dashboard.</p>
 
     <div class="cs-hero fade-in">
       <div class="cs-hero-num"><span data-count="10" data-prefix="" data-suffix="M+">0</span></div>
@@ -824,22 +893,125 @@
       </div>
     </div>
 
-    <div class="brands-strip fade-in">
-      <div class="brands-title">Brands I've Worked With</div>
-      <div class="brands-list">
-        <div class="brand-item">SAMA Cape Town<small>KSA · ZA</small></div>
-        <div class="brand-item">SAMA Transport<small>KSA</small></div>
-        <div class="brand-item">GROOMI<small>E-commerce</small></div>
-        <div class="brand-item">Kayanac<small>Lifestyle</small></div>
-        <div class="brand-item">Kitaan<small>Retail</small></div>
-        <div class="brand-item">The Old Days<small>Fashion</small></div>
-        <div class="brand-item">Infinity Store<small>E-com</small></div>
-        <div class="brand-item">Amazing Store<small>E-com</small></div>
-        <div class="brand-item">MEDU Science<small>Education</small></div>
-        <div class="brand-item">WOLVES<small>Brand</small></div>
-        <div class="brand-item">Ayam Zaman<small>Kuwait</small></div>
-        <div class="brand-item">أكاديمية التفوق<small>Education</small></div>
+    <div style="text-align:center;margin-top:2.5rem">
+      <a href="#partners" class="btn-secondary">Meet Our Partners ↓</a>
+    </div>
+  </div>
+</section>
+
+<!-- OUR PARTNERS -->
+<section id="partners" style="background:linear-gradient(180deg,var(--bg),var(--bg2))">
+  <div class="section-inner">
+    <div class="section-tag">🤝 Our Partners</div>
+    <h2>Brands That <span class="h1-grad">Trust Barkar</span></h2>
+    <p class="section-desc">From e-commerce stores to education academies, transport networks to lifestyle brands — these are the partners we&rsquo;ve helped scale across MENA &amp; Africa.</p>
+
+    <div class="partners-grid fade-in">
+
+      <div class="partner-card">
+        <div class="partner-logo pl-sama">SC</div>
+        <div class="partner-name">SAMA Cape Town</div>
+        <div class="partner-cat">Hospitality</div>
+        <span class="partner-region">KSA · ZA</span>
       </div>
+
+      <div class="partner-card">
+        <div class="partner-logo pl-samat">ST</div>
+        <div class="partner-name">SAMA Transport</div>
+        <div class="partner-cat">Transport</div>
+        <span class="partner-region">KSA</span>
+      </div>
+
+      <div class="partner-card">
+        <div class="partner-logo pl-groomi">G</div>
+        <div class="partner-name">GROOMI</div>
+        <div class="partner-cat">E-commerce</div>
+        <span class="partner-region">Egypt</span>
+      </div>
+
+      <div class="partner-card">
+        <div class="partner-logo pl-kayanac">K</div>
+        <div class="partner-name">Kayanac ERP</div>
+        <div class="partner-cat">B2B SaaS</div>
+        <span class="partner-region">Egypt</span>
+      </div>
+
+      <div class="partner-card">
+        <div class="partner-logo pl-kitaan">Kt</div>
+        <div class="partner-name">Kitaan</div>
+        <div class="partner-cat">Retail</div>
+        <span class="partner-region">Egypt</span>
+      </div>
+
+      <div class="partner-card">
+        <div class="partner-logo pl-old">OD</div>
+        <div class="partner-name">The Old Days</div>
+        <div class="partner-cat">Fashion</div>
+        <span class="partner-region">Egypt</span>
+      </div>
+
+      <div class="partner-card">
+        <div class="partner-logo pl-infinity">∞</div>
+        <div class="partner-name">Infinity Store</div>
+        <div class="partner-cat">E-commerce</div>
+        <span class="partner-region">Egypt</span>
+      </div>
+
+      <div class="partner-card">
+        <div class="partner-logo pl-amazing">AS</div>
+        <div class="partner-name">Amazing Store</div>
+        <div class="partner-cat">E-commerce</div>
+        <span class="partner-region">Egypt</span>
+      </div>
+
+      <div class="partner-card">
+        <div class="partner-logo pl-medu">M</div>
+        <div class="partner-name">MEDU Science</div>
+        <div class="partner-cat">EdTech</div>
+        <span class="partner-region">Egypt</span>
+      </div>
+
+      <div class="partner-card">
+        <div class="partner-logo pl-wolves">W</div>
+        <div class="partner-name">Wolves Store</div>
+        <div class="partner-cat">Streetwear</div>
+        <span class="partner-region">Egypt</span>
+      </div>
+
+      <div class="partner-card">
+        <div class="partner-logo pl-ayam">AZ</div>
+        <div class="partner-name">Ayam Zaman</div>
+        <div class="partner-cat">F&amp;B</div>
+        <span class="partner-region">Kuwait</span>
+      </div>
+
+      <div class="partner-card">
+        <div class="partner-logo pl-nader">N</div>
+        <div class="partner-name">Nader Sunglasses</div>
+        <div class="partner-cat">Eyewear</div>
+        <span class="partner-region">Kuwait</span>
+      </div>
+
+      <div class="partner-card">
+        <div class="partner-logo pl-tafawk">أت</div>
+        <div class="partner-name">أكاديمية التفوق</div>
+        <div class="partner-cat">Education</div>
+        <span class="partner-region">Egypt</span>
+      </div>
+
+      <div class="partner-card">
+        <div class="partner-logo pl-besta">بأ</div>
+        <div class="partner-name">ببساطة أتعلم</div>
+        <div class="partner-cat">Education</div>
+        <span class="partner-region">Remote</span>
+      </div>
+
+    </div>
+
+    <div class="partners-cta fade-in">
+      <div class="partners-cta-title">Want to be the next partner?</div>
+      <div class="partners-cta-sub">We&rsquo;re currently onboarding new brands across MENA &amp; Africa.</div>
+      <a href="#contact" class="btn-primary">Start a Project →</a>
     </div>
   </div>
 </section>
@@ -849,7 +1021,7 @@
   <div class="section-inner">
     <div class="section-tag">Skills &amp; Stack</div>
     <h2>Tools That Get The Job <span class="h1-grad">Done</span></h2>
-    <p class="section-desc">A blend of strategic thinking and hands-on technical execution — the platforms I use every day.</p>
+    <p class="section-desc">A blend of strategic thinking and hands-on technical execution — the platforms our team works with every day.</p>
 
     <div class="skills-grid">
       <div class="fade-in">
@@ -888,9 +1060,9 @@
 <!-- RESUME -->
 <section id="resume" style="background:linear-gradient(180deg,var(--bg2),var(--bg))">
   <div class="section-inner">
-    <div class="section-tag">📄 My Resume</div>
-    <h2>Experience &amp; <span class="h1-grad">Education</span></h2>
-    <p class="section-desc">A timeline of the brands I've worked with, the roles I've held, and the certifications behind the work. Prefer the PDF? Download below.</p>
+    <div class="section-tag">📄 Founder&rsquo;s Track Record</div>
+    <h2>Experience &amp; <span class="h1-grad">Credentials</span></h2>
+    <p class="section-desc">Barkar was founded by <strong style="color:var(--text)">Adham Abo Bakr SalahElden</strong> &mdash; here&rsquo;s the timeline of brands, roles, and certifications behind the agency. Prefer the PDF? Download below.</p>
 
     <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:3rem">
       <a href="Adham-Abo-Bakr-Resume.pdf" download class="btn-primary">⬇️ Download CV (PDF)</a>
@@ -1042,8 +1214,8 @@
 <!-- PROCESS -->
 <section id="process">
   <div class="section-inner">
-    <div class="section-tag">My Approach</div>
-    <h2>How I <span class="h1-grad">Work</span></h2>
+    <div class="section-tag">Our Approach</div>
+    <h2>How We <span class="h1-grad">Work</span></h2>
     <p class="section-desc">A structured, results-oriented process that delivers clarity and performance at every stage.</p>
 
     <div class="process-steps fade-in">
@@ -1064,7 +1236,7 @@
       <div class="contact-left">
         <div class="section-tag">Work with Barkar</div>
         <h2>Ready to Be <span class="h1-grad">Different?</span></h2>
-        <p class="section-desc" style="margin-bottom:2rem">Tell me about your business, your goals, and your budget — I&rsquo;ll come back with a clear plan, real numbers, and a path to growth.</p>
+        <p class="section-desc" style="margin-bottom:2rem">Tell us about your business, your goals, and your budget — we&rsquo;ll come back with a clear plan, real numbers, and a path to growth.</p>
 
         <div class="contact-channels">
           <a href="mailto:info@barkar.net" class="contact-item">
@@ -1095,7 +1267,7 @@
       <div class="contact-form-wrap">
         <form id="leadForm" class="lead-form" novalidate>
           <div class="form-tag">📝 Free Strategy Call</div>
-          <h3 class="form-title">Send Me a Project Brief</h3>
+          <h3 class="form-title">Send Us a Project Brief</h3>
           <p class="form-sub">Get a free 30-min strategy call. No commitment, no fluff.</p>
 
           <div class="field">
@@ -1143,7 +1315,7 @@
           </div>
 
           <div class="field">
-            <label>Tell me about your project</label>
+            <label>Tell us about your project</label>
             <textarea name="message" rows="4" placeholder="What does your business do? What are your main goals?"></textarea>
           </div>
 
