@@ -49,6 +49,12 @@
   .login-card button:disabled{opacity:.6;cursor:not-allowed}
   .login-error{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.4);color:var(--red);padding:.7rem;border-radius:10px;font-size:.85rem;margin-bottom:1rem;display:none}
   .login-error.show{display:block}
+  .login-footer{text-align:center;margin-top:1.4rem;padding-top:1.2rem;border-top:1px solid var(--border);font-size:.88rem;color:var(--muted)}
+  .login-footer a{color:var(--purple-light);text-decoration:none;font-weight:600;margin-left:.4rem}
+  .login-footer a:hover{color:var(--magenta)}
+  .login-back{text-align:center;margin-top:.9rem;font-size:.82rem}
+  .login-back a{color:var(--muted);text-decoration:none}
+  .login-back a:hover{color:var(--purple-light)}
 
   /* DASHBOARD */
   .dash{display:none;min-height:100vh}
@@ -366,6 +372,13 @@
       <input type="password" id="loginPassword" required autocomplete="current-password" />
       <button type="submit" id="loginBtn">Sign In →</button>
     </form>
+    <div class="login-footer">
+      <span>Don't have an account?</span>
+      <a href="/signup.html">Create one →</a>
+    </div>
+    <div class="login-back">
+      <a href="/">← Back to barkar.net</a>
+    </div>
   </div>
 </div>
 
