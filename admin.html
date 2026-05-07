@@ -396,6 +396,10 @@
       <a href="#clients" class="tab" data-tab="clients">👥 Clients</a>
       <a href="#briefs" class="tab" data-tab="briefs">📝 Briefs</a>
       <a href="#strategies" class="tab" data-tab="strategies">🧠 Strategies</a>
+      <a href="#content" class="tab" data-tab="content">📅 Content</a>
+      <a href="#team" class="tab" data-tab="team">👨‍💻 Team</a>
+      <a href="#tasks" class="tab" data-tab="tasks">✅ Tasks</a>
+      <a href="#contracts" class="tab" data-tab="contracts">📄 Contracts</a>
       <a href="#leads" class="tab" data-tab="leads">📋 Leads</a>
       <a href="#pixels" class="tab" data-tab="pixels">📡 Pixels</a>
     </div>
@@ -500,6 +504,86 @@
         <div id="strategyEditorContent"></div>
       </div>
     </div><!-- /view-strategies -->
+
+    <!-- ===== VIEW: CONTENT (Phase 4) ===== -->
+    <div class="view" data-view="content" hidden>
+      <div class="view-header">
+        <div>
+          <h2 class="view-title">📅 Content Calendar</h2>
+          <p class="view-sub">Plan, create, and approve content. Each item flows: Draft → Review → Approved → Scheduled → Published.</p>
+        </div>
+        <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+          <select id="contentClientFilter" class="status-select" style="padding:.6rem 1rem">
+            <option value="">All clients</option>
+          </select>
+          <select id="contentStatusFilter" class="status-select" style="padding:.6rem 1rem">
+            <option value="">All statuses</option>
+            <option value="draft">Draft</option>
+            <option value="review">In Review</option>
+            <option value="approved">Approved</option>
+            <option value="scheduled">Scheduled</option>
+            <option value="published">Published</option>
+            <option value="rejected">Rejected</option>
+          </select>
+          <button class="btn-primary-purple" id="addContentBtn">+ New Content</button>
+        </div>
+      </div>
+      <div id="contentList" class="table-card">
+        <div class="empty"><div class="spinner"></div><div style="margin-top:.7rem">Loading content&hellip;</div></div>
+      </div>
+    </div><!-- /view-content -->
+
+    <!-- ===== VIEW: TEAM (Phase 5) ===== -->
+    <div class="view" data-view="team" hidden>
+      <div class="view-header">
+        <div>
+          <h2 class="view-title">👨‍💻 Team Members</h2>
+          <p class="view-sub">Manage your remote team — designers, video editors, copywriters, and specialists.</p>
+        </div>
+        <button class="btn-primary-purple" id="addTeamBtn">+ Add Team Member</button>
+      </div>
+      <div id="teamList" class="table-card">
+        <div class="empty"><div class="spinner"></div><div style="margin-top:.7rem">Loading team&hellip;</div></div>
+      </div>
+    </div><!-- /view-team -->
+
+    <!-- ===== VIEW: TASKS (Phase 5) ===== -->
+    <div class="view" data-view="tasks" hidden>
+      <div class="view-header">
+        <div>
+          <h2 class="view-title">✅ Tasks</h2>
+          <p class="view-sub">Assign tasks to your team. Track progress, time, and deliverables.</p>
+        </div>
+        <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+          <select id="taskStatusFilter" class="status-select" style="padding:.6rem 1rem">
+            <option value="">All statuses</option>
+            <option value="todo">To Do</option>
+            <option value="in_progress">In Progress</option>
+            <option value="review">In Review</option>
+            <option value="done">Done</option>
+            <option value="blocked">Blocked</option>
+          </select>
+          <button class="btn-primary-purple" id="addTaskBtn">+ Add Task</button>
+        </div>
+      </div>
+      <div id="tasksList" class="table-card">
+        <div class="empty"><div class="spinner"></div><div style="margin-top:.7rem">Loading tasks&hellip;</div></div>
+      </div>
+    </div><!-- /view-tasks -->
+
+    <!-- ===== VIEW: CONTRACTS (Phase 6) ===== -->
+    <div class="view" data-view="contracts" hidden>
+      <div class="view-header">
+        <div>
+          <h2 class="view-title">📄 Contracts</h2>
+          <p class="view-sub">Create, send, and track contracts with clients. E-signature included.</p>
+        </div>
+        <button class="btn-primary-purple" id="addContractBtn">+ New Contract</button>
+      </div>
+      <div id="contractsList" class="table-card">
+        <div class="empty"><div class="spinner"></div><div style="margin-top:.7rem">Loading contracts&hellip;</div></div>
+      </div>
+    </div><!-- /view-contracts -->
 
     <!-- ===== VIEW: LEADS ===== -->
     <div class="view" data-view="leads" hidden>
@@ -752,6 +836,193 @@
         <div class="modal-actions">
           <button type="button" class="btn-secondary-soft" id="cancelCampaign">Cancel</button>
           <button type="submit" class="btn-primary-purple">💾 Save Campaign</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============== MODAL: ADD/EDIT CONTENT ============== -->
+  <div class="modal-backdrop" id="contentModal" hidden>
+    <div class="modal" style="max-width:760px">
+      <div class="modal-head">
+        <h3 id="contentModalTitle">New Content</h3>
+        <button class="modal-close" id="closeContentModal">&times;</button>
+      </div>
+      <form id="contentForm" class="modal-body">
+        <input type="hidden" id="content_id" />
+        <div class="field-row">
+          <div class="field"><label>Title *</label><input type="text" id="ct_title" required placeholder="Summer launch announcement" /></div>
+          <div class="field"><label>Client *</label><select id="ct_client_id" required></select></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Platform *</label>
+            <select id="ct_platform" required>
+              <option value="">Choose…</option>
+              <option value="instagram">Instagram</option>
+              <option value="facebook">Facebook</option>
+              <option value="tiktok">TikTok</option>
+              <option value="linkedin">LinkedIn</option>
+              <option value="twitter">X / Twitter</option>
+              <option value="youtube">YouTube</option>
+              <option value="snapchat">Snapchat</option>
+            </select>
+          </div>
+          <div class="field"><label>Type</label>
+            <select id="ct_content_type">
+              <option value="post">Post</option>
+              <option value="story">Story</option>
+              <option value="reel">Reel</option>
+              <option value="short">Short</option>
+              <option value="carousel">Carousel</option>
+              <option value="video">Video</option>
+              <option value="ad">Ad</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Scheduled Date</label><input type="date" id="ct_scheduled_date" /></div>
+          <div class="field"><label>Scheduled Time</label><input type="time" id="ct_scheduled_time" /></div>
+        </div>
+        <div class="field"><label>Caption</label><textarea id="ct_caption" rows="4" placeholder="The post caption / copy…"></textarea></div>
+        <div class="field"><label>Hashtags</label><input type="text" id="ct_hashtags" placeholder="#brand #marketing #growth" /></div>
+        <div class="field"><label>Internal Notes</label><textarea id="ct_notes" rows="2" placeholder="Notes only you see…"></textarea></div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary-soft" id="cancelContent">Cancel</button>
+          <button type="submit" class="btn-primary-purple">💾 Save Content</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============== MODAL: ADD/EDIT TEAM MEMBER ============== -->
+  <div class="modal-backdrop" id="teamModal" hidden>
+    <div class="modal">
+      <div class="modal-head">
+        <h3 id="teamModalTitle">Add Team Member</h3>
+        <button class="modal-close" id="closeTeamModal">&times;</button>
+      </div>
+      <form id="teamForm" class="modal-body">
+        <input type="hidden" id="team_id" />
+        <div class="field-row">
+          <div class="field"><label>Full Name *</label><input type="text" id="tm_full_name" required /></div>
+          <div class="field"><label>Role / Title *</label><input type="text" id="tm_role_title" required placeholder="Senior Designer" /></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Email *</label><input type="email" id="tm_email" required /></div>
+          <div class="field"><label>Phone</label><input type="tel" id="tm_phone" /></div>
+        </div>
+        <div class="field"><label>Country</label><input type="text" id="tm_country" placeholder="Egypt" /></div>
+        <div class="field"><label>Skills (comma-separated)</label><input type="text" id="tm_skills" placeholder="Figma, Photoshop, Premiere Pro" /></div>
+        <div class="field-row">
+          <div class="field"><label>Hourly Rate ($)</label><input type="number" id="tm_hourly_rate" step="0.01" /></div>
+          <div class="field"><label>Status</label>
+            <select id="tm_status">
+              <option value="active">Active</option>
+              <option value="paused">Paused</option>
+              <option value="offboarded">Offboarded</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label>Notes</label><textarea id="tm_notes" rows="2"></textarea></div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary-soft" id="cancelTeam">Cancel</button>
+          <button type="submit" class="btn-primary-purple">💾 Save Member</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============== MODAL: ADD/EDIT TASK ============== -->
+  <div class="modal-backdrop" id="taskModal" hidden>
+    <div class="modal">
+      <div class="modal-head">
+        <h3 id="taskModalTitle">New Task</h3>
+        <button class="modal-close" id="closeTaskModal">&times;</button>
+      </div>
+      <form id="taskForm" class="modal-body">
+        <input type="hidden" id="task_id" />
+        <div class="field"><label>Title *</label><input type="text" id="tk_title" required placeholder="Design Instagram post for Groomi" /></div>
+        <div class="field"><label>Description</label><textarea id="tk_description" rows="3"></textarea></div>
+        <div class="field-row">
+          <div class="field"><label>Client</label><select id="tk_client_id"><option value="">— None —</option></select></div>
+          <div class="field"><label>Assign To *</label><select id="tk_assigned_to" required><option value="">Choose member…</option></select></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Type</label>
+            <select id="tk_type">
+              <option value="general">General</option>
+              <option value="design">Design</option>
+              <option value="video">Video</option>
+              <option value="copy">Copy</option>
+              <option value="seo">SEO</option>
+              <option value="ads">Ads</option>
+              <option value="social">Social Media</option>
+              <option value="strategy">Strategy</option>
+              <option value="development">Development</option>
+            </select>
+          </div>
+          <div class="field"><label>Priority</label>
+            <select id="tk_priority">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+              <option value="urgent">Urgent</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Due Date</label><input type="date" id="tk_due_date" /></div>
+          <div class="field"><label>Estimated Hours</label><input type="number" id="tk_estimated_hours" step="0.25" /></div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary-soft" id="cancelTask">Cancel</button>
+          <button type="submit" class="btn-primary-purple">💾 Save Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============== MODAL: NEW CONTRACT ============== -->
+  <div class="modal-backdrop" id="contractModal" hidden>
+    <div class="modal" style="max-width:760px">
+      <div class="modal-head">
+        <h3 id="contractModalTitle">New Contract</h3>
+        <button class="modal-close" id="closeContractModal">&times;</button>
+      </div>
+      <form id="contractForm" class="modal-body">
+        <input type="hidden" id="contract_id" />
+        <div class="field-row">
+          <div class="field"><label>Title *</label><input type="text" id="cn_title" required placeholder="Marketing Retainer — Jan 2026" /></div>
+          <div class="field"><label>Client *</label><select id="cn_client_id" required></select></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Type</label>
+            <select id="cn_type">
+              <option value="retainer">Monthly Retainer</option>
+              <option value="project">Project-based</option>
+              <option value="one-time">One-time</option>
+              <option value="custom">Custom</option>
+            </select>
+          </div>
+          <div class="field"><label>Total Value</label><input type="number" id="cn_total_value" step="0.01" placeholder="3000" /></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Currency</label>
+            <select id="cn_currency">
+              <option value="USD">USD ($)</option>
+              <option value="EGP">EGP (ج.م)</option>
+              <option value="EUR">EUR (€)</option>
+              <option value="SAR">SAR (ر.س)</option>
+            </select>
+          </div>
+          <div class="field"><label>Expires On</label><input type="date" id="cn_expires_at" /></div>
+        </div>
+        <div class="field"><label>Contract Content / Terms</label>
+          <textarea id="cn_content" rows="10" placeholder="Scope of work, deliverables, payment schedule, terms…"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary-soft" id="cancelContract">Cancel</button>
+          <button type="submit" class="btn-primary-purple">💾 Save Draft</button>
         </div>
       </form>
     </div>
@@ -1138,6 +1409,10 @@ function setActiveView(){
       loadStrategies();
     }
   }
+  if(tab === 'content'){ loadContent(); }
+  if(tab === 'team'){ loadTeam(); }
+  if(tab === 'tasks'){ loadTasks(); }
+  if(tab === 'contracts'){ loadContracts(); }
 }
 window.addEventListener('hashchange', setActiveView);
 
@@ -1709,6 +1984,500 @@ window.togglePaidUnlock = async (id, value) => {
   const { error } = await supabase.from('marketing_strategies').update({ is_paid_unlocked: value }).eq('id', id);
   if(error){ alert('Error: '+error.message); return; }
   openStrategyEditor(id);
+};
+
+// =================================================================
+// PHASE 4 — CONTENT CALENDAR
+// =================================================================
+let allContent = [];
+let cachedClientsForContent = [];
+let cachedTeamForTasks = [];
+
+const PLATFORM_LABEL = {
+  instagram:'Instagram', facebook:'Facebook', tiktok:'TikTok', linkedin:'LinkedIn',
+  twitter:'X', youtube:'YouTube', snapchat:'Snapchat'
+};
+const STATUS_BADGE = {
+  draft:{bg:'rgba(144,144,168,0.15)', color:'var(--muted)'},
+  review:{bg:'rgba(234,179,8,0.15)', color:'var(--yellow)'},
+  approved:{bg:'rgba(168,85,247,0.18)', color:'var(--purple-light)'},
+  scheduled:{bg:'rgba(6,182,212,0.18)', color:'var(--cyan)'},
+  published:{bg:'rgba(34,216,143,0.15)', color:'var(--green)'},
+  rejected:{bg:'rgba(239,68,68,0.15)', color:'var(--red)'}
+};
+
+async function loadContent(){
+  const wrap = document.getElementById('contentList');
+  // Populate client filter
+  if(!cachedClientsForContent.length){
+    const { data: cs } = await supabase.from('clients').select('id,name').order('name');
+    cachedClientsForContent = cs || [];
+    const filter = document.getElementById('contentClientFilter');
+    filter.innerHTML = '<option value="">All clients</option>' + cachedClientsForContent.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+    // Also fill the modal client select
+    document.getElementById('ct_client_id').innerHTML = '<option value="">Choose client…</option>' + cachedClientsForContent.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+  }
+  const { data, error } = await supabase
+    .from('content_items')
+    .select('*, client:clients(id,name)')
+    .order('scheduled_date', {ascending:true, nullsLast:true})
+    .order('created_at', {ascending:false});
+  if(error){ wrap.innerHTML = `<div class="empty">⚠️ ${error.message}</div>`; return; }
+  allContent = data || [];
+  renderContent();
+}
+
+function renderContent(){
+  const wrap = document.getElementById('contentList');
+  const clientFilter = document.getElementById('contentClientFilter').value;
+  const statusFilter = document.getElementById('contentStatusFilter').value;
+  const filtered = allContent.filter(c => {
+    if(clientFilter && c.client_id !== clientFilter) return false;
+    if(statusFilter && c.status !== statusFilter) return false;
+    return true;
+  });
+  if(!filtered.length){
+    wrap.innerHTML = `<div class="empty"><div class="empty-icon">📅</div>No content yet — add your first piece above.</div>`;
+    return;
+  }
+  wrap.innerHTML = `
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Title</th><th>Client</th><th>Platform · Type</th><th>Scheduled</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          ${filtered.map(c => {
+            const sb = STATUS_BADGE[c.status] || STATUS_BADGE.draft;
+            return `<tr>
+              <td>
+                <strong>${escapeHtml(c.title)}</strong>
+                ${c.caption ? `<div class="lead-meta" style="max-width:380px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(c.caption)}</div>`:''}
+              </td>
+              <td>${escapeHtml(c.client?.name || '—')}</td>
+              <td><span class="pf-pill">${PLATFORM_LABEL[c.platform]||c.platform}</span> · ${escapeHtml(c.content_type)}</td>
+              <td><div class="lead-meta">${c.scheduled_date || 'unset'}${c.scheduled_time ? ' '+c.scheduled_time.slice(0,5):''}</div></td>
+              <td><span style="display:inline-block;padding:.18rem .55rem;border-radius:50px;font-size:.7rem;font-weight:600;text-transform:uppercase;background:${sb.bg};color:${sb.color}">${c.status}</span></td>
+              <td style="white-space:nowrap">
+                ${c.status === 'draft' ? `<button class="btn-icon" title="Send to client for review" onclick="setContentStatus('${c.id}','review')">📤</button>`:''}
+                ${c.status === 'review' ? `<button class="btn-icon" title="Mark approved" onclick="setContentStatus('${c.id}','approved')">✓</button>`:''}
+                ${c.status === 'approved' ? `<button class="btn-icon" title="Mark scheduled" onclick="setContentStatus('${c.id}','scheduled')">📅</button>`:''}
+                ${c.status === 'scheduled' ? `<button class="btn-icon" title="Mark published" onclick="setContentStatus('${c.id}','published')">🚀</button>`:''}
+                <button class="btn-icon" title="Edit" onclick="openContentModal('${c.id}')">✏️</button>
+                <button class="btn-icon" title="Delete" onclick="deleteContent('${c.id}')">🗑️</button>
+              </td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+document.getElementById('contentClientFilter').addEventListener('change', renderContent);
+document.getElementById('contentStatusFilter').addEventListener('change', renderContent);
+
+window.setContentStatus = async (id, status) => {
+  const { error } = await supabase.from('content_items').update({ status, updated_at: new Date().toISOString() }).eq('id', id);
+  if(error){ alert('Error: '+error.message); return; }
+  loadContent();
+};
+
+window.deleteContent = async (id) => {
+  if(!confirm('Delete this content?')) return;
+  await supabase.from('content_items').delete().eq('id', id);
+  loadContent();
+};
+
+const contentModal = document.getElementById('contentModal');
+const contentForm = document.getElementById('contentForm');
+window.openContentModal = (id) => {
+  contentForm.reset();
+  document.getElementById('content_id').value = id || '';
+  document.getElementById('contentModalTitle').textContent = id ? 'Edit Content' : 'New Content';
+  if(id){
+    const c = allContent.find(x => x.id === id);
+    if(c){
+      document.getElementById('ct_title').value = c.title || '';
+      document.getElementById('ct_client_id').value = c.client_id || '';
+      document.getElementById('ct_platform').value = c.platform || '';
+      document.getElementById('ct_content_type').value = c.content_type || 'post';
+      document.getElementById('ct_scheduled_date').value = c.scheduled_date || '';
+      document.getElementById('ct_scheduled_time').value = c.scheduled_time || '';
+      document.getElementById('ct_caption').value = c.caption || '';
+      document.getElementById('ct_hashtags').value = c.hashtags || '';
+      document.getElementById('ct_notes').value = c.notes || '';
+    }
+  }
+  contentModal.hidden = false;
+};
+document.getElementById('addContentBtn').addEventListener('click', () => openContentModal());
+document.getElementById('closeContentModal').addEventListener('click', () => contentModal.hidden = true);
+document.getElementById('cancelContent').addEventListener('click', () => contentModal.hidden = true);
+contentModal.addEventListener('click', e => { if(e.target === contentModal) contentModal.hidden = true; });
+
+contentForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('content_id').value;
+  const payload = {
+    title: document.getElementById('ct_title').value.trim(),
+    client_id: document.getElementById('ct_client_id').value,
+    platform: document.getElementById('ct_platform').value,
+    content_type: document.getElementById('ct_content_type').value,
+    scheduled_date: document.getElementById('ct_scheduled_date').value || null,
+    scheduled_time: document.getElementById('ct_scheduled_time').value || null,
+    caption: document.getElementById('ct_caption').value.trim() || null,
+    hashtags: document.getElementById('ct_hashtags').value.trim() || null,
+    notes: document.getElementById('ct_notes').value.trim() || null,
+    updated_at: new Date().toISOString()
+  };
+  let resp;
+  if(id) resp = await supabase.from('content_items').update(payload).eq('id', id);
+  else resp = await supabase.from('content_items').insert([payload]);
+  if(resp.error){ alert('Error: '+resp.error.message); return; }
+  contentModal.hidden = true;
+  loadContent();
+});
+
+// =================================================================
+// PHASE 5 — TEAM MEMBERS
+// =================================================================
+let allTeam = [];
+async function loadTeam(){
+  const wrap = document.getElementById('teamList');
+  const { data, error } = await supabase.from('team_members').select('*').order('joined_at',{ascending:false});
+  if(error){ wrap.innerHTML = `<div class="empty">⚠️ ${error.message}</div>`; return; }
+  allTeam = data || [];
+  cachedTeamForTasks = allTeam.filter(m => m.status === 'active');
+  if(!allTeam.length){
+    wrap.innerHTML = `<div class="empty"><div class="empty-icon">👨‍💻</div>No team members yet.</div>`;
+    return;
+  }
+  wrap.innerHTML = `
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Member</th><th>Role</th><th>Skills</th><th>Rate</th><th>Status</th><th>Joined</th><th></th></tr></thead>
+        <tbody>
+          ${allTeam.map(m => `
+            <tr>
+              <td>
+                <strong>${escapeHtml(m.full_name)}</strong>
+                <div class="lead-meta">${escapeHtml(m.email||'')}${m.country?' · '+escapeHtml(m.country):''}</div>
+              </td>
+              <td>${escapeHtml(m.role_title || '—')}</td>
+              <td><div style="max-width:240px">${(m.skills||[]).map(s => `<span class="pf-pill" style="margin:.1rem">${escapeHtml(s)}</span>`).join('') || '—'}</div></td>
+              <td>${m.hourly_rate ? '$'+Number(m.hourly_rate).toFixed(0)+'/h' : '—'}</td>
+              <td><span class="badge ${m.status === 'active' ? 'active' : m.status === 'paused' ? 'paused' : 'ended'}">${m.status}</span></td>
+              <td><div class="lead-meta">${m.joined_at || '—'}</div></td>
+              <td><button class="btn-icon" onclick="openTeamModal('${m.id}')">✏️</button>
+                  <button class="btn-icon" onclick="deleteTeamMember('${m.id}')">🗑️</button></td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+const teamModal = document.getElementById('teamModal');
+const teamForm = document.getElementById('teamForm');
+window.openTeamModal = (id) => {
+  teamForm.reset();
+  document.getElementById('team_id').value = id || '';
+  document.getElementById('teamModalTitle').textContent = id ? 'Edit Team Member' : 'Add Team Member';
+  if(id){
+    const m = allTeam.find(x => x.id === id);
+    if(m){
+      document.getElementById('tm_full_name').value = m.full_name || '';
+      document.getElementById('tm_role_title').value = m.role_title || '';
+      document.getElementById('tm_email').value = m.email || '';
+      document.getElementById('tm_phone').value = m.phone || '';
+      document.getElementById('tm_country').value = m.country || '';
+      document.getElementById('tm_skills').value = (m.skills || []).join(', ');
+      document.getElementById('tm_hourly_rate').value = m.hourly_rate || '';
+      document.getElementById('tm_status').value = m.status || 'active';
+      document.getElementById('tm_notes').value = m.notes || '';
+    }
+  }
+  teamModal.hidden = false;
+};
+document.getElementById('addTeamBtn').addEventListener('click', () => openTeamModal());
+document.getElementById('closeTeamModal').addEventListener('click', () => teamModal.hidden = true);
+document.getElementById('cancelTeam').addEventListener('click', () => teamModal.hidden = true);
+teamModal.addEventListener('click', e => { if(e.target === teamModal) teamModal.hidden = true; });
+
+teamForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('team_id').value;
+  const skills = document.getElementById('tm_skills').value.split(',').map(s => s.trim()).filter(Boolean);
+  const payload = {
+    full_name: document.getElementById('tm_full_name').value.trim(),
+    role_title: document.getElementById('tm_role_title').value.trim(),
+    email: document.getElementById('tm_email').value.trim(),
+    phone: document.getElementById('tm_phone').value.trim() || null,
+    country: document.getElementById('tm_country').value.trim() || null,
+    skills,
+    hourly_rate: parseFloat(document.getElementById('tm_hourly_rate').value) || null,
+    status: document.getElementById('tm_status').value,
+    notes: document.getElementById('tm_notes').value.trim() || null,
+    updated_at: new Date().toISOString()
+  };
+  // For new team member, we need an auth_user_id — for now we generate placeholder; admin should manually link
+  let resp;
+  if(id) resp = await supabase.from('team_members').update(payload).eq('id', id);
+  else {
+    payload.auth_user_id = crypto.randomUUID(); // placeholder — admin should link to real auth user
+    alert('⚠️ Team member created. Note: To enable login, you need to manually create their Auth user in Supabase Dashboard with the same email and link via auth_user_id.');
+    resp = await supabase.from('team_members').insert([payload]);
+  }
+  if(resp.error){ alert('Error: '+resp.error.message); return; }
+  teamModal.hidden = true;
+  loadTeam();
+});
+
+window.deleteTeamMember = async (id) => {
+  if(!confirm('Remove this team member?')) return;
+  await supabase.from('team_members').delete().eq('id', id);
+  loadTeam();
+};
+
+// =================================================================
+// PHASE 5 — TASKS
+// =================================================================
+let allTasks = [];
+async function loadTasks(){
+  // Make sure team is loaded for assignment dropdown
+  if(!cachedTeamForTasks.length){
+    const { data: tm } = await supabase.from('team_members').select('id,auth_user_id,full_name,status').eq('status','active');
+    cachedTeamForTasks = tm || [];
+  }
+  if(!cachedClientsForContent.length){
+    const { data: cs } = await supabase.from('clients').select('id,name').order('name');
+    cachedClientsForContent = cs || [];
+  }
+  // Populate dropdowns
+  document.getElementById('tk_client_id').innerHTML = '<option value="">— None —</option>' + cachedClientsForContent.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+  document.getElementById('tk_assigned_to').innerHTML = '<option value="">Choose member…</option>' + cachedTeamForTasks.map(m => `<option value="${m.auth_user_id}">${escapeHtml(m.full_name)}</option>`).join('');
+
+  const wrap = document.getElementById('tasksList');
+  const { data, error } = await supabase
+    .from('tasks')
+    .select('*, client:clients(id,name)')
+    .order('due_date', {ascending:true, nullsLast:true})
+    .order('created_at', {ascending:false});
+  if(error){ wrap.innerHTML = `<div class="empty">⚠️ ${error.message}</div>`; return; }
+  allTasks = data || [];
+  renderTasks();
+}
+
+function renderTasks(){
+  const wrap = document.getElementById('tasksList');
+  const filter = document.getElementById('taskStatusFilter').value;
+  const filtered = filter ? allTasks.filter(t => t.status === filter) : allTasks;
+  if(!filtered.length){
+    wrap.innerHTML = `<div class="empty"><div class="empty-icon">✅</div>No tasks yet.</div>`;
+    return;
+  }
+  const STATUS_COLORS = {
+    todo:{bg:'rgba(144,144,168,0.15)',color:'var(--muted)'},
+    in_progress:{bg:'rgba(168,85,247,0.18)',color:'var(--purple-light)'},
+    review:{bg:'rgba(234,179,8,0.15)',color:'var(--yellow)'},
+    done:{bg:'rgba(34,216,143,0.15)',color:'var(--green)'},
+    blocked:{bg:'rgba(239,68,68,0.15)',color:'var(--red)'}
+  };
+  const PRIORITY_ICON = {low:'⬇️',medium:'➡️',high:'⬆️',urgent:'🔥'};
+  wrap.innerHTML = `
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Task</th><th>Type</th><th>Client</th><th>Assigned</th><th>Priority</th><th>Due</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          ${filtered.map(t => {
+            const memberName = cachedTeamForTasks.find(m => m.auth_user_id === t.assigned_to)?.full_name || '—';
+            const sc = STATUS_COLORS[t.status] || STATUS_COLORS.todo;
+            return `<tr>
+              <td><strong>${escapeHtml(t.title)}</strong>${t.description ? `<div class="lead-meta" style="max-width:300px">${escapeHtml(t.description)}</div>`:''}</td>
+              <td>${escapeHtml(t.type)}</td>
+              <td>${escapeHtml(t.client?.name || '—')}</td>
+              <td>${escapeHtml(memberName)}</td>
+              <td>${PRIORITY_ICON[t.priority]||''} ${t.priority}</td>
+              <td><div class="lead-meta">${t.due_date || '—'}</div></td>
+              <td><span style="display:inline-block;padding:.18rem .55rem;border-radius:50px;font-size:.7rem;font-weight:600;text-transform:uppercase;background:${sc.bg};color:${sc.color}">${t.status.replace('_',' ')}</span></td>
+              <td><button class="btn-icon" onclick="openTaskModal('${t.id}')">✏️</button>
+                  <button class="btn-icon" onclick="deleteTask('${t.id}')">🗑️</button></td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+document.getElementById('taskStatusFilter').addEventListener('change', renderTasks);
+
+const taskModal = document.getElementById('taskModal');
+const taskForm = document.getElementById('taskForm');
+window.openTaskModal = (id) => {
+  taskForm.reset();
+  document.getElementById('task_id').value = id || '';
+  document.getElementById('taskModalTitle').textContent = id ? 'Edit Task' : 'New Task';
+  if(id){
+    const t = allTasks.find(x => x.id === id);
+    if(t){
+      document.getElementById('tk_title').value = t.title || '';
+      document.getElementById('tk_description').value = t.description || '';
+      document.getElementById('tk_client_id').value = t.client_id || '';
+      document.getElementById('tk_assigned_to').value = t.assigned_to || '';
+      document.getElementById('tk_type').value = t.type || 'general';
+      document.getElementById('tk_priority').value = t.priority || 'medium';
+      document.getElementById('tk_due_date').value = t.due_date || '';
+      document.getElementById('tk_estimated_hours').value = t.estimated_hours || '';
+    }
+  }
+  taskModal.hidden = false;
+};
+document.getElementById('addTaskBtn').addEventListener('click', () => openTaskModal());
+document.getElementById('closeTaskModal').addEventListener('click', () => taskModal.hidden = true);
+document.getElementById('cancelTask').addEventListener('click', () => taskModal.hidden = true);
+taskModal.addEventListener('click', e => { if(e.target === taskModal) taskModal.hidden = true; });
+
+taskForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('task_id').value;
+  const payload = {
+    title: document.getElementById('tk_title').value.trim(),
+    description: document.getElementById('tk_description').value.trim() || null,
+    client_id: document.getElementById('tk_client_id').value || null,
+    assigned_to: document.getElementById('tk_assigned_to').value || null,
+    type: document.getElementById('tk_type').value,
+    priority: document.getElementById('tk_priority').value,
+    due_date: document.getElementById('tk_due_date').value || null,
+    estimated_hours: parseFloat(document.getElementById('tk_estimated_hours').value) || null,
+    updated_at: new Date().toISOString()
+  };
+  let resp;
+  if(id) resp = await supabase.from('tasks').update(payload).eq('id', id);
+  else resp = await supabase.from('tasks').insert([payload]);
+  if(resp.error){ alert('Error: '+resp.error.message); return; }
+  taskModal.hidden = true;
+  loadTasks();
+});
+
+window.deleteTask = async (id) => {
+  if(!confirm('Delete this task?')) return;
+  await supabase.from('tasks').delete().eq('id', id);
+  loadTasks();
+};
+
+// =================================================================
+// PHASE 6 — CONTRACTS
+// =================================================================
+let allContracts = [];
+async function loadContracts(){
+  if(!cachedClientsForContent.length){
+    const { data: cs } = await supabase.from('clients').select('id,name').order('name');
+    cachedClientsForContent = cs || [];
+  }
+  document.getElementById('cn_client_id').innerHTML = '<option value="">Choose client…</option>' + cachedClientsForContent.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+
+  const wrap = document.getElementById('contractsList');
+  const { data, error } = await supabase
+    .from('contracts')
+    .select('*, client:clients(id,name)')
+    .order('updated_at',{ascending:false});
+  if(error){ wrap.innerHTML = `<div class="empty">⚠️ ${error.message}</div>`; return; }
+  allContracts = data || [];
+  if(!allContracts.length){
+    wrap.innerHTML = `<div class="empty"><div class="empty-icon">📄</div>No contracts yet.</div>`;
+    return;
+  }
+  const STATUS_COLORS = {
+    draft:{bg:'rgba(144,144,168,0.15)',color:'var(--muted)'},
+    sent:{bg:'rgba(168,85,247,0.18)',color:'var(--purple-light)'},
+    signed:{bg:'rgba(34,216,143,0.15)',color:'var(--green)'},
+    expired:{bg:'rgba(234,179,8,0.15)',color:'var(--yellow)'},
+    cancelled:{bg:'rgba(239,68,68,0.15)',color:'var(--red)'}
+  };
+  wrap.innerHTML = `
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Title</th><th>Client</th><th>Type</th><th>Value</th><th>Status</th><th>Expires</th><th></th></tr></thead>
+        <tbody>
+          ${allContracts.map(c => {
+            const sc = STATUS_COLORS[c.status] || STATUS_COLORS.draft;
+            return `<tr>
+              <td><strong>${escapeHtml(c.title)}</strong></td>
+              <td>${escapeHtml(c.client?.name || '—')}</td>
+              <td>${escapeHtml(c.type)}</td>
+              <td>${c.total_value ? c.currency + ' ' + Number(c.total_value).toLocaleString() : '—'}</td>
+              <td><span style="display:inline-block;padding:.18rem .55rem;border-radius:50px;font-size:.7rem;font-weight:600;text-transform:uppercase;background:${sc.bg};color:${sc.color}">${c.status}</span></td>
+              <td><div class="lead-meta">${c.expires_at || '—'}</div></td>
+              <td>
+                ${c.status === 'draft' ? `<button class="btn-icon" title="Send to client" onclick="sendContract('${c.id}')">📤</button>`:''}
+                <button class="btn-icon" onclick="openContractModal('${c.id}')">✏️</button>
+                <button class="btn-icon" onclick="deleteContract('${c.id}')">🗑️</button>
+              </td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+const contractModal = document.getElementById('contractModal');
+const contractForm = document.getElementById('contractForm');
+window.openContractModal = (id) => {
+  contractForm.reset();
+  document.getElementById('contract_id').value = id || '';
+  document.getElementById('contractModalTitle').textContent = id ? 'Edit Contract' : 'New Contract';
+  if(id){
+    const c = allContracts.find(x => x.id === id);
+    if(c){
+      document.getElementById('cn_title').value = c.title || '';
+      document.getElementById('cn_client_id').value = c.client_id || '';
+      document.getElementById('cn_type').value = c.type || 'retainer';
+      document.getElementById('cn_total_value').value = c.total_value || '';
+      document.getElementById('cn_currency').value = c.currency || 'USD';
+      document.getElementById('cn_expires_at').value = c.expires_at || '';
+      document.getElementById('cn_content').value = c.content || '';
+    }
+  }
+  contractModal.hidden = false;
+};
+document.getElementById('addContractBtn').addEventListener('click', () => openContractModal());
+document.getElementById('closeContractModal').addEventListener('click', () => contractModal.hidden = true);
+document.getElementById('cancelContract').addEventListener('click', () => contractModal.hidden = true);
+contractModal.addEventListener('click', e => { if(e.target === contractModal) contractModal.hidden = true; });
+
+contractForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('contract_id').value;
+  const payload = {
+    title: document.getElementById('cn_title').value.trim(),
+    client_id: document.getElementById('cn_client_id').value,
+    type: document.getElementById('cn_type').value,
+    total_value: parseFloat(document.getElementById('cn_total_value').value) || null,
+    currency: document.getElementById('cn_currency').value,
+    expires_at: document.getElementById('cn_expires_at').value || null,
+    content: document.getElementById('cn_content').value.trim() || null,
+    updated_at: new Date().toISOString()
+  };
+  let resp;
+  if(id) resp = await supabase.from('contracts').update(payload).eq('id', id);
+  else resp = await supabase.from('contracts').insert([payload]);
+  if(resp.error){ alert('Error: '+resp.error.message); return; }
+  contractModal.hidden = true;
+  loadContracts();
+});
+
+window.sendContract = async (id) => {
+  if(!confirm('Send this contract to the client? They will see it in their portal.')) return;
+  await supabase.from('contracts').update({ status:'sent', sent_at: new Date().toISOString() }).eq('id', id);
+  loadContracts();
+};
+
+window.deleteContract = async (id) => {
+  if(!confirm('Delete this contract?')) return;
+  await supabase.from('contracts').delete().eq('id', id);
+  loadContracts();
 };
 
 // =================================================================
