@@ -499,6 +499,7 @@
       <a href="#team" class="tab" data-tab="team">👨‍💻 Team</a>
       <a href="#tasks" class="tab" data-tab="tasks">✅ Tasks</a>
       <a href="#contracts" class="tab" data-tab="contracts">📄 Contracts</a>
+      <a href="#adaccounts" class="tab" data-tab="adaccounts">📈 Ad Accounts</a>
       <a href="#leads" class="tab" data-tab="leads">📋 Leads</a>
       <a href="#pixels" class="tab" data-tab="pixels">📡 Pixels</a>
     </div>
@@ -683,6 +684,17 @@
         <div class="empty"><div class="spinner"></div><div style="margin-top:.7rem">Loading contracts&hellip;</div></div>
       </div>
     </div><!-- /view-contracts -->
+
+    <!-- ===== VIEW: AD ACCOUNTS ===== -->
+    <div class="view" data-view="adaccounts" hidden>
+      <div class="view-header">
+        <div>
+          <h2 class="view-title">📈 Ad Accounts</h2>
+          <p class="view-sub">Per-client, per-platform ad accounts. Assign media buyers, import CSVs, track performance.</p>
+        </div>
+      </div>
+      <div id="adAccountsContainer"></div>
+    </div><!-- /view-adaccounts -->
 
     <!-- ===== VIEW: LEADS ===== -->
     <div class="view" data-view="leads" hidden>
@@ -1196,6 +1208,7 @@
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="supabase-config.js"></script>
 <script src="contract-pdf.js"></script>
+<script src="ad-accounts.js"></script>
 
 <script>
 const supabase = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
@@ -1531,6 +1544,13 @@ function setActiveView(){
   if(tab === 'team'){ loadTeam(); }
   if(tab === 'tasks'){ loadTasks(); }
   if(tab === 'contracts'){ loadContracts(); }
+  if(tab === 'adaccounts'){
+    if(window.AdAccounts){
+      window.AdAccounts.renderAdminView({ container: 'adAccountsContainer', supabase });
+    } else {
+      document.getElementById('adAccountsContainer').innerHTML = '<div class="empty">⚠️ ad-accounts.js not loaded.</div>';
+    }
+  }
 }
 window.addEventListener('hashchange', setActiveView);
 

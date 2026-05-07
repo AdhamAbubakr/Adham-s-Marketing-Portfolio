@@ -324,6 +324,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="supabase-config.js"></script>
+<script src="ad-accounts.js"></script>
 <script>
 const supabase = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
 const loading = document.getElementById('loading');
@@ -1137,6 +1138,16 @@ async function renderPortal(client, user){
     `;
   }
 
+  // === AD ACCOUNTS (read-only) ===
+  html += `
+    <div class="svc-section">
+      <div class="svc-section-head">
+        <h3>📈 Your Ad Accounts</h3>
+      </div>
+      <div id="clientAdAccountsContainer"></div>
+    </div>
+  `;
+
   // CTA to update services
   html += `<div class="cta-box" style="margin-top:1.5rem">Need to add or change a service? <a href="#" id="changeServicesLink">Update your services →</a></div>`;
 
@@ -1144,6 +1155,15 @@ async function renderPortal(client, user){
 
   // Render charts
   setTimeout(() => renderCharts(metrics || []), 50);
+
+  // Render ad accounts (read-only view for client)
+  if(window.AdAccounts){
+    window.AdAccounts.renderClientView({
+      container: 'clientAdAccountsContainer',
+      supabase,
+      clientId: client.id
+    });
+  }
 
   // Wire change services
   document.getElementById('changeServicesLink')?.addEventListener('click', async (e) => {

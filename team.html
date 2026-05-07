@@ -189,6 +189,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script>
+<script src="ad-accounts.js"></script>
 <script>
 const supabase = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
 const loading = document.getElementById('loading');
@@ -539,6 +540,14 @@ async function renderPortal(member, user){
     </div>
     ` : ''}
 
+    <!-- Ad Accounts (visible if assigned — RLS handles filtering) -->
+    <div class="section">
+      <div class="section-head">
+        <h3>📈 My Ad Accounts</h3>
+      </div>
+      <div id="teamAdAccountsContainer"></div>
+    </div>
+
     <div class="section">
       <div class="section-head">
         <h3>📋 My Tasks</h3>
@@ -624,6 +633,15 @@ async function renderPortal(member, user){
   });
 
   renderTasks();
+
+  // Render Ad Accounts (will show empty state if none assigned)
+  if(window.AdAccounts){
+    window.AdAccounts.renderTeamView({
+      container: 'teamAdAccountsContainer',
+      supabase,
+      currentTeamId: member.id
+    });
+  }
 }
 
 let currentClientFilter = '';
