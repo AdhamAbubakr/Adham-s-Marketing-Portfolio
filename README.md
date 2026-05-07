@@ -23,3 +23,4 @@ python -m http.server 5173
 <!-- Fresh Git repo deploy test: 2026-05-07T00:22:48Z -->
 <!-- 🚀 PRODUCTION READY: 2026-05-07T00:25:32Z - barkar.net is LIVE -->
 <!-- Webhook re-test: 2026-05-07T00:29:13Z -->
+<!-- 🔥 AUTO-DEPLOY FINAL VERIFICATION: 2026-05-07T00:31:04Z - if you see this WITHOUT clicking Deploy = SUCCESS -->
