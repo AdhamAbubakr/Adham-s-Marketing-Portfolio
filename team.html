@@ -35,6 +35,9 @@
   .topbar-user{font-size:.85rem;color:var(--muted)}
   .btn-logout{background:transparent;border:1px solid var(--border-strong);color:var(--text);padding:.4rem 1rem;border-radius:8px;cursor:pointer;font-size:.85rem;font-family:'Inter',sans-serif}
   .btn-logout:hover{background:var(--card-hover)}
+  .topbar-back{color:var(--purple-light);text-decoration:none;font-size:.85rem;font-weight:500;padding:.4rem .9rem;border-radius:8px;transition:all .2s}
+  .topbar-back:hover{background:var(--card-hover);color:var(--magenta)}
+  @media (max-width:600px){.topbar-back{display:none}}
 
   .container{max-width:1300px;margin:0 auto;padding:2rem}
 
@@ -113,6 +116,7 @@
       Barkar<span style="color:var(--magenta)">.</span>&nbsp;Team&nbsp;Portal
     </a>
     <div class="topbar-actions">
+      <a href="/" class="topbar-back">← Back to Site</a>
       <span class="topbar-user" id="userEmail"></span>
       <button class="btn-logout" id="logoutBtn">Sign Out</button>
     </div>
