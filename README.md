@@ -25,3 +25,4 @@ python -m http.server 5173
 <!-- Webhook re-test: 2026-05-07T00:29:13Z -->
 <!-- 🔥 AUTO-DEPLOY FINAL VERIFICATION: 2026-05-07T00:31:04Z - if you see this WITHOUT clicking Deploy = SUCCESS -->
 <!-- ✨ CLEAN GIT SETUP: 2026-05-07T00:38:07Z - public_html structure fixed -->
+<!-- 🔗 Webhook URL fixed: 2026-05-07T00:41:05Z - new endpoint -->
