@@ -399,6 +399,18 @@
   .edu-school{color:var(--muted);font-size:.85rem;line-height:1.6}
   @media (max-width:900px){.edu-grid{grid-template-columns:1fr}}
 
+  /* ---------- MEET THE TEAM ---------- */
+  .team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.2rem}
+  .team-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.5rem 1.2rem;text-align:center;transition:all .25s;position:relative;overflow:hidden}
+  .team-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--purple),var(--magenta))}
+  .team-card:hover{border-color:var(--border-strong);transform:translateY(-4px);background:var(--card-hover)}
+  .team-avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--purple-light));display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;font-size:1.8rem;margin:0 auto 1rem}
+  .team-name{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.05rem;margin-bottom:.3rem}
+  .team-role{font-size:.78rem;color:var(--accent);font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.7rem}
+  .team-bio{font-size:.82rem;color:var(--muted);line-height:1.6;margin-bottom:.7rem;min-height:50px}
+  .team-skills{display:flex;flex-wrap:wrap;gap:.3rem;justify-content:center}
+  .team-skill{font-size:.65rem;color:var(--purple-light);background:rgba(124,58,237,.1);padding:.18rem .55rem;border-radius:6px;font-weight:500}
+
   /* ---------- PROCESS ---------- */
   .process-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;position:relative}
   .process-step{
@@ -543,6 +555,7 @@
     <li><a href="#case-studies">Case Studies</a></li>
     <li><a href="#skills">Skills</a></li>
     <li><a href="#resume">Resume</a></li>
+    <li><a href="#team">Team</a></li>
     <li><a href="#process">Process</a></li>
   </ul>
   <div style="display:flex;gap:.6rem;align-items:center">
@@ -1012,6 +1025,18 @@
   </div>
 </section>
 
+<!-- MEET THE TEAM -->
+<section id="team" style="background:linear-gradient(180deg,var(--bg2),var(--bg))">
+  <div class="section-inner">
+    <div class="section-tag">Meet The Team</div>
+    <h2>The People Behind <span class="h1-grad">Barkar.</span></h2>
+    <p class="section-desc">A remote team of designers, editors, marketers, and specialists working across MENA &amp; Africa.</p>
+    <div class="team-grid fade-in" id="publicTeamGrid">
+      <div class="team-loading" style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--muted)">Loading team…</div>
+    </div>
+  </div>
+</section>
+
 <!-- PROCESS -->
 <section id="process">
   <div class="section-inner">
@@ -1266,6 +1291,43 @@ View all leads: https://barkar.net/admin.html
     formFeedback.className = `form-feedback show ${type}`;
     if(type === 'success') setTimeout(() => formFeedback.classList.remove('show'), 8000);
   }
+
+  // ===== LOAD PUBLIC TEAM =====
+  const PUBLIC_ROLES = {
+    designer:'Designer', video_editor:'Video Editor', content_creator:'Content Creator',
+    copywriter:'Copywriter', social_media_specialist:'Social Specialist', media_buyer:'Media Buyer',
+    account_manager:'Account Manager', seo_specialist:'SEO Specialist', web_developer:'Web Developer',
+    shopify_designer:'Shopify Designer', wordpress_designer:'WordPress Designer',
+    photographer:'Photographer', strategist:'Strategist', other:'Team Member'
+  };
+  (async function loadPublicTeam(){
+    const grid = document.getElementById('publicTeamGrid');
+    if(!grid) return;
+    try {
+      const { data: members } = await supabase.from('team_members').select('full_name,role_title,skills,country,notes').eq('status','active').limit(12);
+      if(!members || !members.length){
+        grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--muted)">Team coming soon — we're growing fast.</div>`;
+        return;
+      }
+      grid.innerHTML = members.map(m => {
+        const initials = (m.full_name||'M').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+        const role = PUBLIC_ROLES[m.role_title] || m.role_title || 'Team';
+        return `
+          <div class="team-card">
+            <div class="team-avatar">${initials}</div>
+            <div class="team-name">${m.full_name||''}</div>
+            <div class="team-role">${role}</div>
+            <div class="team-bio">${m.notes ? (m.notes.length > 90 ? m.notes.slice(0,90)+'…' : m.notes) : (m.country ? '📍 '+m.country : '')}</div>
+            <div class="team-skills">
+              ${(m.skills||[]).slice(0,4).map(s => `<span class="team-skill">${s}</span>`).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    } catch(e){
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--muted)">Team page loading…</div>`;
+    }
+  })();
 
   // FADE IN
   const observer = new IntersectionObserver((entries) => {

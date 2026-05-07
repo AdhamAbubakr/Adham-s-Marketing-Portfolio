@@ -179,6 +179,11 @@ CREATE POLICY "Admin manages team" ON public.team_members FOR ALL TO authenticat
 CREATE POLICY "Team reads own row" ON public.team_members FOR SELECT TO authenticated USING (auth_user_id = auth.uid());
 CREATE POLICY "Team updates own row" ON public.team_members FOR UPDATE TO authenticated USING (auth_user_id = auth.uid());
 
+-- Public can see active team members (for "Meet the Team" on barkar.net)
+CREATE POLICY "Public sees active team" ON public.team_members
+  FOR SELECT TO anon, authenticated
+  USING (status = 'active');
+
 CREATE POLICY "Admin manages tasks" ON public.tasks FOR ALL TO authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
 CREATE POLICY "Team reads own tasks" ON public.tasks FOR SELECT TO authenticated USING (assigned_to = auth.uid());
 CREATE POLICY "Team updates own tasks" ON public.tasks FOR UPDATE TO authenticated USING (assigned_to = auth.uid());

@@ -155,6 +155,24 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
 let currentFilter = 'all';
 let allTasksCache = [];
 
+// Role configuration — each role has its own dashboard cards/icons
+const ROLE_CONFIG = {
+  designer: { icon:'🎨', label:'Graphic Designer', taskTypes:['design'], color:'#A855F7' },
+  video_editor: { icon:'🎬', label:'Video Editor', taskTypes:['video'], color:'#EC4899' },
+  content_creator: { icon:'📝', label:'Content Creator', taskTypes:['copy','social'], color:'#06B6D4' },
+  copywriter: { icon:'✍️', label:'Copywriter', taskTypes:['copy'], color:'#22D88F' },
+  social_media_specialist: { icon:'📱', label:'Social Media Specialist', taskTypes:['social','copy'], color:'#A855F7' },
+  media_buyer: { icon:'🎯', label:'Media Buyer', taskTypes:['ads'], color:'#EC4899' },
+  account_manager: { icon:'💼', label:'Account Manager', taskTypes:['strategy','general'], color:'#FEF3C7' },
+  seo_specialist: { icon:'🔍', label:'SEO Specialist', taskTypes:['seo'], color:'#22D88F' },
+  web_developer: { icon:'💻', label:'Web Developer', taskTypes:['development'], color:'#06B6D4' },
+  shopify_designer: { icon:'🛒', label:'Shopify Designer', taskTypes:['development','design'], color:'#22D88F' },
+  wordpress_designer: { icon:'🌐', label:'WordPress Designer', taskTypes:['development','design'], color:'#06B6D4' },
+  photographer: { icon:'📸', label:'Photographer', taskTypes:['design'], color:'#FEF3C7' },
+  strategist: { icon:'🧠', label:'Strategist', taskTypes:['strategy'], color:'#A855F7' },
+  other: { icon:'🌟', label:'Team Member', taskTypes:[], color:'#A855F7' }
+};
+
 async function renderPortal(member, user){
   // Fetch tasks assigned to this user
   const { data: tasks } = await supabase
@@ -172,14 +190,15 @@ async function renderPortal(member, user){
   const done = allTasksCache.filter(t => t.status === 'done').length;
 
   const initials = (member.full_name || 'M').split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
+  const roleConfig = ROLE_CONFIG[member.role_title] || ROLE_CONFIG.other;
 
   content.innerHTML = `
-    <div class="welcome">
-      <div class="welcome-avatar">${initials}</div>
+    <div class="welcome" style="border-left:4px solid ${roleConfig.color}">
+      <div class="welcome-avatar" style="background:linear-gradient(135deg,${roleConfig.color},var(--purple))">${initials}</div>
       <div class="welcome-text">
-        <div class="welcome-hi">Welcome back</div>
+        <div class="welcome-hi">${roleConfig.icon} ${roleConfig.label}</div>
         <div class="welcome-name">${esc(member.full_name)}</div>
-        <div class="welcome-meta">${esc(member.role_title || 'Team Member')} · ${(member.skills||[]).slice(0,3).join(' · ') || 'No skills set'}</div>
+        <div class="welcome-meta">${(member.skills||[]).slice(0,4).join(' · ') || 'No skills set yet'} · <a href="#" id="editProfileLink" style="color:var(--purple-light);text-decoration:none">edit profile</a></div>
       </div>
     </div>
 
@@ -203,7 +222,59 @@ async function renderPortal(member, user){
       </div>
       <div id="tasksList"></div>
     </div>
+
+    <!-- PROFILE EDIT (hidden by default) -->
+    <div id="profileEditCard" class="section" style="display:none">
+      <div class="section-head">
+        <h3>👤 My Profile</h3>
+        <button class="btn-status-btn" onclick="document.getElementById('profileEditCard').style.display='none'" style="padding:.4rem .8rem;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--muted);cursor:pointer">Close</button>
+      </div>
+      <form id="profileForm">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:.8rem">
+          <div><label style="display:block;font-size:.78rem;font-weight:600;margin-bottom:.4rem">Full Name</label><input type="text" id="pf_name" value="${esc(member.full_name)}" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:.7rem .9rem;border-radius:9px;font-family:'Inter',sans-serif"/></div>
+          <div><label style="display:block;font-size:.78rem;font-weight:600;margin-bottom:.4rem">Phone</label><input type="tel" id="pf_phone" value="${esc(member.phone||'')}" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:.7rem .9rem;border-radius:9px;font-family:'Inter',sans-serif"/></div>
+        </div>
+        <div style="margin-bottom:.8rem">
+          <label style="display:block;font-size:.78rem;font-weight:600;margin-bottom:.4rem">Country</label>
+          <input type="text" id="pf_country" value="${esc(member.country||'')}" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:.7rem .9rem;border-radius:9px;font-family:'Inter',sans-serif"/>
+        </div>
+        <div style="margin-bottom:.8rem">
+          <label style="display:block;font-size:.78rem;font-weight:600;margin-bottom:.4rem">Skills (comma-separated)</label>
+          <input type="text" id="pf_skills" value="${esc((member.skills||[]).join(', '))}" placeholder="Photoshop, Illustrator, Figma" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:.7rem .9rem;border-radius:9px;font-family:'Inter',sans-serif"/>
+        </div>
+        <div style="margin-bottom:1rem">
+          <label style="display:block;font-size:.78rem;font-weight:600;margin-bottom:.4rem">Bio / About</label>
+          <textarea id="pf_notes" rows="3" placeholder="Tell us about yourself, your style, your achievements…" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:.7rem .9rem;border-radius:9px;font-family:'Inter',sans-serif;resize:vertical">${esc(member.notes||'')}</textarea>
+        </div>
+        <button type="submit" style="background:var(--purple);color:#fff;border:none;padding:.8rem 1.4rem;border-radius:10px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">💾 Save Profile</button>
+      </form>
+    </div>
   `;
+
+  // Wire profile edit
+  document.getElementById('editProfileLink').addEventListener('click', (e) => {
+    e.preventDefault();
+    const c = document.getElementById('profileEditCard');
+    c.style.display = c.style.display === 'none' ? '' : 'none';
+    if(c.style.display !== 'none') c.scrollIntoView({behavior:'smooth'});
+  });
+
+  document.getElementById('profileForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const skills = document.getElementById('pf_skills').value.split(',').map(s => s.trim()).filter(Boolean);
+    const updates = {
+      full_name: document.getElementById('pf_name').value.trim(),
+      phone: document.getElementById('pf_phone').value.trim() || null,
+      country: document.getElementById('pf_country').value.trim() || null,
+      skills,
+      notes: document.getElementById('pf_notes').value.trim() || null,
+      updated_at: new Date().toISOString()
+    };
+    const { error } = await supabase.from('team_members').update(updates).eq('id', member.id);
+    if(error){ alert('Error: '+error.message); return; }
+    alert('✅ Profile updated!');
+    location.reload();
+  });
 
   renderTasks();
 }

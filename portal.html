@@ -161,6 +161,20 @@
   .btn-secondary-soft{background:transparent;color:var(--muted);border:1px solid var(--border-strong);padding:.7rem 1.2rem;border-radius:10px;cursor:pointer;font-family:'Inter',sans-serif;font-size:.9rem;font-weight:500}
   .btn-secondary-soft:hover{color:var(--text);border-color:var(--purple)}
 
+  /* SERVICE INQUIRY */
+  .inquiry-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.4rem}
+  @media (max-width:780px){.inquiry-grid{grid-template-columns:1fr}}
+  .inquiry-card{background:var(--bg3);border:2px solid var(--border);border-radius:14px;padding:1.6rem 1.2rem;cursor:pointer;text-align:center;transition:all .25s;text-decoration:none;color:var(--text);display:block}
+  .inquiry-card:hover{border-color:var(--purple);background:var(--card-hover);transform:translateY(-3px)}
+  .inquiry-icon{font-size:2.4rem;margin-bottom:.8rem}
+  .inquiry-title{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1rem;margin-bottom:.4rem}
+  .inquiry-desc{font-size:.82rem;color:var(--muted);line-height:1.6}
+  .service-detail-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.4rem;margin-bottom:.9rem}
+  .service-detail-head{display:flex;align-items:center;gap:.6rem;margin-bottom:.7rem}
+  .service-detail-head h4{font-family:'Space Grotesk',sans-serif;font-size:1.05rem;font-weight:600;margin:0}
+  .service-detail-list{padding-left:1.4rem;margin:0}
+  .service-detail-list li{margin-bottom:.5rem;color:var(--muted);font-size:.9rem;line-height:1.7}
+
   /* CONTENT CARDS */
   .content-list{display:flex;flex-direction:column;gap:1rem}
   .content-card{background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:1.4rem;transition:all .2s}
@@ -346,6 +360,154 @@ const BRIEF_STEPS = [
 
 let briefState = { step:1, answers:{}, briefId:null };
 
+// =================================================================
+// SERVICE INQUIRY VIEW
+// =================================================================
+const SERVICE_DETAILS = {
+  media_buying: {
+    icon:'🎯', name:'Paid Media / Media Buying',
+    items:[
+      'Audit of current ads (if any) to find waste & opportunity',
+      'Custom strategy: funnel, targeting, creatives, budget split',
+      'Setup of Meta / Google / TikTok / Snapchat campaigns',
+      'Pixel installation + conversion tracking',
+      'Daily monitoring + 24-hour optimization cycle',
+      'Weekly performance reports + monthly strategy reviews',
+      'Creative production (or close coordination with our team)',
+      'Scaling plan once we hit profitable benchmarks'
+    ]
+  },
+  social_media: {
+    icon:'📱', name:'Social Media Management',
+    items:[
+      'Brand voice & content pillars discovery',
+      'Monthly content calendar (15-30 posts)',
+      'Custom graphics + reels + stories',
+      'Hashtag & community strategy',
+      'Posting + scheduling on all platforms',
+      'Community management (replies, DMs, comments)',
+      'Influencer collaborations (when relevant)',
+      'Analytics + monthly growth reports'
+    ]
+  },
+  website_design: {
+    icon:'🛒', name:'Website / E-commerce Design',
+    items:[
+      'Custom Shopify or WordPress build',
+      'Mobile-first, conversion-focused UX',
+      'Product photography integration',
+      'Payment + shipping setup',
+      'SEO basics (meta, schema, speed)',
+      'Email automation (Klaviyo / Mailchimp)',
+      'Cart abandonment + retention flows',
+      'Analytics + heatmap setup'
+    ]
+  },
+  content_creative: {
+    icon:'🎨', name:'Content & Creative Production',
+    items:[
+      'Concept development for campaigns',
+      'Graphic design (posts, stories, ads)',
+      'Video editing (reels, shorts, TVCs)',
+      'Photography direction',
+      'Copywriting (Arabic + English)',
+      'Brand identity refresh (if needed)',
+      'Always-on content production'
+    ]
+  },
+  crm_automation: {
+    icon:'🤖', name:'CRM & Automation',
+    items:[
+      'Zoho CRM setup (leads, deals, pipelines)',
+      'WhatsApp + Email automation flows',
+      'Lead scoring + auto-routing',
+      'N8N workflows for repetitive tasks',
+      'Customer journey mapping',
+      'Reporting dashboards'
+    ]
+  },
+  analytics: {
+    icon:'📊', name:'Analytics & Reporting',
+    items:[
+      'GA4 setup + custom events',
+      'Google Tag Manager configuration',
+      'Cross-platform attribution',
+      'Custom dashboards (Looker / Data Studio)',
+      'Weekly + monthly reports',
+      'Strategy reviews based on data',
+      'A/B testing & optimization recommendations'
+    ]
+  }
+};
+
+function renderInquiryView(client){
+  const services = client.services || [];
+  content.innerHTML = `
+    <div class="welcome">
+      <div class="welcome-logo">${client.logo_url ? `<img src="${esc(client.logo_url)}" alt=""/>` : esc(client.name.charAt(0))}</div>
+      <div class="welcome-text">
+        <div class="welcome-hi">Welcome aboard 👋</div>
+        <div class="welcome-name">${esc(client.contact_name || client.name)}</div>
+        <div class="welcome-meta">Let's figure out the best way to help you grow.</div>
+      </div>
+    </div>
+
+    <div class="services-pick">
+      <h2>What would you like to do?</h2>
+      <p>You picked these services: ${services.map(s => `<span class="pf-pill" style="margin:.1rem">${SERVICE_DETAILS[s]?.icon||''} ${SERVICE_DETAILS[s]?.name||s}</span>`).join('')}</p>
+
+      <div class="inquiry-grid">
+        <div class="inquiry-card" onclick="showServiceDetails()">
+          <div class="inquiry-icon">📚</div>
+          <div class="inquiry-title">Learn more about each service</div>
+          <div class="inquiry-desc">See exactly what's included in each service we offer.</div>
+        </div>
+        <a href="https://wa.me/201044724144?text=Hi%20Barkar%2C%20I%27d%20like%20to%20talk%20about%20my%20project" target="_blank" class="inquiry-card">
+          <div class="inquiry-icon">💬</div>
+          <div class="inquiry-title">Talk to Sales</div>
+          <div class="inquiry-desc">WhatsApp us directly for a quick call or chat.</div>
+        </a>
+        <div class="inquiry-card" onclick="goToBrief()">
+          <div class="inquiry-icon">📝</div>
+          <div class="inquiry-title">Fill the Brief Now</div>
+          <div class="inquiry-desc">Skip the chat — answer 5 short steps and we'll respond in 24h with a strategy.</div>
+        </div>
+      </div>
+
+      <div id="serviceDetailsBox" style="display:none;margin-top:2rem">
+        <h3 style="margin-bottom:1rem;font-family:'Space Grotesk',sans-serif">📚 What's included in each service:</h3>
+        ${services.map(s => {
+          const sd = SERVICE_DETAILS[s];
+          if(!sd) return '';
+          return `
+            <div class="service-detail-card">
+              <div class="service-detail-head">
+                <span style="font-size:1.6rem">${sd.icon}</span>
+                <h4>${esc(sd.name)}</h4>
+              </div>
+              <ul class="service-detail-list">
+                ${sd.items.map(i => `<li>${esc(i)}</li>`).join('')}
+              </ul>
+            </div>
+          `;
+        }).join('')}
+        <div style="text-align:center;margin-top:1.5rem">
+          <button class="btn-save" onclick="goToBrief()">📝 Ready? Fill the Brief →</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+window.showServiceDetails = () => {
+  document.getElementById('serviceDetailsBox').style.display = 'block';
+  document.getElementById('serviceDetailsBox').scrollIntoView({behavior:'smooth',block:'start'});
+};
+window.goToBrief = () => {
+  sessionStorage.setItem('barkar_skip_inquiry', '1');
+  location.reload();
+};
+
 async function renderBriefForm(client){
   // Check existing brief
   const { data: existing } = await supabase.from('client_briefs')
@@ -499,8 +661,15 @@ async function renderPortal(client, user){
   // If brief not submitted → show brief form
   // Else → dashboard
   const services = client.services || [];
+
+  // STEP 2: After picking services, show "What's next?" inquiry options (unless already submitted brief)
   if(services.length && !briefSubmitted){
-    renderBriefForm(client);
+    // Check if user has clicked "Fill brief now" or chose a path
+    if(sessionStorage.getItem('barkar_skip_inquiry') === '1'){
+      renderBriefForm(client);
+    } else {
+      renderInquiryView(client);
+    }
     return;
   }
 
@@ -770,9 +939,9 @@ async function renderPortal(client, user){
           `).join('')}
         </div>
         <div class="strategy-actions">
-          ${strategy.is_paid_unlocked && strategy.pdf_url
-            ? `<a href="${esc(strategy.pdf_url)}" target="_blank" class="btn-save" style="text-decoration:none;display:inline-block">⬇ Download PDF</a>`
-            : `<div class="cta-box" style="margin-top:0">PDF download unlocks once payment is confirmed. Talk to the Barkar team to proceed.</div>`}
+          ${strategy.is_paid_unlocked
+            ? `<button class="btn-save" onclick="exportStrategyPDF()" style="display:inline-flex;align-items:center;gap:.4rem">⬇ Export to PDF</button>`
+            : `<div class="cta-box" style="margin-top:0">📄 PDF export unlocks once payment is confirmed. Talk to the Barkar team to proceed.</div>`}
           ${strategy.status === 'sent' ? `<button class="btn-secondary-soft" id="approveStrategyBtn" data-id="${strategy.id}">✅ Approve Strategy</button>` : ''}
         </div>
       </div>
@@ -793,6 +962,29 @@ async function renderPortal(client, user){
     await supabase.from('clients').update({services:[]}).eq('id', client.id);
     location.reload();
   });
+
+  // Export strategy as PDF (browser print)
+  window.exportStrategyPDF = () => {
+    // Hide everything except the strategy section, then print
+    const stylesId = 'pdf-print-style';
+    if(!document.getElementById(stylesId)){
+      const s = document.createElement('style');
+      s.id = stylesId;
+      s.innerHTML = `
+        @media print {
+          body * { visibility: hidden; }
+          .svc-section, .svc-section *, .strategy-block, .strategy-block * { visibility: visible; }
+          .svc-section { position: absolute; left: 0; top: 0; width: 100%; padding: 2rem; background: white !important; color: black !important; border: none !important; }
+          .svc-section h3, .svc-section h4 { color: #1a0f2e !important; }
+          .svc-section, .strategy-block { background: white !important; border-color: #ddd !important; }
+          .strategy-block-body { color: #333 !important; }
+          .strategy-actions, .cta-box, button { display: none !important; }
+        }
+      `;
+      document.head.appendChild(s);
+    }
+    setTimeout(() => window.print(), 100);
+  };
 
   // Approve / Reject content
   window.approveContent = async (id) => {
