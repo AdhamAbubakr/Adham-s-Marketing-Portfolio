@@ -17,6 +17,7 @@
     fullName: 'Barkar Digital Marketing Agency',
     representative: 'Adham Abo Bakr SalahElden',
     title: 'Founder & CEO',
+    nationalId: '30108011329691',
     email: 'info@barkar.net',
     phone: '+20 104 472 4144',
     website: 'barkar.net',
@@ -148,6 +149,7 @@
     doc.setTextColor(...BRAND.muted);
     doc.text('Represented by: ' + BRAND.representative, M, yLeft); yLeft += 4;
     doc.text('Title: ' + BRAND.title, M, yLeft); yLeft += 4;
+    doc.text('National ID: ' + BRAND.nationalId, M, yLeft); yLeft += 4;
     doc.text('Email: ' + BRAND.email, M, yLeft); yLeft += 4;
     doc.text('Phone: ' + BRAND.phone, M, yLeft); yLeft += 4;
     doc.text('Address: ' + BRAND.address, M, yLeft); yLeft += 4;
@@ -344,53 +346,61 @@
     doc.rect(M, y, pageW - M * 2, 26);
     y += 32;
 
-    // Two signature columns
+    // ============================================================
+    // Two signature columns — careful layout, no overlaps
+    // ============================================================
     const sigW = (pageW - M * 2 - 10) / 2;
+    const xL  = M;                    // left column x
+    const xR  = M + sigW + 10;        // right column x
 
-    // Party A — pre-filled / signed by Barkar
+    // Y-anchors for the whole block
+    const labelY = y;                 // section labels (PARTY A / PARTY B)
+    const sigBaseline = y + 16;       // baseline where the actual signature sits
+    const lineY = y + 18;             // signature line just below the signature
+    const infoY = y + 24;             // info text starts below the line
+
+    // ---- COLUMN LABELS ----
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(9);
     doc.setTextColor(...BRAND.purple);
-    doc.text('PARTY A — BARKAR', M, y);
-    y += 4;
+    doc.text('PARTY A — BARKAR', xL, labelY);
+    doc.text('PARTY B — CLIENT', xR, labelY);
+
+    // ---- SIGNATURE LINES ----
     doc.setDrawColor(...BRAND.border);
-    doc.line(M, y, M + sigW, y);
-    let yA = y;
+    doc.setLineWidth(0.4);
+    doc.line(xL, lineY, xL + sigW, lineY);
+    doc.line(xR, lineY, xR + sigW, lineY);
 
-    // Stylized signature script for Adham
-    doc.setFont('helvetica', 'italic');
-    doc.setFontSize(20);
+    // ---- PARTY A: pre-printed signature sitting on the line ----
+    doc.setFont('times', 'italic');
+    doc.setFontSize(22);
     doc.setTextColor(...BRAND.purple);
-    doc.text('Adham A. B.', M + 4, y - 2);
+    doc.text(BRAND.representative, xL + 4, sigBaseline);
 
-    yA = y + 5;
+    // Party A info block under the line
+    let yA = infoY;
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(9);
     doc.setTextColor(...BRAND.text);
-    doc.text(BRAND.representative, M, yA); yA += 4;
+    doc.text(BRAND.representative, xL, yA); yA += 4;
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
     doc.setTextColor(...BRAND.muted);
-    doc.text(BRAND.title + ', Barkar', M, yA); yA += 4;
-    doc.text('Date: ' + (contract.issued_date || new Date().toLocaleDateString('en-GB')), M, yA); yA += 4;
-    doc.text('Signed digitally on behalf of Barkar', M, yA);
+    doc.text(BRAND.title + ', Barkar', xL, yA); yA += 4;
+    doc.text('National ID: ' + BRAND.nationalId, xL, yA); yA += 4;
+    doc.text('Date: ' + (contract.issued_date || new Date().toLocaleDateString('en-GB')), xL, yA); yA += 4;
+    doc.text('Signed digitally on behalf of Barkar', xL, yA);
 
-    // Party B — to be signed by client
-    const xR = M + sigW + 10;
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(9);
-    doc.setTextColor(...BRAND.purple);
-    doc.text('PARTY B — CLIENT', xR, y - 6);
-    doc.setDrawColor(...BRAND.border);
-    doc.line(xR, y, xR + sigW, y);
-    let yB = y + 5;
+    // ---- PARTY B: empty fields under the line for client to fill in ----
+    let yB = infoY;
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
     doc.setTextColor(...BRAND.muted);
-    doc.text('Signature: __________________________', xR, yB); yB += 5;
-    doc.text('Full Name: __________________________', xR, yB); yB += 5;
-    doc.text('National ID: __________________________', xR, yB); yB += 5;
-    doc.text('Date: __________________________', xR, yB);
+    doc.text('Signature:    ____________________________', xR, yB); yB += 5;
+    doc.text('Full Name:    ____________________________', xR, yB); yB += 5;
+    doc.text('National ID:  ____________________________', xR, yB); yB += 5;
+    doc.text('Date:         ____________________________', xR, yB);
 
     // Footer band
     const fy = pageH - 14;
