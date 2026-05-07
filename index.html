@@ -1200,7 +1200,7 @@
         if(window.WEB3FORMS_KEY){
           try {
             const emailBody = `
-🔥 New Lead from Portfolio Website
+🔥 New Lead from Barkar.net
 
 ━━━━━━━━━━━━━━━━━━━━━━━
 👤 NAME:     ${lead.name}
@@ -1215,7 +1215,7 @@
 ${lead.message || '(No message provided)'}
 
 ━━━━━━━━━━━━━━━━━━━━━━━
-View all leads: https://adhamabobakr.netlify.app/admin.html
+View all leads: https://barkar.net/admin.html
             `.trim();
 
             const emailResp = await fetch('https://api.web3forms.com/submit', {
@@ -1224,7 +1224,7 @@ View all leads: https://adhamabobakr.netlify.app/admin.html
               body: JSON.stringify({
                 access_key: window.WEB3FORMS_KEY,
                 subject: `🔥 New Lead: ${lead.name} — ${lead.service}`,
-                from_name: 'Adham Portfolio',
+                from_name: 'Barkar Notifications',
                 name: lead.name,
                 email: lead.email,
                 phone: lead.phone || 'Not provided',
