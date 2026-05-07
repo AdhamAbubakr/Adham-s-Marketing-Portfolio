@@ -916,29 +916,108 @@ async function renderPortal(client, user){
     `;
   }
 
-  // === CONTRACTS (if any sent) ===
-  const { data: contracts } = await supabase.from('contracts').select('*').eq('client_id', client.id).in('status',['sent','signed']);
+  // === CONTRACTS (full workflow) ===
+  const { data: contracts } = await supabase.from('contracts').select('*').eq('client_id', client.id).neq('status','cancelled').order('created_at',{ascending:false});
   if(contracts && contracts.length){
     html += `
       <div class="svc-section">
         <div class="svc-section-head">
-          <h3>📄 Contracts</h3>
+          <h3>📄 Your Contracts</h3>
         </div>
-        ${contracts.map(c => `
+        ${contracts.map(c => {
+          const isSent = c.status === 'sent';
+          const isClientSigned = c.status === 'client_signed';
+          const isVerified = ['verified','team_assigned','active'].includes(c.status);
+          const statusLabel = {
+            draft:'Draft',
+            sent:'Awaiting your signature',
+            client_signed:'Awaiting Barkar verification',
+            verified:'Verified · Pick your team',
+            team_assigned:'Team assigned',
+            active:'Active'
+          }[c.status] || c.status;
+          const statusColor = isVerified ? 'var(--green)' : (isClientSigned ? 'var(--yellow)' : 'var(--purple-light)');
+          return `
           <div class="contract-card">
             <div class="contract-head">
               <div>
                 <div class="contract-title">${esc(c.title)}</div>
                 <div class="contract-meta">
-                  ${esc(c.type)} · ${c.total_value ? c.currency+' '+Number(c.total_value).toLocaleString() : 'Custom'} ·
-                  <span class="badge ${c.status === 'signed' ? 'active' : 'paused'}">${c.status}</span>
+                  ${esc(c.contract_number || '')} · ${esc(c.type)} · ${c.total_value ? c.currency+' '+Number(c.total_value).toLocaleString() : 'Custom'} ·
+                  <span style="color:${statusColor};font-weight:600">${statusLabel}</span>
                 </div>
               </div>
-              ${c.status === 'sent' ? `<button class="btn-save" onclick="openSignContract('${c.id}')">✍️ Sign Contract</button>` : `<span style="color:var(--green)">✓ Signed</span>`}
             </div>
-            <div class="contract-content">${esc(c.content || '').replace(/\n/g,'<br/>')}</div>
+
+            ${(c.services && c.services.length) ? `
+              <div style="margin-top:.8rem">
+                <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem">Services included</div>
+                <div style="display:flex;flex-wrap:wrap;gap:.4rem">
+                  ${c.services.map(s => `<span style="font-size:.75rem;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.3);color:var(--purple-light);padding:.25rem .6rem;border-radius:50px">${esc(s.label)}</span>`).join('')}
+                </div>
+              </div>` : ''}
+
+            <div style="margin-top:1rem;padding:1rem;background:var(--card);border:1px solid var(--border);border-radius:10px">
+              ${c.pdf_url ? `
+                <div style="display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin-bottom:.8rem">
+                  <a href="${c.pdf_url}" target="_blank" rel="noopener" class="btn-save" style="text-decoration:none">⬇ Download Contract PDF</a>
+                  ${isSent ? '<span style="font-size:.78rem;color:var(--muted)">→ Print, sign by hand, scan it back, then upload below</span>' : ''}
+                </div>` : '<div style="color:var(--muted);font-size:.85rem;margin-bottom:.6rem">⏳ PDF being prepared by Barkar.</div>'}
+
+              ${(isSent || isClientSigned) ? `
+                <div style="border-top:1px dashed var(--border);padding-top:.8rem;margin-top:.4rem">
+                  <div style="font-size:.85rem;color:var(--text);margin-bottom:.5rem;font-weight:600">Upload signed copy</div>
+                  <div style="font-size:.78rem;color:var(--muted);margin-bottom:.6rem">Make sure you ticked the services, signed, wrote your full name, national ID, and the hand-written declaration.</div>
+                  <input type="file" id="signedFile_${c.id}" accept="application/pdf,image/*" style="font-size:.85rem;color:var(--muted)" />
+                  <button class="btn-save" style="margin-top:.5rem" onclick="uploadSignedContract('${c.id}')">📤 Upload Signed Copy</button>
+                  ${c.signed_pdf_url ? `<div style="margin-top:.6rem;font-size:.78rem;color:var(--green)">✓ Already uploaded — <a href="${c.signed_pdf_url}" target="_blank" rel="noopener" style="color:var(--purple-light)">view</a>. Re-upload to replace.</div>` : ''}
+                </div>` : ''}
+
+              ${isClientSigned ? `<div style="margin-top:.8rem;padding:.7rem;background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.3);border-radius:8px;font-size:.82rem;color:var(--yellow)">⏳ Barkar is reviewing your signed copy. You'll get email confirmation once verified, then you can pick your team here.</div>`:''}
+
+              ${isVerified ? `<div style="margin-top:.8rem;padding:.7rem;background:rgba(34,216,143,.1);border:1px solid rgba(34,216,143,.3);border-radius:8px;font-size:.82rem;color:var(--green)">✓ Contract verified. Your portal is now unlocked. Scroll down to pick your team and start your project.</div>`:''}
+            </div>
           </div>
-        `).join('')}
+        `;}).join('')}
+      </div>
+    `;
+  }
+
+  // === TEAM PICKER (visible only if any verified contract) ===
+  const verifiedCtr = (contracts || []).find(c => c.is_unlocked);
+  if(verifiedCtr){
+    const { data: teamPool } = await supabase.from('team_members').select('id,full_name,role_title,country,avatar_url,skills').eq('status','active').order('full_name');
+    const picked = verifiedCtr.team_member_ids || [];
+    html += `
+      <div class="svc-section">
+        <div class="svc-section-head">
+          <h3>👥 Pick Your Team</h3>
+          <span class="svc-status-pill" style="background:rgba(34,216,143,.15);color:var(--green)">${picked.length} selected</span>
+        </div>
+        <div style="font-size:.88rem;color:var(--muted);margin-bottom:1rem">Choose the specialists you want on your account. Once submitted, Barkar will confirm and unlock the execution dashboard.</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.8rem">
+          ${(teamPool || []).map(m => {
+            const isPicked = picked.includes(m.id);
+            return `
+              <label style="display:flex;flex-direction:column;gap:.4rem;padding:1rem;background:var(--card);border:1px solid ${isPicked?'var(--purple-light)':'var(--border)'};border-radius:12px;cursor:pointer;transition:all .2s">
+                <div style="display:flex;align-items:center;gap:.6rem">
+                  <input type="checkbox" class="team-pick" data-id="${m.id}" ${isPicked?'checked':''} ${verifiedCtr.execution_unlocked?'disabled':''}/>
+                  <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--magenta));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700">${esc((m.full_name||'?').charAt(0))}</div>
+                  <div>
+                    <div style="font-weight:600;font-size:.92rem;color:var(--text)">${esc(m.full_name||'')}</div>
+                    <div style="font-size:.74rem;color:var(--muted)">${esc(m.role_title||'')}${m.country?' · '+esc(m.country):''}</div>
+                  </div>
+                </div>
+                ${(m.skills||[]).length ? `<div style="display:flex;flex-wrap:wrap;gap:.25rem;margin-top:.3rem">${(m.skills||[]).slice(0,3).map(s => `<span style="font-size:.65rem;color:var(--muted);background:var(--bg2);padding:.15rem .45rem;border-radius:50px">${esc(s)}</span>`).join('')}</div>`:''}
+              </label>
+            `;
+          }).join('')}
+        </div>
+        ${verifiedCtr.execution_unlocked ? `
+          <div style="margin-top:1rem;padding:.9rem;background:rgba(34,216,143,.1);border:1px solid rgba(34,216,143,.3);border-radius:10px;color:var(--green);font-size:.88rem">🚀 Execution unlocked. Your team is locked in and the project is active.</div>
+        ` : `
+          <button class="btn-save" style="margin-top:1rem" onclick="submitTeamPick('${verifiedCtr.id}')">✓ Submit Team Selection</button>
+        `}
       </div>
     `;
   }
@@ -1034,19 +1113,46 @@ async function renderPortal(client, user){
   };
 
   // Sign contract
-  window.openSignContract = async (id) => {
-    const { data: c } = await supabase.from('contracts').select('*').eq('id', id).single();
-    if(!c) return alert('Contract not found');
-    const fullName = prompt('Type your full legal name to sign:', client.contact_name || '');
-    if(!fullName) return;
-    if(!confirm(`Are you sure you want to sign "${c.title}"?\n\nBy signing, you agree to all terms.`)) return;
-    const sigData = `Signed by ${fullName} on ${new Date().toISOString()}`;
-    await supabase.from('contracts').update({
-      status: 'signed',
-      signed_by_client_at: new Date().toISOString(),
-      signature_client_data: sigData
+  // === Upload signed contract PDF/image ===
+  window.uploadSignedContract = async (id) => {
+    const fileInput = document.getElementById('signedFile_'+id);
+    const file = fileInput?.files?.[0];
+    if(!file){ alert('Please choose a file first (the signed PDF or a clear photo of the signed copy).'); return; }
+    if(file.size > 12 * 1024 * 1024){ alert('File too large. Please keep it under 12MB.'); return; }
+
+    const session = await supabase.auth.getSession();
+    const uid = session.data.session?.user?.id;
+    if(!uid){ alert('Session expired. Please refresh.'); return; }
+
+    const ext = (file.name.split('.').pop() || 'pdf').toLowerCase();
+    const path = `${uid}/signed-${id}-${Date.now()}.${ext}`;
+
+    const { error: upErr } = await supabase.storage.from('contracts').upload(path, file, { contentType: file.type, upsert: false });
+    if(upErr){ alert('Upload failed: '+upErr.message+'\n\n(Make sure the contract-workflow.sql has been run.)'); return; }
+    const { data: pub } = supabase.storage.from('contracts').getPublicUrl(path);
+
+    const { error: updErr } = await supabase.from('contracts').update({
+      signed_pdf_url: pub.publicUrl,
+      status: 'client_signed',
+      signed_by_client_at: new Date().toISOString()
     }).eq('id', id);
-    alert('✅ Contract signed successfully!');
+    if(updErr){ alert('Update failed: '+updErr.message); return; }
+
+    alert('✅ Signed copy uploaded!\n\nBarkar will review it and unlock your team picker shortly.');
+    location.reload();
+  };
+
+  // === Submit team selection ===
+  window.submitTeamPick = async (contractId) => {
+    const checked = Array.from(document.querySelectorAll('.team-pick:checked')).map(c => c.dataset.id);
+    if(!checked.length){ alert('Please select at least one team member.'); return; }
+    if(!confirm(`Confirm team selection (${checked.length} member${checked.length>1?'s':''})?`)) return;
+    const { error } = await supabase.from('contracts').update({
+      team_member_ids: checked,
+      status: 'team_assigned'
+    }).eq('id', contractId);
+    if(error){ alert('Error: '+error.message); return; }
+    alert('✓ Team selection submitted. Barkar will confirm and unlock execution shortly.');
     location.reload();
   };
 

@@ -1039,11 +1039,27 @@
           </div>
           <div class="field"><label>Expires On</label><input type="date" id="cn_expires_at" /></div>
         </div>
-        <div class="field"><label>Contract Content / Terms</label>
-          <textarea id="cn_content" rows="10" placeholder="Scope of work, deliverables, payment schedule, terms…"></textarea>
+
+        <div class="field"><label>Services to include in contract (these appear as checkboxes for the client to tick)</label>
+          <div id="cn_services_list" style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;padding:.7rem;background:var(--card);border:1px solid var(--border);border-radius:8px"></div>
+          <div style="font-size:.78rem;color:var(--muted);margin-top:.4rem">Tick at least one service above. The client signs the printed PDF and re-confirms by ticking the boxes themselves.</div>
         </div>
+
+        <div class="field"><label>Client full name (as it should appear on the contract)</label>
+          <input type="text" id="cn_client_full_name" placeholder="e.g. Mohamed Ahmed Hassan" />
+        </div>
+
+        <div class="field"><label>Additional clauses (optional — appended after the standard 10 clauses)</label>
+          <textarea id="cn_clauses" rows="4" placeholder="Any custom terms specific to this engagement…"></textarea>
+        </div>
+
+        <div class="field"><label>Internal notes (admin only — never appears on PDF)</label>
+          <textarea id="cn_content" rows="2" placeholder="Notes for your team / internal context"></textarea>
+        </div>
+
         <div class="modal-actions">
           <button type="button" class="btn-secondary-soft" id="cancelContract">Cancel</button>
+          <button type="button" class="btn-secondary-soft" id="previewContractPDF">👁️ Preview PDF</button>
           <button type="submit" class="btn-primary-purple">💾 Save Draft</button>
         </div>
       </form>
@@ -1099,7 +1115,9 @@
 <!-- Supabase + Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
+<script src="contract-pdf.js"></script>
 
 <script>
 const supabase = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
@@ -2430,12 +2448,34 @@ window.deleteTask = async (id) => {
 };
 
 // =================================================================
-// PHASE 6 — CONTRACTS
+// PHASE 6 — CONTRACTS (Full Workflow)
 // =================================================================
 let allContracts = [];
+
+// Render service checkboxes inside the modal
+function renderServiceCheckboxes(selectedKeys = []) {
+  const wrap = document.getElementById('cn_services_list');
+  if(!wrap || !window.BARKAR_SERVICES) return;
+  wrap.innerHTML = window.BARKAR_SERVICES.map(s => `
+    <label style="display:flex;gap:.5rem;align-items:flex-start;cursor:pointer;padding:.4rem;border-radius:6px;transition:background .2s" onmouseover="this.style.background='var(--card-hover)'" onmouseout="this.style.background='transparent'">
+      <input type="checkbox" value="${s.key}" data-label="${escapeHtml(s.label)}" data-desc="${escapeHtml(s.desc)}" ${selectedKeys.includes(s.key)?'checked':''} style="margin-top:.25rem" />
+      <span>
+        <strong style="display:block;font-size:.88rem;color:var(--text)">${escapeHtml(s.label)}</strong>
+        <span style="font-size:.74rem;color:var(--muted)">${escapeHtml(s.desc)}</span>
+      </span>
+    </label>
+  `).join('');
+}
+
+// Get the picked services (full objects) from the modal
+function readServicesFromModal() {
+  const checks = document.querySelectorAll('#cn_services_list input[type=checkbox]:checked');
+  return Array.from(checks).map(c => ({ key: c.value, label: c.dataset.label, desc: c.dataset.desc }));
+}
+
 async function loadContracts(){
   if(!cachedClientsForContent.length){
-    const { data: cs } = await supabase.from('clients').select('id,name').order('name');
+    const { data: cs } = await supabase.from('clients').select('id,name,email').order('name');
     cachedClientsForContent = cs || [];
   }
   document.getElementById('cn_client_id').innerHTML = '<option value="">Choose client…</option>' + cachedClientsForContent.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
@@ -2443,7 +2483,7 @@ async function loadContracts(){
   const wrap = document.getElementById('contractsList');
   const { data, error } = await supabase
     .from('contracts')
-    .select('*, client:clients(id,name)')
+    .select('*, client:clients(id,name,email,business_name)')
     .order('updated_at',{ascending:false});
   if(error){ wrap.innerHTML = `<div class="empty">⚠️ ${error.message}</div>`; return; }
   allContracts = data || [];
@@ -2451,29 +2491,44 @@ async function loadContracts(){
     wrap.innerHTML = `<div class="empty"><div class="empty-icon">📄</div>No contracts yet.</div>`;
     return;
   }
-  const STATUS_COLORS = {
-    draft:{bg:'rgba(144,144,168,0.15)',color:'var(--muted)'},
-    sent:{bg:'rgba(168,85,247,0.18)',color:'var(--purple-light)'},
-    signed:{bg:'rgba(34,216,143,0.15)',color:'var(--green)'},
-    expired:{bg:'rgba(234,179,8,0.15)',color:'var(--yellow)'},
-    cancelled:{bg:'rgba(239,68,68,0.15)',color:'var(--red)'}
+
+  const STATUS_LABELS = {
+    draft:{label:'Draft',bg:'rgba(144,144,168,0.15)',color:'var(--muted)'},
+    sent:{label:'Sent · Awaiting Client',bg:'rgba(168,85,247,0.18)',color:'var(--purple-light)'},
+    awaiting_upload:{label:'Awaiting Upload',bg:'rgba(234,179,8,0.15)',color:'var(--yellow)'},
+    client_signed:{label:'⏳ Verify Required',bg:'rgba(234,179,8,0.20)',color:'var(--yellow)'},
+    verified:{label:'✓ Verified',bg:'rgba(34,216,143,0.15)',color:'var(--green)'},
+    team_assigned:{label:'Team Assigned',bg:'rgba(34,216,143,0.18)',color:'var(--green)'},
+    active:{label:'🚀 Active',bg:'rgba(34,216,143,0.25)',color:'var(--green)'},
+    signed:{label:'Signed',bg:'rgba(34,216,143,0.15)',color:'var(--green)'},
+    expired:{label:'Expired',bg:'rgba(234,179,8,0.15)',color:'var(--yellow)'},
+    cancelled:{label:'Cancelled',bg:'rgba(239,68,68,0.15)',color:'var(--red)'}
   };
+
   wrap.innerHTML = `
     <div class="table-scroll">
       <table>
-        <thead><tr><th>Title</th><th>Client</th><th>Type</th><th>Value</th><th>Status</th><th>Expires</th><th></th></tr></thead>
+        <thead><tr><th>#</th><th>Title</th><th>Client</th><th>Value</th><th>Status</th><th>Workflow</th><th></th></tr></thead>
         <tbody>
           ${allContracts.map(c => {
-            const sc = STATUS_COLORS[c.status] || STATUS_COLORS.draft;
+            const sc = STATUS_LABELS[c.status] || STATUS_LABELS.draft;
+            const num = c.contract_number || '—';
             return `<tr>
+              <td style="font-family:'Space Grotesk',sans-serif;font-size:.8rem;color:var(--muted)">${escapeHtml(num)}</td>
               <td><strong>${escapeHtml(c.title)}</strong></td>
-              <td>${escapeHtml(c.client?.name || '—')}</td>
-              <td>${escapeHtml(c.type)}</td>
+              <td>${escapeHtml(c.client?.name || '—')}<br/><span style="font-size:.7rem;color:var(--muted)">${escapeHtml(c.client?.email || '')}</span></td>
               <td>${c.total_value ? c.currency + ' ' + Number(c.total_value).toLocaleString() : '—'}</td>
-              <td><span style="display:inline-block;padding:.18rem .55rem;border-radius:50px;font-size:.7rem;font-weight:600;text-transform:uppercase;background:${sc.bg};color:${sc.color}">${c.status}</span></td>
-              <td><div class="lead-meta">${c.expires_at || '—'}</div></td>
+              <td><span style="display:inline-block;padding:.18rem .55rem;border-radius:50px;font-size:.7rem;font-weight:600;background:${sc.bg};color:${sc.color}">${sc.label}</span></td>
               <td>
-                ${c.status === 'draft' ? `<button class="btn-icon" title="Send to client" onclick="sendContract('${c.id}')">📤</button>`:''}
+                ${c.signed_pdf_url ? `<a href="${c.signed_pdf_url}" target="_blank" rel="noopener" style="display:inline-block;font-size:.74rem;color:var(--purple-light);text-decoration:none;margin-bottom:.2rem">📥 Signed copy</a><br/>`:''}
+                ${c.is_unlocked ? '<span style="font-size:.7rem;color:var(--green)">✓ Portal unlocked</span><br/>':''}
+                ${c.execution_unlocked ? '<span style="font-size:.7rem;color:var(--green)">✓ Execution unlocked</span>':''}
+              </td>
+              <td style="white-space:nowrap">
+                <button class="btn-icon" title="Download PDF" onclick="downloadCtr('${c.id}')">⬇️</button>
+                ${(c.status === 'draft' || c.status === 'sent') ? `<button class="btn-icon" title="Send to client" onclick="sendContract('${c.id}')">📤</button>`:''}
+                ${c.status === 'client_signed' ? `<button class="btn-icon" title="Verify signed copy & unlock portal" onclick="verifyContract('${c.id}')" style="color:var(--green)">✅</button>`:''}
+                ${c.is_unlocked && !c.execution_unlocked ? `<button class="btn-icon" title="Unlock execution stage" onclick="unlockExecution('${c.id}')" style="color:var(--purple-light)">🚀</button>`:''}
                 <button class="btn-icon" onclick="openContractModal('${c.id}')">✏️</button>
                 <button class="btn-icon" onclick="deleteContract('${c.id}')">🗑️</button>
               </td>
@@ -2487,22 +2542,48 @@ async function loadContracts(){
 
 const contractModal = document.getElementById('contractModal');
 const contractForm = document.getElementById('contractForm');
+
+function buildContractFromModal(){
+  const clientId = document.getElementById('cn_client_id').value;
+  const client = cachedClientsForContent.find(c => c.id === clientId);
+  return {
+    title: document.getElementById('cn_title').value.trim(),
+    client_full_name: document.getElementById('cn_client_full_name').value.trim() || client?.name,
+    client_default_name: client?.name,
+    business_name: client?.business_name,
+    client_email: client?.email,
+    type: document.getElementById('cn_type').value,
+    total_value: parseFloat(document.getElementById('cn_total_value').value) || null,
+    currency: document.getElementById('cn_currency').value,
+    expires_at: document.getElementById('cn_expires_at').value || null,
+    services: readServicesFromModal(),
+    clauses: document.getElementById('cn_clauses').value.trim() || null,
+    issued_date: new Date().toLocaleDateString('en-GB')
+  };
+}
+
 window.openContractModal = (id) => {
   contractForm.reset();
   document.getElementById('contract_id').value = id || '';
   document.getElementById('contractModalTitle').textContent = id ? 'Edit Contract' : 'New Contract';
+
+  let selectedKeys = [];
   if(id){
     const c = allContracts.find(x => x.id === id);
     if(c){
       document.getElementById('cn_title').value = c.title || '';
       document.getElementById('cn_client_id').value = c.client_id || '';
+      document.getElementById('cn_client_full_name').value = c.client_full_name || '';
       document.getElementById('cn_type').value = c.type || 'retainer';
       document.getElementById('cn_total_value').value = c.total_value || '';
       document.getElementById('cn_currency').value = c.currency || 'USD';
       document.getElementById('cn_expires_at').value = c.expires_at || '';
+      document.getElementById('cn_clauses').value = c.clauses || '';
       document.getElementById('cn_content').value = c.content || '';
+      selectedKeys = (c.services || []).map(s => s.key);
     }
   }
+  renderServiceCheckboxes(selectedKeys);
   contractModal.hidden = false;
 };
 document.getElementById('addContractBtn').addEventListener('click', () => openContractModal());
@@ -2510,16 +2591,35 @@ document.getElementById('closeContractModal').addEventListener('click', () => co
 document.getElementById('cancelContract').addEventListener('click', () => contractModal.hidden = true);
 contractModal.addEventListener('click', e => { if(e.target === contractModal) contractModal.hidden = true; });
 
+// Preview button — generates and opens PDF in new tab without saving
+document.getElementById('previewContractPDF').addEventListener('click', () => {
+  const ctr = buildContractFromModal();
+  if(!ctr.title || !ctr.services.length){ alert('Add a title and at least one service first.'); return; }
+  ctr.contract_number = 'PREVIEW';
+  const doc = window.generateContractPDF(ctr);
+  if(doc){
+    const blob = doc.output('blob');
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+  }
+});
+
 contractForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const id = document.getElementById('contract_id').value;
+  const services = readServicesFromModal();
+  if(!services.length){ alert('Tick at least one service.'); return; }
+
   const payload = {
     title: document.getElementById('cn_title').value.trim(),
     client_id: document.getElementById('cn_client_id').value,
+    client_full_name: document.getElementById('cn_client_full_name').value.trim() || null,
     type: document.getElementById('cn_type').value,
     total_value: parseFloat(document.getElementById('cn_total_value').value) || null,
     currency: document.getElementById('cn_currency').value,
     expires_at: document.getElementById('cn_expires_at').value || null,
+    services: services,
+    clauses: document.getElementById('cn_clauses').value.trim() || null,
     content: document.getElementById('cn_content').value.trim() || null,
     updated_at: new Date().toISOString()
   };
@@ -2531,9 +2631,102 @@ contractForm.addEventListener('submit', async (e) => {
   loadContracts();
 });
 
+// === Download PDF for a saved contract ===
+window.downloadCtr = (id) => {
+  const c = allContracts.find(x => x.id === id);
+  if(!c) return;
+  const built = {
+    ...c,
+    client_email: c.client?.email,
+    business_name: c.client?.business_name,
+    client_default_name: c.client?.name,
+    issued_date: c.sent_at ? new Date(c.sent_at).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB')
+  };
+  window.downloadContractPDF(built);
+};
+
+// === Send contract: generate PDF, upload to storage, mark sent, notify client ===
 window.sendContract = async (id) => {
-  if(!confirm('Send this contract to the client? They will see it in their portal.')) return;
-  await supabase.from('contracts').update({ status:'sent', sent_at: new Date().toISOString() }).eq('id', id);
+  const c = allContracts.find(x => x.id === id);
+  if(!c) return;
+  if(!c.client?.email){ alert('Client has no email on file.'); return; }
+  if(!c.services || !c.services.length){ alert('Add services before sending. Edit the contract first.'); return; }
+  if(!confirm(`Send "${c.title}" to ${c.client.name} (${c.client.email})?\n\nA PDF will be generated and a notification email sent. The client downloads, prints, signs, and uploads the signed copy via their portal.`)) return;
+
+  try{
+    const built = {
+      ...c,
+      client_email: c.client.email,
+      business_name: c.client.business_name,
+      client_default_name: c.client.name,
+      issued_date: new Date().toLocaleDateString('en-GB')
+    };
+    const blob = window.contractPDFBlob(built);
+    if(!blob){ alert('PDF generation failed.'); return; }
+
+    // Upload to Supabase Storage — folder by contract id
+    const path = `${id}/contract-${c.contract_number || id.slice(0,8)}.pdf`;
+    const { error: upErr } = await supabase.storage.from('contracts').upload(path, blob, { contentType:'application/pdf', upsert:true });
+    if(upErr){ console.error(upErr); alert('Upload failed: '+upErr.message+'\n\nMake sure you ran contract-workflow.sql in Supabase.'); return; }
+    const { data: pub } = supabase.storage.from('contracts').getPublicUrl(path);
+    const pdfUrl = pub.publicUrl;
+
+    // Update DB
+    await supabase.from('contracts').update({
+      status:'sent', sent_at: new Date().toISOString(), pdf_url: pdfUrl
+    }).eq('id', id);
+
+    // Send notification to client via Web3Forms
+    if(window.WEB3FORMS_KEY){
+      try{
+        await fetch('https://api.web3forms.com/submit',{
+          method:'POST',
+          headers:{'Content-Type':'application/json','Accept':'application/json'},
+          body: JSON.stringify({
+            access_key: window.WEB3FORMS_KEY,
+            subject: `📄 Your Barkar contract is ready — ${c.contract_number || c.title}`,
+            from_name: 'Barkar',
+            email: c.client.email,
+            name: c.client.name,
+            message: `Hi ${c.client.name},\n\nYour service agreement with Barkar is ready.\n\n📄 Download the contract PDF:\n${pdfUrl}\n\nNext steps:\n1. Print the PDF.\n2. Tick the services you want under "SERVICES SELECTED".\n3. Fill in your full name, national ID, sign on the Party B line.\n4. Write the hand-written declaration confirming the services agreed.\n5. Scan or photograph the signed copy.\n6. Log in to your client portal at https://barkar.net/portal.html and upload the signed copy.\n\nWe'll then verify and unlock the rest of your dashboard so you can pick the team and start execution.\n\nAny questions? Reply to this email.\n\n— Barkar Team\n${pdfUrl}`
+          })
+        });
+      }catch(e){ console.warn('Email notification failed', e); }
+    }
+
+    alert(`✅ Contract sent!\n\nPDF URL:\n${pdfUrl}\n\nThe client will see the contract in their portal and can upload a signed copy when ready.`);
+    loadContracts();
+  }catch(e){
+    console.error(e);
+    alert('Error: '+e.message);
+  }
+};
+
+// === Verify uploaded signed copy → unlock portal ===
+window.verifyContract = async (id) => {
+  const c = allContracts.find(x => x.id === id);
+  if(!c) return;
+  if(!c.signed_pdf_url){ alert('No signed copy uploaded yet.'); return; }
+  if(!confirm(`Verify "${c.title}" signed copy and unlock the next portal stages for this client?\n\nThis grants access to team selection.`)) return;
+  const { error } = await supabase.from('contracts').update({
+    status:'verified',
+    is_unlocked: true,
+    admin_verified_at: new Date().toISOString()
+  }).eq('id', id);
+  if(error){ alert('Error: '+error.message); return; }
+  alert('✅ Verified. Client can now pick their team in the portal.');
+  loadContracts();
+};
+
+// === Unlock execution stage (final step) ===
+window.unlockExecution = async (id) => {
+  const c = allContracts.find(x => x.id === id);
+  if(!c) return;
+  if(!confirm(`Unlock the execution stage for "${c.title}"?\n\nThis activates the project and grants full portal access.`)) return;
+  await supabase.from('contracts').update({
+    status:'active', execution_unlocked: true
+  }).eq('id', id);
+  alert('🚀 Execution unlocked. The client now has full portal access.');
   loadContracts();
 };
 
