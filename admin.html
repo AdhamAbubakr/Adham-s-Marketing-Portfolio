@@ -55,6 +55,10 @@
   .login-back{text-align:center;margin-top:.9rem;font-size:.82rem}
   .login-back a{color:var(--muted);text-decoration:none}
   .login-back a:hover{color:var(--purple-light)}
+  .btn-back-home{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-top:1.2rem;padding:.85rem 1.2rem;background:transparent;border:1px solid var(--border-strong);border-radius:10px;color:var(--text);text-decoration:none;font-weight:600;font-size:.9rem;font-family:'Inter',sans-serif;transition:all .25s}
+  .btn-back-home:hover{background:var(--card-hover);border-color:var(--purple);color:var(--purple-light);transform:translateX(-2px)}
+  .btn-back-icon{font-size:1.1rem;transition:transform .25s}
+  .btn-back-home:hover .btn-back-icon{transform:translateX(-3px)}
 
   /* DASHBOARD */
   .dash{display:none;min-height:100vh}
@@ -379,9 +383,10 @@
       <span>Don't have an account?</span>
       <a href="/signup.html">Create one →</a>
     </div>
-    <div class="login-back">
-      <a href="/">← Back to barkar.net</a>
-    </div>
+    <a href="/" class="btn-back-home">
+      <span class="btn-back-icon">←</span>
+      <span>Back to barkar.net</span>
+    </a>
   </div>
 </div>
 
