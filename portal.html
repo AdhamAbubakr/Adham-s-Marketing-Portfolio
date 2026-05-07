@@ -6,6 +6,9 @@
 <title>Client Portal — Barkar.</title>
 <link rel="icon" type="image/svg+xml" href="brand/favicon.svg" />
 <meta name="robots" content="noindex,nofollow" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
 <style>
@@ -261,9 +264,19 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
   location.href = '/signup.html';
 });
 
+// 10-second safety net
+const safetyTimer = setTimeout(() => {
+  if(!loading.hidden){
+    console.error('[Client Portal] Timeout — init took >10s');
+    loading.hidden = true;
+    app.hidden = false;
+    content.innerHTML = `<div class="empty-state"><div class="empty-icon">⏱️</div><h2>Took too long to load</h2><p>The portal is taking longer than expected. Try reloading or signing out.</p><button onclick="location.reload()" class="btn-save">Reload</button> <button onclick="supabase.auth.signOut().then(()=>location.href='/signup.html')" class="btn-secondary-soft">Sign out</button></div>`;
+  }
+}, 10000);
+
 (async function init(){
   try {
-    console.log('[Client Portal] Init start');
+    console.log('[Client Portal] Init start at', new Date().toISOString());
     const { data:{ session } } = await supabase.auth.getSession();
     if(!session){ location.href = '/signup.html'; return; }
 
@@ -286,12 +299,15 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
 
     if(error || !client){
       console.warn('[Client Portal] No linked client:', error);
+      clearTimeout(safetyTimer);
       renderEmpty(session.user.email);
       return;
     }
 
+    clearTimeout(safetyTimer);
     renderPortal(client, session.user);
   } catch(err){
+    clearTimeout(safetyTimer);
     console.error('[Client Portal] Fatal:', err);
     loading.hidden = true;
     app.hidden = false;
