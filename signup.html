@@ -74,6 +74,16 @@
   .switch-link a:hover{color:var(--magenta)}
   .footer-link{text-align:center;margin-top:1.5rem;font-size:.8rem;color:var(--muted)}
   .footer-link a{color:var(--purple-light);text-decoration:none}
+
+  /* TYPE PICKER */
+  .type-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1.4rem}
+  @media (max-width:480px){.type-grid{grid-template-columns:1fr}}
+  .type-card{background:var(--bg);border:2px solid var(--border);border-radius:14px;padding:1.4rem 1rem;cursor:pointer;transition:all .25s;color:var(--text);font-family:'Inter',sans-serif;text-align:center}
+  .type-card:hover{border-color:var(--purple-light);background:var(--bg3)}
+  .type-card.selected{border-color:var(--purple);background:linear-gradient(135deg,rgba(124,58,237,.18),rgba(236,72,153,.06))}
+  .type-icon{font-size:2.4rem;margin-bottom:.6rem}
+  .type-label{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1rem;margin-bottom:.3rem}
+  .type-desc{font-size:.78rem;color:var(--muted);line-height:1.5}
 </style>
 </head>
 <body>
@@ -103,26 +113,97 @@
 
     <div class="feedback" id="feedback"></div>
 
-    <!-- SIGNUP FORM -->
-    <form id="signupForm">
-      <div class="row">
-        <div>
-          <label>Full Name *</label>
-          <input type="text" id="su_name" required placeholder="John Doe" />
+    <!-- STEP 1: TYPE PICKER (signup only) -->
+    <div id="typePickerStep">
+      <p style="color:var(--muted);font-size:.92rem;margin-bottom:1rem;text-align:center">I'm joining as&hellip;</p>
+      <div class="type-grid">
+        <button type="button" class="type-card" data-type="client">
+          <div class="type-icon">🏢</div>
+          <div class="type-label">A Client</div>
+          <div class="type-desc">I want marketing services for my brand</div>
+        </button>
+        <button type="button" class="type-card" data-type="team">
+          <div class="type-icon">👨‍💻</div>
+          <div class="type-label">Team Member</div>
+          <div class="type-desc">I'm a designer, editor, marketer, or specialist</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 2A: CLIENT SIGNUP FORM -->
+    <form id="signupForm" style="display:none">
+      <input type="hidden" id="signup_type" value="client" />
+      <a href="#" id="backToTypePicker" class="back-link" style="display:inline-flex;align-items:center;gap:.4rem;color:var(--purple-light);text-decoration:none;font-size:.85rem;margin-bottom:.8rem">← Change account type</a>
+
+      <!-- Client fields -->
+      <div id="clientFields">
+        <div class="row">
+          <div>
+            <label>Full Name *</label>
+            <input type="text" id="su_name" required placeholder="John Doe" />
+          </div>
+          <div>
+            <label>Brand / Company *</label>
+            <input type="text" id="su_brand" required placeholder="Acme Inc." />
+          </div>
         </div>
-        <div>
-          <label>Brand / Company *</label>
-          <input type="text" id="su_brand" required placeholder="Acme Inc." />
+        <label>Email *</label>
+        <input type="email" id="su_email" required autocomplete="email" placeholder="you@company.com" />
+        <label>Password *</label>
+        <input type="password" id="su_password" required minlength="6" autocomplete="new-password" placeholder="At least 6 characters" />
+        <div class="row">
+          <div>
+            <label>Phone / WhatsApp</label>
+            <input type="tel" id="su_phone" placeholder="+20 100 000 0000" />
+          </div>
+          <div>
+            <label>Country</label>
+            <input type="text" id="su_country" placeholder="Egypt" />
+          </div>
         </div>
       </div>
-      <label>Email *</label>
-      <input type="email" id="su_email" required autocomplete="email" placeholder="you@company.com" />
-      <label>Password *</label>
-      <input type="password" id="su_password" required minlength="6" autocomplete="new-password" placeholder="At least 6 characters" />
-      <label>Phone / WhatsApp</label>
-      <input type="tel" id="su_phone" placeholder="+20 100 000 0000" />
-      <label>Country</label>
-      <input type="text" id="su_country" placeholder="Egypt" />
+
+      <!-- Team fields (hidden by default) -->
+      <div id="teamFields" style="display:none">
+        <label>Full Name *</label>
+        <input type="text" id="su_team_name" placeholder="Sara Ahmed" />
+        <label>Role / Job Title *</label>
+        <select id="su_team_role">
+          <option value="">Choose your role…</option>
+          <option value="designer">🎨 Graphic Designer</option>
+          <option value="video_editor">🎬 Video Editor</option>
+          <option value="content_creator">📝 Content Creator</option>
+          <option value="copywriter">✍️ Copywriter</option>
+          <option value="social_media_specialist">📱 Social Media Specialist</option>
+          <option value="media_buyer">🎯 Media Buyer (Ads)</option>
+          <option value="account_manager">💼 Account Manager</option>
+          <option value="seo_specialist">🔍 SEO Specialist</option>
+          <option value="web_developer">💻 Web Developer</option>
+          <option value="shopify_designer">🛒 Shopify Designer</option>
+          <option value="wordpress_designer">🌐 WordPress Designer</option>
+          <option value="photographer">📸 Photographer</option>
+          <option value="strategist">🧠 Strategist</option>
+          <option value="other">🌟 Other</option>
+        </select>
+        <label>Email *</label>
+        <input type="email" id="su_team_email" autocomplete="email" placeholder="you@email.com" />
+        <label>Password *</label>
+        <input type="password" id="su_team_password" minlength="6" autocomplete="new-password" placeholder="At least 6 characters" />
+        <div class="row">
+          <div>
+            <label>Phone</label>
+            <input type="tel" id="su_team_phone" placeholder="+20 100 000 0000" />
+          </div>
+          <div>
+            <label>Country</label>
+            <input type="text" id="su_team_country" placeholder="Egypt" />
+          </div>
+        </div>
+        <label>Skills (comma-separated)</label>
+        <input type="text" id="su_team_skills" placeholder="Photoshop, Illustrator, Figma" />
+        <p style="font-size:.78rem;color:var(--muted);margin-top:.4rem">After signup, you'll be able to upload your portfolio and complete your profile.</p>
+      </div>
+
       <button type="submit" id="signupBtn">Create My Account →</button>
     </form>
 
@@ -135,7 +216,7 @@
       <button type="submit" id="loginBtn">Sign In →</button>
     </form>
 
-    <div class="switch-link">
+    <div class="switch-link" id="switchLinkWrap">
       <span id="switchText">Already have an account? <a href="#" onclick="setMode('login');return false">Sign in</a></span>
     </div>
   </div>
@@ -160,10 +241,20 @@ function show(msg, type){
 }
 function clearFb(){ fb.className = 'feedback'; fb.textContent = ''; }
 
+const typePicker = document.getElementById('typePickerStep');
+
 function setMode(mode){
   document.querySelectorAll('.auth-tab').forEach(t => t.classList.toggle('active', t.dataset.mode === mode));
-  signupForm.style.display = mode === 'signup' ? '' : 'none';
-  loginForm.style.display = mode === 'login' ? '' : 'none';
+  if(mode === 'signup'){
+    // Show type picker first; signupForm stays hidden until type picked
+    typePicker.style.display = '';
+    signupForm.style.display = 'none';
+    loginForm.style.display = 'none';
+  } else {
+    typePicker.style.display = 'none';
+    signupForm.style.display = 'none';
+    loginForm.style.display = '';
+  }
   document.getElementById('switchText').innerHTML = mode === 'signup'
     ? `Already have an account? <a href="#" onclick="setMode('login');return false">Sign in</a>`
     : `New here? <a href="#" onclick="setMode('signup');return false">Create an account</a>`;
@@ -172,12 +263,85 @@ function setMode(mode){
 window.setMode = setMode;
 document.querySelectorAll('.auth-tab').forEach(t => t.addEventListener('click', () => setMode(t.dataset.mode)));
 
-// SIGNUP
+// Type picker
+document.querySelectorAll('.type-card').forEach(card => {
+  card.addEventListener('click', () => {
+    const type = card.dataset.type;
+    document.getElementById('signup_type').value = type;
+    typePicker.style.display = 'none';
+    signupForm.style.display = '';
+    if(type === 'client'){
+      document.getElementById('clientFields').style.display = '';
+      document.getElementById('teamFields').style.display = 'none';
+      // Make client fields required
+      ['su_name','su_brand','su_email','su_password'].forEach(id => document.getElementById(id).required = true);
+      ['su_team_name','su_team_role','su_team_email','su_team_password'].forEach(id => document.getElementById(id).required = false);
+    } else {
+      document.getElementById('clientFields').style.display = 'none';
+      document.getElementById('teamFields').style.display = '';
+      ['su_name','su_brand','su_email','su_password'].forEach(id => document.getElementById(id).required = false);
+      ['su_team_name','su_team_role','su_team_email','su_team_password'].forEach(id => document.getElementById(id).required = true);
+    }
+  });
+});
+
+document.getElementById('backToTypePicker').addEventListener('click', (e) => {
+  e.preventDefault();
+  signupForm.style.display = 'none';
+  typePicker.style.display = '';
+  clearFb();
+});
+
+// SIGNUP — handles both client and team
 signupForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   clearFb();
   const btn = document.getElementById('signupBtn');
   btn.disabled = true; btn.textContent = 'Creating account…';
+  const type = document.getElementById('signup_type').value;
+
+  if(type === 'team'){
+    // ===== TEAM MEMBER SIGNUP =====
+    const email = document.getElementById('su_team_email').value.trim();
+    const password = document.getElementById('su_team_password').value;
+    const fullName = document.getElementById('su_team_name').value.trim();
+    const roleTitle = document.getElementById('su_team_role').value;
+    const phone = document.getElementById('su_team_phone').value.trim();
+    const country = document.getElementById('su_team_country').value.trim();
+    const skillsRaw = document.getElementById('su_team_skills').value.trim();
+    const skills = skillsRaw ? skillsRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+
+    const { data, error } = await supabase.auth.signUp({
+      email, password,
+      options: { data: { full_name: fullName, role_title: roleTitle, account_type: 'team' } }
+    });
+    if(error){ show('⚠️ ' + error.message, 'error'); btn.disabled = false; btn.textContent = 'Create My Account →'; return; }
+
+    if(data.user){
+      // Set role to 'team'
+      await supabase.from('user_roles').upsert({ user_id: data.user.id, role: 'team' }, { onConflict:'user_id' });
+
+      // Create team_members record
+      await supabase.from('team_members').insert([{
+        auth_user_id: data.user.id,
+        full_name: fullName,
+        role_title: roleTitle,
+        email,
+        phone: phone || null,
+        country: country || null,
+        skills,
+        status: 'active'
+      }]);
+    }
+
+    show('✅ Team account created! ' + (data.session ? 'Redirecting…' : 'Check your email to verify, then sign in.'), 'success');
+    if(data.session) setTimeout(() => location.href = '/team.html', 1200);
+    else setTimeout(() => setMode('login'), 1800);
+    btn.disabled = false; btn.textContent = 'Create My Account →';
+    return;
+  }
+
+  // ===== CLIENT SIGNUP =====
   const email = document.getElementById('su_email').value.trim();
   const password = document.getElementById('su_password').value;
   const fullName = document.getElementById('su_name').value.trim();
@@ -187,18 +351,11 @@ signupForm.addEventListener('submit', async (e) => {
 
   const { data, error } = await supabase.auth.signUp({
     email, password,
-    options: { data: { full_name: fullName, brand, phone, country } }
+    options: { data: { full_name: fullName, brand, phone, country, account_type: 'client' } }
   });
+  if(error){ show('⚠️ ' + error.message, 'error'); btn.disabled = false; btn.textContent = 'Create My Account →'; return; }
 
-  if(error){
-    show('⚠️ ' + error.message, 'error');
-    btn.disabled = false; btn.textContent = 'Create My Account →';
-    return;
-  }
-
-  // Link to existing client (if Adham already added them) OR create new
   if(data.user){
-    // Look for existing client by contact_email
     const { data: existing } = await supabase.from('clients')
       .select('id,auth_user_id')
       .eq('contact_email', email)
@@ -206,36 +363,28 @@ signupForm.addEventListener('submit', async (e) => {
       .limit(1);
 
     if(existing && existing.length){
-      // Link the auth user to the pre-created client
       await supabase.from('clients').update({
         auth_user_id: data.user.id,
         contact_name: fullName,
         contact_phone: phone || undefined,
       }).eq('id', existing[0].id);
     } else {
-      // Create a fresh client record
       const slug = brand.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') + '-' + Date.now().toString(36);
       await supabase.from('clients').insert([{
-        name: brand,
-        slug,
+        name: brand, slug,
         country: country || null,
         contact_name: fullName,
         contact_email: email,
         contact_phone: phone || null,
         auth_user_id: data.user.id,
-        status: 'active',
-        services: [],
-        platforms: []
+        status: 'active', services: [], platforms: []
       }]);
     }
   }
 
   show('✅ Account created! ' + (data.session ? 'Redirecting…' : 'Check your email to verify, then sign in.'), 'success');
-  if(data.session){
-    setTimeout(() => location.href = '/portal.html', 1200);
-  } else {
-    setTimeout(() => setMode('login'), 1800);
-  }
+  if(data.session) setTimeout(() => location.href = '/portal.html', 1200);
+  else setTimeout(() => setMode('login'), 1800);
   btn.disabled = false; btn.textContent = 'Create My Account →';
 });
 
