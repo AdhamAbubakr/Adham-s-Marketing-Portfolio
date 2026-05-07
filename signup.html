@@ -258,9 +258,10 @@ loginForm.addEventListener('submit', async (e) => {
   // Check role and redirect appropriately
   const { data: roleRow } = await supabase.from('user_roles').select('role').eq('user_id', data.user.id).single();
   const role = roleRow?.role || 'client';
+  const target = role === 'admin' ? '/admin.html' : role === 'team' ? '/team.html' : '/portal.html';
 
   show('✅ Signed in! Redirecting…', 'success');
-  setTimeout(() => location.href = role === 'admin' ? '/admin.html' : '/portal.html', 600);
+  setTimeout(() => location.href = target, 600);
 });
 
 // Already logged in? Skip the page.
@@ -268,7 +269,8 @@ loginForm.addEventListener('submit', async (e) => {
   const { data:{ session } } = await supabase.auth.getSession();
   if(session){
     const { data: roleRow } = await supabase.from('user_roles').select('role').eq('user_id', session.user.id).single();
-    location.href = (roleRow?.role === 'admin') ? '/admin.html' : '/portal.html';
+    const role = roleRow?.role || 'client';
+    location.href = role === 'admin' ? '/admin.html' : role === 'team' ? '/team.html' : '/portal.html';
   }
 })();
 </script>

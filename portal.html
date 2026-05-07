@@ -161,6 +161,32 @@
   .btn-secondary-soft{background:transparent;color:var(--muted);border:1px solid var(--border-strong);padding:.7rem 1.2rem;border-radius:10px;cursor:pointer;font-family:'Inter',sans-serif;font-size:.9rem;font-weight:500}
   .btn-secondary-soft:hover{color:var(--text);border-color:var(--purple)}
 
+  /* CONTENT CARDS */
+  .content-list{display:flex;flex-direction:column;gap:1rem}
+  .content-card{background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:1.4rem;transition:all .2s}
+  .content-card:hover{border-color:var(--border-strong)}
+  .content-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:.8rem;flex-wrap:wrap}
+  .content-card-title{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.05rem;margin-bottom:.3rem}
+  .content-card-meta{display:flex;gap:.6rem;flex-wrap:wrap;font-size:.78rem;color:var(--muted);align-items:center}
+  .content-caption{color:var(--text);font-size:.92rem;line-height:1.7;margin-bottom:.7rem;padding:.7rem 1rem;background:var(--bg);border-radius:10px;border-left:3px solid var(--purple)}
+  .content-hashtags{font-size:.85rem;color:var(--cyan);margin-bottom:.7rem}
+  .content-files{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.7rem;margin-bottom:.8rem}
+  .content-file{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:.5rem;text-align:center;text-decoration:none;color:var(--text);transition:border-color .2s}
+  .content-file:hover{border-color:var(--purple)}
+  .content-file img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;margin-bottom:.4rem}
+  .content-file .file-icon{font-size:2rem;margin:.7rem 0}
+  .content-file .file-name{font-size:.7rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .content-actions{display:flex;justify-content:flex-end;gap:.7rem;flex-wrap:wrap;padding-top:.7rem;border-top:1px solid var(--border);margin-top:.7rem}
+
+  /* CONTRACT CARDS */
+  .contract-card{background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:1.4rem;margin-bottom:1rem}
+  .contract-head{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+  .contract-title{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.1rem;margin-bottom:.3rem}
+  .contract-meta{font-size:.85rem;color:var(--muted)}
+  .contract-content{color:var(--text);font-size:.92rem;line-height:1.8;white-space:pre-wrap;max-height:300px;overflow-y:auto;padding:.5rem 0}
+
+  .pf-pill{background:rgba(124,58,237,.12);border:1px solid var(--border);color:var(--purple-light);font-size:.65rem;padding:.18rem .55rem;border-radius:6px;font-weight:500;text-transform:uppercase;letter-spacing:.05em}
+
   /* STRATEGY VIEW */
   .strategy-sections{display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.4rem}
   .strategy-block{background:var(--bg3);border:1px solid var(--border);border-radius:12px;overflow:hidden}
@@ -227,12 +253,10 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
 
   document.getElementById('userEmail').textContent = session.user.email;
 
-  // If user is admin, redirect to admin
+  // Role-based redirect
   const { data: roleRow } = await supabase.from('user_roles').select('role').eq('user_id', session.user.id).single();
-  if(roleRow?.role === 'admin'){
-    location.href = '/admin.html';
-    return;
-  }
+  if(roleRow?.role === 'admin'){ location.href = '/admin.html'; return; }
+  if(roleRow?.role === 'team'){ location.href = '/team.html'; return; }
 
   // Find linked client record
   const { data: client, error } = await supabase.from('clients').select('*').eq('auth_user_id', session.user.id).maybeSingle();
@@ -630,6 +654,92 @@ async function renderPortal(client, user){
     `;
   }
 
+  // === CONTENT AWAITING APPROVAL ===
+  const { data: pendingContent } = await supabase
+    .from('content_items')
+    .select('*, files:content_files(*), comments:content_comments(*)')
+    .eq('client_id', client.id)
+    .in('status', ['review','approved','scheduled','published'])
+    .order('scheduled_date', {ascending:true, nullsLast:true})
+    .order('created_at', {ascending:false});
+
+  const inReview = (pendingContent || []).filter(c => c.status === 'review');
+  if((pendingContent || []).length){
+    html += `
+      <div class="svc-section">
+        <div class="svc-section-head">
+          <h3>📅 Your Content</h3>
+          ${inReview.length ? `<span class="svc-status-pill" style="background:rgba(234,179,8,.15);color:var(--yellow)">${inReview.length} need your approval</span>` : ''}
+        </div>
+        <div class="content-list">
+          ${(pendingContent || []).map(c => {
+            const sb = {review:'#EAB308', approved:'var(--purple-light)', scheduled:'var(--cyan)', published:'var(--green)'}[c.status];
+            return `
+              <div class="content-card" data-id="${c.id}">
+                <div class="content-card-head">
+                  <div>
+                    <div class="content-card-title">${esc(c.title)}</div>
+                    <div class="content-card-meta">
+                      <span class="pf-pill">${esc(c.platform)}</span>
+                      <span>${esc(c.content_type)}</span>
+                      ${c.scheduled_date ? `<span>📅 ${c.scheduled_date}</span>` : ''}
+                    </div>
+                  </div>
+                  <span class="badge" style="background:rgba(168,85,247,0.18);color:${sb}">${c.status}</span>
+                </div>
+                ${c.caption ? `<div class="content-caption">${esc(c.caption).replace(/\n/g,'<br/>')}</div>` : ''}
+                ${c.hashtags ? `<div class="content-hashtags">${esc(c.hashtags)}</div>` : ''}
+                ${(c.files || []).length ? `
+                  <div class="content-files">
+                    ${c.files.map(f => `
+                      <a href="${esc(f.file_url)}" target="_blank" class="content-file">
+                        ${f.file_type && f.file_type.startsWith('image') ? `<img src="${esc(f.file_url)}" alt=""/>` : `<div class="file-icon">📎</div>`}
+                        <div class="file-name">${esc(f.file_name || 'File')}</div>
+                      </a>
+                    `).join('')}
+                  </div>
+                ` : ''}
+                ${c.status === 'review' ? `
+                  <div class="content-actions">
+                    <button class="btn-secondary-soft" onclick="rejectContent('${c.id}')">✗ Request Changes</button>
+                    <button class="btn-save" onclick="approveContent('${c.id}')">✓ Approve</button>
+                  </div>
+                ` : ''}
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  // === CONTRACTS (if any sent) ===
+  const { data: contracts } = await supabase.from('contracts').select('*').eq('client_id', client.id).in('status',['sent','signed']);
+  if(contracts && contracts.length){
+    html += `
+      <div class="svc-section">
+        <div class="svc-section-head">
+          <h3>📄 Contracts</h3>
+        </div>
+        ${contracts.map(c => `
+          <div class="contract-card">
+            <div class="contract-head">
+              <div>
+                <div class="contract-title">${esc(c.title)}</div>
+                <div class="contract-meta">
+                  ${esc(c.type)} · ${c.total_value ? c.currency+' '+Number(c.total_value).toLocaleString() : 'Custom'} ·
+                  <span class="badge ${c.status === 'signed' ? 'active' : 'paused'}">${c.status}</span>
+                </div>
+              </div>
+              ${c.status === 'sent' ? `<button class="btn-save" onclick="openSignContract('${c.id}')">✍️ Sign Contract</button>` : `<span style="color:var(--green)">✓ Signed</span>`}
+            </div>
+            <div class="contract-content">${esc(c.content || '').replace(/\n/g,'<br/>')}</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
   // === MARKETING STRATEGY (if delivered) ===
   const strategy = (strategies && strategies[0]) || null;
   if(strategy){
@@ -683,6 +793,36 @@ async function renderPortal(client, user){
     await supabase.from('clients').update({services:[]}).eq('id', client.id);
     location.reload();
   });
+
+  // Approve / Reject content
+  window.approveContent = async (id) => {
+    if(!confirm('Approve this content for scheduling?')) return;
+    await supabase.from('content_items').update({ status:'approved', updated_at:new Date().toISOString() }).eq('id', id);
+    location.reload();
+  };
+  window.rejectContent = async (id) => {
+    const feedback = prompt('What needs to change? (Optional feedback)');
+    if(feedback === null) return;
+    await supabase.from('content_items').update({ status:'rejected', client_feedback: feedback, updated_at:new Date().toISOString() }).eq('id', id);
+    location.reload();
+  };
+
+  // Sign contract
+  window.openSignContract = async (id) => {
+    const { data: c } = await supabase.from('contracts').select('*').eq('id', id).single();
+    if(!c) return alert('Contract not found');
+    const fullName = prompt('Type your full legal name to sign:', client.contact_name || '');
+    if(!fullName) return;
+    if(!confirm(`Are you sure you want to sign "${c.title}"?\n\nBy signing, you agree to all terms.`)) return;
+    const sigData = `Signed by ${fullName} on ${new Date().toISOString()}`;
+    await supabase.from('contracts').update({
+      status: 'signed',
+      signed_by_client_at: new Date().toISOString(),
+      signature_client_data: sigData
+    }).eq('id', id);
+    alert('✅ Contract signed successfully!');
+    location.reload();
+  };
 
   // Approve strategy
   document.getElementById('approveStrategyBtn')?.addEventListener('click', async (e) => {
