@@ -45,24 +45,41 @@
 - **Wordmark:** "Adham." with purple period
 
 ## Pages in the platform
-1. `index.html` — Public portfolio (hero, impact counters, about, services, case studies, skills, resume, process, lead form)
-2. `signup.html` — Client signup + login (combined tabs)
-3. `portal.html` — Client portal post-login (service selection on first login, then service-based dashboards)
-4. `admin.html` — Admin command center (Overview / Clients / Leads / Pixels tabs)
-5. `brand-guide.html` — 9-page printable brand identity PDF
-6. `project-summary.html` — Full architectural blueprint PDF
-7. `tracking.js` — Loads pixel IDs from Supabase + injects them site-wide
-8. `supabase-config.js` — Public anon key + Web3Forms key
+1. `index.html` — Public portfolio + lead form
+2. `signup.html` — Combined signup/login with role-based redirect (admin → admin.html, client → portal.html, team → team.html)
+3. `portal.html` — Client portal (services + brief + strategy view + content approval + contract signing)
+4. `admin.html` — Admin command center with 10 tabs:
+   Overview · Clients · Briefs · Strategies · Content · Team · Tasks · Contracts · Leads · Pixels
+5. `team.html` — Team Portal (task list + status updates per team member)
+6. `brand-guide.html` — Printable brand identity PDF
+7. `project-summary.html` — Full architectural blueprint PDF
+8. `tracking.js` — Loads pixel IDs from Supabase + injects them site-wide
+9. `supabase-config.js` — Public anon key + Web3Forms key
 
 ## Database tables (Supabase project rgofucjhmiiyygbcnoim)
-- `leads` — public form submissions (anyone INSERT, admin SELECT/UPDATE/DELETE)
-- `site_settings` — pixel IDs + custom code (anyone SELECT, admin write)
-- `clients` — brands; has `auth_user_id`, `services[]`, `platforms[]`, contact info
-- `client_campaigns` — per-client campaigns + `external_url` (link to Meta/Google ad manager)
-- `client_metrics` — daily numbers per client (spend, reach, conversions, revenue, etc.)
+**Phase 1-3 (live):**
+- `leads` — public form submissions
+- `site_settings` — pixel IDs + custom code
+- `clients` — brands; has `auth_user_id`, `services[]`, `platforms[]`
+- `client_campaigns` — per-client campaigns + `external_url`
+- `client_metrics` — daily numbers per client
 - `client_activity` — action log per client
-- `user_roles` — `role` is `'admin'` or `'client'`; trigger auto-assigns `'client'` on signup
-- Helper function `is_admin()` — checks if `auth.uid()` has admin role
+- `client_briefs` — multi-step questionnaire answers (JSONB)
+- `marketing_strategies` — versioned strategies linked to briefs
+- `user_roles` — `role` is `'admin'` | `'client'` | `'team'`
+- Helper function `is_admin()` — used in RLS
+
+**Phase 4-8 (schema written, run `phase4-8-schema.sql` in Supabase):**
+- `content_items` — content calendar items (post/story/reel/etc) with status workflow
+- `content_files` — files attached to content (designs, videos)
+- `content_comments` — comments thread per content item
+- `team_members` — remote team member profiles
+- `tasks` — task assignments + time tracking
+- `time_logs` — time tracking entries
+- `contracts` — client contracts with e-signature support
+- `invoices` — invoicing tied to contracts
+- `notifications` — in-app notifications
+- `audit_log` — activity audit trail
 
 ## Multi-tenant security (RLS)
 - **Admin** (Adham, role='admin') sees everything
