@@ -35,9 +35,20 @@
   }
   html{scroll-behavior:smooth}
   body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden}
-  ::-webkit-scrollbar{width:6px}
-  ::-webkit-scrollbar-track{background:var(--bg)}
-  ::-webkit-scrollbar-thumb{background:linear-gradient(var(--purple),var(--purple-deep));border-radius:3px}
+  ::-webkit-scrollbar{width:14px;height:14px}
+  ::-webkit-scrollbar-track{background:var(--bg2);border-left:1px solid var(--border)}
+  ::-webkit-scrollbar-thumb{
+    background:linear-gradient(var(--purple),var(--purple-deep));
+    border-radius:8px;border:3px solid var(--bg2);
+    min-height:60px;
+  }
+  ::-webkit-scrollbar-thumb:hover{
+    background:linear-gradient(var(--purple-light),var(--purple));
+    border-width:2px;
+  }
+  ::-webkit-scrollbar-thumb:active{background:var(--purple-light)}
+  /* Firefox */
+  *{scrollbar-width:auto;scrollbar-color:var(--purple) var(--bg2)}
   ::selection{background:var(--purple);color:#fff}
   a{color:inherit}
 
