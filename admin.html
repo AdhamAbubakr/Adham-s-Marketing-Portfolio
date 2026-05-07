@@ -1126,6 +1126,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="supabase-config.js"></script>
 <script src="contract-pdf.js"></script>
 
@@ -2640,15 +2641,24 @@ document.getElementById('cancelContract').addEventListener('click', () => contra
 contractModal.addEventListener('click', e => { if(e.target === contractModal) contractModal.hidden = true; });
 
 // Preview button — generates and opens PDF in new tab without saving
-document.getElementById('previewContractPDF').addEventListener('click', () => {
+document.getElementById('previewContractPDF').addEventListener('click', async (e) => {
+  const btn = e.currentTarget;
   const ctr = buildContractFromModal();
   if(!ctr.title || !ctr.services.length){ alert('Add a title and at least one service first.'); return; }
   ctr.contract_number = 'PREVIEW';
-  const doc = window.generateContractPDF(ctr);
-  if(doc){
-    const blob = doc.output('blob');
-    const url = URL.createObjectURL(blob);
-    window.open(url, '_blank');
+  const orig = btn.innerHTML;
+  btn.disabled = true; btn.innerHTML = '⏳ Generating…';
+  try {
+    const doc = await window.generateContractPDF(ctr);
+    if(doc){
+      const blob = doc.output('blob');
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    }
+  } catch(err) {
+    console.error(err); alert('Preview failed: '+err.message);
+  } finally {
+    btn.disabled = false; btn.innerHTML = orig;
   }
 });
 
@@ -2680,7 +2690,7 @@ contractForm.addEventListener('submit', async (e) => {
 });
 
 // === Download PDF for a saved contract ===
-window.downloadCtr = (id) => {
+window.downloadCtr = async (id) => {
   const c = allContracts.find(x => x.id === id);
   if(!c) return;
   const built = {
@@ -2690,7 +2700,7 @@ window.downloadCtr = (id) => {
     client_default_name: c.client?.contact_name || c.client?.name,
     issued_date: c.sent_at ? new Date(c.sent_at).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB')
   };
-  window.downloadContractPDF(built);
+  await window.downloadContractPDF(built);
 };
 
 // === Send contract: generate PDF, upload to storage, mark sent, notify client ===
@@ -2711,7 +2721,7 @@ window.sendContract = async (id) => {
       client_default_name: c.client?.contact_name || clientName,
       issued_date: new Date().toLocaleDateString('en-GB')
     };
-    const blob = window.contractPDFBlob(built);
+    const blob = await window.contractPDFBlob(built);
     if(!blob){ alert('PDF generation failed.'); return; }
 
     // Upload to Supabase Storage — folder by contract id

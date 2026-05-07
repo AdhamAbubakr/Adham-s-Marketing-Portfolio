@@ -1,13 +1,7 @@
 /* =============================================================================
-   Barkar — Contract PDF Generator (jsPDF based)
-   Produces a professionally-branded contract PDF with:
-   - Barkar header + contract number
-   - Parties section (Barkar + Client)
-   - Services as checkboxes (empty for client to tick)
-   - Terms & clauses
-   - Total value
-   - Pre-printed Barkar signature
-   - Empty client signature / ID / acknowledgment area
+   Barkar — Contract PDF Generator (HTML → Canvas → PDF)
+   Uses html2canvas to render an HTML template (with full Arabic + RTL support
+   via Google Fonts Cairo) and packages each page slice with jsPDF.
    ========================================================================== */
 
 (function(){
@@ -21,19 +15,11 @@
     email: 'info@barkar.net',
     phone: '+20 104 472 4144',
     website: 'barkar.net',
-    address: 'Egypt — Operating across MENA & Africa',
-    purple: [124, 58, 237],
-    purpleLight: [168, 85, 247],
-    magenta: [236, 72, 153],
-    dark: [10, 1, 24],
-    text: [28, 17, 48],
-    muted: [120, 120, 140],
-    border: [220, 220, 235],
-    lightBg: [248, 246, 253]
+    address: 'Egypt — Operating across MENA & Africa'
   };
 
   // ============================================================
-  // Default available services (admin can override per contract)
+  // Default services menu (admin can override per contract)
   // ============================================================
   window.BARKAR_SERVICES = [
     { key: 'social_media', icon: '📱', label: 'Social Media Management',  desc: 'Content strategy, calendar, community, growth' },
@@ -46,222 +32,24 @@
     { key: 'strategy',     icon: '🧠', label: 'Marketing Strategy',        desc: 'Discovery, positioning, channel mix' }
   ];
 
+  function escHtml(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+
   // ============================================================
-  // PDF Generator
+  // Build the contract HTML — uses dir="auto" wherever the value
+  // could be Arabic so the browser handles RTL automatically.
   // ============================================================
-  window.generateContractPDF = function(contract) {
-    if (!window.jspdf) {
-      alert('PDF library not loaded. Please refresh the page and try again.');
-      return null;
-    }
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-
-    const pageW = 210, pageH = 297, M = 18;
-    let y = 0;
-
-    // ===== PAGE 1: HEADER + COVER =====
-    // Top color band
-    doc.setFillColor(...BRAND.purple);
-    doc.rect(0, 0, pageW, 38, 'F');
-    // Magenta accent stripe
-    doc.setFillColor(...BRAND.magenta);
-    doc.rect(0, 38, pageW, 2, 'F');
-
-    // Logo block (white square with B)
-    doc.setFillColor(255, 255, 255);
-    doc.roundedRect(M, 12, 16, 16, 2.5, 2.5, 'F');
-    doc.setTextColor(...BRAND.purple);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(18);
-    doc.text('B', M + 8, 23, { align: 'center' });
-    // Magenta dot
-    doc.setFillColor(...BRAND.magenta);
-    doc.circle(M + 14.5, 14.5, 1.1, 'F');
-
-    // Brand name & tagline (white on purple)
-    doc.setTextColor(255, 255, 255);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(20);
-    doc.text('Barkar.', M + 22, 21);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8.5);
-    doc.text('Digital Marketing Agency', M + 22, 27);
-
-    // Right side: contract number + date
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
-    doc.text('Contract No.', pageW - M, 18, { align: 'right' });
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(12);
-    doc.text(contract.contract_number || 'BARK-2026-XXXX', pageW - M, 24, { align: 'right' });
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
-    doc.text('Issued: ' + (contract.issued_date || new Date().toLocaleDateString('en-GB')), pageW - M, 30, { align: 'right' });
-
-    y = 52;
-
-    // ===== TITLE =====
-    doc.setTextColor(...BRAND.text);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(22);
-    doc.text('SERVICE AGREEMENT', pageW / 2, y, { align: 'center' });
-    y += 6;
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(11);
-    doc.setTextColor(...BRAND.muted);
-    doc.text(contract.title || 'Marketing Services Retainer', pageW / 2, y, { align: 'center' });
-    y += 4;
-
-    // Decorative divider
-    doc.setDrawColor(...BRAND.purpleLight);
-    doc.setLineWidth(0.6);
-    doc.line(pageW / 2 - 15, y + 2, pageW / 2 + 15, y + 2);
-    y += 12;
-
-    // ===== PARTIES =====
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
-    doc.setTextColor(...BRAND.purple);
-    doc.text('PARTIES', M, y);
-    y += 4;
-    doc.setDrawColor(...BRAND.border);
-    doc.setLineWidth(0.3);
-    doc.line(M, y, pageW - M, y);
-    y += 5;
-
-    // Party 1: Barkar (left column)
-    const colW = (pageW - M * 2 - 6) / 2;
-    let yLeft = y, yRight = y;
-
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(9);
-    doc.setTextColor(...BRAND.muted);
-    doc.text('PARTY A — SERVICE PROVIDER', M, yLeft);
-    yLeft += 5;
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
-    doc.setTextColor(...BRAND.text);
-    doc.text(BRAND.fullName, M, yLeft);
-    yLeft += 5;
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
-    doc.setTextColor(...BRAND.muted);
-    doc.text('Represented by: ' + BRAND.representative, M, yLeft); yLeft += 4;
-    doc.text('Title: ' + BRAND.title, M, yLeft); yLeft += 4;
-    doc.text('National ID: ' + BRAND.nationalId, M, yLeft); yLeft += 4;
-    doc.text('Email: ' + BRAND.email, M, yLeft); yLeft += 4;
-    doc.text('Phone: ' + BRAND.phone, M, yLeft); yLeft += 4;
-    doc.text('Address: ' + BRAND.address, M, yLeft); yLeft += 4;
-
-    // Party 2: Client (right column)
-    const xRight = M + colW + 6;
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(9);
-    doc.setTextColor(...BRAND.muted);
-    doc.text('PARTY B — CLIENT', xRight, yRight);
-    yRight += 5;
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
-    doc.setTextColor(...BRAND.text);
-    doc.text(contract.client_full_name || contract.client_default_name || '__________________________', xRight, yRight);
-    yRight += 5;
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
-    doc.setTextColor(...BRAND.muted);
-    if (contract.business_name) { doc.text('Business: ' + contract.business_name, xRight, yRight); yRight += 4; }
-    doc.text('Email: ' + (contract.client_email || '__________________________'), xRight, yRight); yRight += 4;
-    doc.text('Phone: __________________________', xRight, yRight); yRight += 4;
-    doc.text('National ID: __________________________', xRight, yRight); yRight += 4;
-    doc.text('Address: __________________________', xRight, yRight); yRight += 4;
-
-    y = Math.max(yLeft, yRight) + 8;
-
-    // ===== SERVICES =====
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
-    doc.setTextColor(...BRAND.purple);
-    doc.text('SERVICES SELECTED', M, y);
-    y += 4;
-    doc.setDrawColor(...BRAND.border);
-    doc.setLineWidth(0.3);
-    doc.line(M, y, pageW - M, y);
-    y += 6;
-
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
-    doc.setTextColor(...BRAND.muted);
-    doc.text('Tick ☐ the services you would like Barkar to deliver under this agreement:', M, y);
-    y += 6;
-
+  function buildContractHTML(contract) {
     const services = (contract.services && contract.services.length) ? contract.services : window.BARKAR_SERVICES;
-    services.forEach((s) => {
-      // Checkbox
-      doc.setDrawColor(...BRAND.text);
-      doc.setLineWidth(0.4);
-      doc.rect(M, y - 3.5, 4, 4);
-      // Label
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(10);
-      doc.setTextColor(...BRAND.text);
-      doc.text(s.label, M + 7, y);
-      // Description
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(8.5);
-      doc.setTextColor(...BRAND.muted);
-      doc.text(s.desc || '', M + 7, y + 4);
-      y += 9;
-    });
+    const issuedDate = contract.issued_date || new Date().toLocaleDateString('en-GB');
+    const clientName = contract.client_full_name || contract.client_default_name || '__________________________';
+    const clientEmail = contract.client_email || '__________________________';
+    const businessName = contract.business_name || '';
 
-    y += 4;
-
-    // ===== COMMERCIAL TERMS =====
-    if (y > 240) { doc.addPage(); y = M; }
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
-    doc.setTextColor(...BRAND.purple);
-    doc.text('COMMERCIAL TERMS', M, y);
-    y += 4;
-    doc.setDrawColor(...BRAND.border);
-    doc.line(M, y, pageW - M, y);
-    y += 6;
-
-    // Highlighted total box
-    doc.setFillColor(...BRAND.lightBg);
-    doc.roundedRect(M, y, pageW - M * 2, 18, 2, 2, 'F');
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
-    doc.setTextColor(...BRAND.muted);
-    doc.text('Total Contract Value', M + 5, y + 6);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(16);
-    doc.setTextColor(...BRAND.purple);
-    const valueText = contract.total_value
-      ? `${contract.currency || 'USD'} ${Number(contract.total_value).toLocaleString()}`
-      : 'To be quoted upon scope confirmation';
-    doc.text(valueText, M + 5, y + 13);
-
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
-    doc.setTextColor(...BRAND.muted);
-    doc.text('Type: ' + (contract.type || 'retainer').toUpperCase(), pageW - M - 5, y + 7, { align: 'right' });
-    if (contract.expires_at) {
-      doc.text('Valid until: ' + contract.expires_at, pageW - M - 5, y + 13, { align: 'right' });
-    }
-    y += 24;
-
-    // ===== TERMS & CONDITIONS =====
-    if (y > 220) { doc.addPage(); y = M; }
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
-    doc.setTextColor(...BRAND.purple);
-    doc.text('TERMS & CONDITIONS', M, y);
-    y += 4;
-    doc.setDrawColor(...BRAND.border);
-    doc.line(M, y, pageW - M, y);
-    y += 6;
-
-    const defaultClauses = [
+    const clauses = [
       ['1. Scope of Work', 'Barkar will deliver the services ticked above according to the agreed deliverables, timelines, and KPIs documented in the project brief and strategy.'],
       ['2. Term & Renewal', 'This agreement begins on the date both parties sign and continues for the period specified, renewing monthly (for retainers) unless either party gives 30 days written notice.'],
       ['3. Fees & Payment', 'Fees are payable in advance for retainers, or per milestone for project work. Late payments beyond 14 days may pause active deliverables until settled.'],
@@ -274,171 +62,350 @@
       ['10. Governing Law', 'This agreement is governed by the laws of the Arab Republic of Egypt. Disputes will be resolved through good-faith negotiation, then arbitration if needed.']
     ];
 
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
-    defaultClauses.forEach(([heading, body]) => {
-      if (y > 270) { doc.addPage(); y = M; }
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(9.5);
-      doc.setTextColor(...BRAND.text);
-      doc.text(heading, M, y);
-      y += 4;
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(8.5);
-      doc.setTextColor(...BRAND.muted);
-      const lines = doc.splitTextToSize(body, pageW - M * 2);
-      lines.forEach(line => {
-        if (y > 278) { doc.addPage(); y = M; }
-        doc.text(line, M, y);
-        y += 3.8;
-      });
-      y += 2;
+    const totalValueText = contract.total_value
+      ? `${escHtml(contract.currency || 'USD')} ${Number(contract.total_value).toLocaleString()}`
+      : 'To be quoted upon scope confirmation';
+
+    return `
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Caveat:wght@500;700&display=swap');
+  .ctr-page, .ctr-page * { box-sizing: border-box; margin: 0; padding: 0; }
+  .ctr-page {
+    font-family: 'Inter', 'Cairo', system-ui, sans-serif;
+    color: #1c1130; background: #ffffff; width: 794px; line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .ctr-page [dir="rtl"], .ctr-page [dir="auto"]:lang(ar) { font-family: 'Cairo', 'Inter', sans-serif; }
+
+  /* ----- HEADER ----- */
+  .ctr-header {
+    background: #7C3AED; padding: 28px 40px; color: #fff;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 6px solid #EC4899;
+  }
+  .ctr-brand-line { display: flex; align-items: center; gap: 14px; }
+  .ctr-logo {
+    width: 56px; height: 56px; background: #fff; border-radius: 12px;
+    color: #7C3AED; font-weight: 800; font-size: 32px;
+    display: flex; align-items: center; justify-content: center; position: relative;
+  }
+  .ctr-logo::after {
+    content: ''; position: absolute; top: 8px; right: 8px;
+    width: 8px; height: 8px; background: #EC4899; border-radius: 50%;
+  }
+  .ctr-brand-name { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; line-height: 1; }
+  .ctr-brand-tag { font-size: 12px; opacity: 0.92; margin-top: 4px; }
+  .ctr-meta-right { text-align: right; }
+  .ctr-meta-right .lbl { font-size: 11px; opacity: 0.85; }
+  .ctr-meta-right .val { font-size: 18px; font-weight: 700; margin-top: 2px; }
+  .ctr-meta-right .date { font-size: 11px; opacity: 0.85; margin-top: 4px; }
+
+  /* ----- BODY ----- */
+  .ctr-body { padding: 36px 50px 24px; }
+  .ctr-title { font-size: 32px; font-weight: 800; text-align: center; letter-spacing: 1px; }
+  .ctr-subtitle { font-size: 16px; color: #78788C; text-align: center; margin-top: 8px; font-weight: 500; }
+  .ctr-divider {
+    width: 60px; height: 3px;
+    background: linear-gradient(90deg, #A855F7, #EC4899);
+    margin: 14px auto 30px; border-radius: 2px;
+  }
+
+  .ctr-section { margin-top: 28px; }
+  .ctr-h2 {
+    color: #7C3AED; font-size: 13px; font-weight: 700; letter-spacing: 1.5px;
+    margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #E5E5F0;
+  }
+
+  /* ----- PARTIES ----- */
+  .ctr-parties { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .ctr-party {
+    background: #fafaff; border-left: 3px solid #7C3AED;
+    padding: 14px 16px; border-radius: 0 8px 8px 0;
+  }
+  .ctr-party-label { font-size: 10px; color: #78788C; font-weight: 700; letter-spacing: 1px; margin-bottom: 8px; }
+  .ctr-party-name { font-size: 16px; font-weight: 700; color: #1c1130; margin-bottom: 6px; }
+  .ctr-party-detail { font-size: 12px; color: #555; margin-top: 3px; line-height: 1.6; }
+
+  /* ----- SERVICES ----- */
+  .ctr-tick-instr { font-size: 12px; color: #78788C; margin-bottom: 12px; }
+  .ctr-services { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .ctr-service {
+    display: flex; gap: 10px; padding: 10px 12px;
+    border: 1px solid #E5E5F0; border-radius: 8px; background: #fff;
+  }
+  .ctr-checkbox {
+    width: 16px; height: 16px; border: 1.5px solid #1c1130;
+    border-radius: 3px; flex-shrink: 0; margin-top: 2px;
+  }
+  .ctr-svc-label { font-size: 13px; font-weight: 700; color: #1c1130; }
+  .ctr-svc-desc { font-size: 11px; color: #78788C; margin-top: 2px; line-height: 1.5; }
+
+  /* ----- COMMERCIAL ----- */
+  .ctr-total-box {
+    background: linear-gradient(135deg, #f8f6fd, #fef0f8);
+    border: 1px solid #d6c7ee; padding: 18px 22px; border-radius: 10px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .ctr-total-lbl { font-size: 11px; color: #78788C; }
+  .ctr-total-val { font-size: 24px; font-weight: 800; color: #7C3AED; margin-top: 2px; }
+  .ctr-total-side { text-align: right; font-size: 11px; color: #78788C; line-height: 1.7; }
+  .ctr-total-side b { color: #1c1130; font-weight: 700; }
+
+  /* ----- CLAUSES ----- */
+  .ctr-clause { margin-bottom: 10px; }
+  .ctr-clause-h { font-size: 12px; font-weight: 700; color: #1c1130; margin-bottom: 3px; }
+  .ctr-clause-b { font-size: 11px; color: #555; line-height: 1.65; }
+
+  /* ----- ACK + SIGS ----- */
+  .ctr-ack-text { font-size: 13px; line-height: 1.75; color: #1c1130; margin-bottom: 18px; }
+  .ctr-ack-instr { font-size: 12px; font-weight: 700; color: #1c1130; margin-bottom: 6px; }
+  .ctr-ack-box { border: 1.5px solid #d0d0e0; border-radius: 8px; height: 100px; background: #fafaff; }
+
+  .ctr-sigs { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 26px; }
+  .ctr-sig-label { font-size: 10px; color: #7C3AED; font-weight: 700; letter-spacing: 1.5px; margin-bottom: 28px; }
+  .ctr-sig-line { height: 1px; background: #cccdde; margin-bottom: 0; position: relative; }
+  .ctr-sig-handwritten {
+    font-family: 'Caveat', 'Brush Script MT', cursive;
+    font-size: 32px; color: #7C3AED;
+    position: absolute; left: 4px; bottom: -2px;
+    font-weight: 600; line-height: 1; white-space: nowrap;
+  }
+  .ctr-sig-info { font-size: 11px; color: #555; margin-top: 16px; line-height: 1.85; }
+  .ctr-sig-info b { color: #1c1130; font-weight: 700; }
+  .ctr-sig-blank { font-family: 'Inter', monospace; color: #555; font-size: 11px; margin-top: 16px; line-height: 2.1; }
+
+  /* ----- FOOTER ----- */
+  .ctr-footer {
+    background: #7C3AED; color: #fff; padding: 14px 40px;
+    font-size: 11px; text-align: center; line-height: 1.7; margin-top: 36px;
+  }
+  .ctr-footer .small { font-size: 10px; opacity: 0.9; }
+</style>
+
+<div class="ctr-page">
+  <div class="ctr-header">
+    <div class="ctr-brand-line">
+      <div class="ctr-logo">B</div>
+      <div>
+        <div class="ctr-brand-name">Barkar.</div>
+        <div class="ctr-brand-tag">Digital Marketing Agency</div>
+      </div>
+    </div>
+    <div class="ctr-meta-right">
+      <div class="lbl">Contract No.</div>
+      <div class="val">${escHtml(contract.contract_number || 'BARK-2026-XXXX')}</div>
+      <div class="date">Issued: ${escHtml(issuedDate)}</div>
+    </div>
+  </div>
+
+  <div class="ctr-body">
+    <div class="ctr-title">SERVICE AGREEMENT</div>
+    <div class="ctr-subtitle" dir="auto">${escHtml(contract.title || 'Marketing Services Retainer')}</div>
+    <div class="ctr-divider"></div>
+
+    <div class="ctr-section">
+      <div class="ctr-h2">PARTIES</div>
+      <div class="ctr-parties">
+        <div class="ctr-party">
+          <div class="ctr-party-label">PARTY A — SERVICE PROVIDER</div>
+          <div class="ctr-party-name">${escHtml(BRAND.fullName)}</div>
+          <div class="ctr-party-detail">Represented by: ${escHtml(BRAND.representative)}</div>
+          <div class="ctr-party-detail">Title: ${escHtml(BRAND.title)}</div>
+          <div class="ctr-party-detail">National ID: ${escHtml(BRAND.nationalId)}</div>
+          <div class="ctr-party-detail">Email: ${escHtml(BRAND.email)}</div>
+          <div class="ctr-party-detail">Phone: ${escHtml(BRAND.phone)}</div>
+          <div class="ctr-party-detail">Address: ${escHtml(BRAND.address)}</div>
+        </div>
+        <div class="ctr-party">
+          <div class="ctr-party-label">PARTY B — CLIENT</div>
+          <div class="ctr-party-name" dir="auto">${escHtml(clientName)}</div>
+          ${businessName ? `<div class="ctr-party-detail" dir="auto">Business: ${escHtml(businessName)}</div>` : ''}
+          <div class="ctr-party-detail">Email: ${escHtml(clientEmail)}</div>
+          <div class="ctr-party-detail">Phone: __________________________</div>
+          <div class="ctr-party-detail">National ID: __________________________</div>
+          <div class="ctr-party-detail">Address: __________________________</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ctr-section">
+      <div class="ctr-h2">SERVICES SELECTED</div>
+      <div class="ctr-tick-instr">Tick the services you would like Barkar to deliver under this agreement:</div>
+      <div class="ctr-services">
+        ${services.map(s => `
+          <div class="ctr-service">
+            <div class="ctr-checkbox"></div>
+            <div>
+              <div class="ctr-svc-label" dir="auto">${escHtml(s.label)}</div>
+              <div class="ctr-svc-desc" dir="auto">${escHtml(s.desc || '')}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="ctr-section">
+      <div class="ctr-h2">COMMERCIAL TERMS</div>
+      <div class="ctr-total-box">
+        <div>
+          <div class="ctr-total-lbl">Total Contract Value</div>
+          <div class="ctr-total-val">${totalValueText}</div>
+        </div>
+        <div class="ctr-total-side">
+          <div>Type: <b>${escHtml((contract.type || 'retainer').toUpperCase())}</b></div>
+          ${contract.expires_at ? `<div>Valid until: <b>${escHtml(contract.expires_at)}</b></div>` : ''}
+        </div>
+      </div>
+    </div>
+
+    <div class="ctr-section">
+      <div class="ctr-h2">TERMS &amp; CONDITIONS</div>
+      ${clauses.map(([h,b]) => `
+        <div class="ctr-clause">
+          <div class="ctr-clause-h">${escHtml(h)}</div>
+          <div class="ctr-clause-b">${escHtml(b)}</div>
+        </div>
+      `).join('')}
+      ${contract.clauses ? `
+        <div class="ctr-clause">
+          <div class="ctr-clause-h">Additional Terms</div>
+          <div class="ctr-clause-b" dir="auto" style="white-space:pre-wrap">${escHtml(contract.clauses)}</div>
+        </div>
+      ` : ''}
+    </div>
+
+    <div class="ctr-section">
+      <div class="ctr-h2">CLIENT ACKNOWLEDGMENT</div>
+      <div class="ctr-ack-text" dir="auto">
+        I, the undersigned, hereby confirm that I have read, understood, and agreed to enter into this service agreement with Barkar Digital Marketing Agency to receive the services I have ticked above. I acknowledge the commercial terms, terms &amp; conditions, and obligations set forth in this contract, and I authorize Barkar to commence work upon the receipt of this signed copy.
+      </div>
+      <div class="ctr-ack-instr">Hand-written declaration (state services agreed + your full name):</div>
+      <div class="ctr-ack-box"></div>
+
+      <div class="ctr-sigs">
+        <div>
+          <div class="ctr-sig-label">PARTY A — BARKAR</div>
+          <div class="ctr-sig-line">
+            <div class="ctr-sig-handwritten">${escHtml(BRAND.representative)}</div>
+          </div>
+          <div class="ctr-sig-info">
+            <b>${escHtml(BRAND.representative)}</b><br/>
+            ${escHtml(BRAND.title)}, Barkar<br/>
+            National ID: ${escHtml(BRAND.nationalId)}<br/>
+            Date: ${escHtml(issuedDate)}<br/>
+            Signed digitally on behalf of Barkar
+          </div>
+        </div>
+        <div>
+          <div class="ctr-sig-label">PARTY B — CLIENT</div>
+          <div class="ctr-sig-line"></div>
+          <div class="ctr-sig-blank">
+            Signature: __________________________<br/>
+            Full Name: __________________________<br/>
+            National ID: __________________________<br/>
+            Date: __________________________
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ctr-footer">
+    <div>${escHtml(BRAND.fullName)} &nbsp;|&nbsp; ${escHtml(BRAND.email)} &nbsp;|&nbsp; ${escHtml(BRAND.website)}</div>
+    <div class="small">This contract is generated electronically and is legally binding once signed by both parties.</div>
+  </div>
+</div>`;
+  }
+
+  // ============================================================
+  // Generate PDF using HTML → Canvas → PDF pipeline
+  // ============================================================
+  window.generateContractPDF = async function(contract) {
+    if (!window.jspdf || !window.html2canvas) {
+      alert('PDF library not loaded. Please refresh and try again.');
+      return null;
+    }
+    const { jsPDF } = window.jspdf;
+
+    // Render HTML offscreen
+    const container = document.createElement('div');
+    container.style.cssText = 'position:fixed;left:-99999px;top:0;width:794px;background:#fff;';
+    container.innerHTML = buildContractHTML(contract);
+    document.body.appendChild(container);
+
+    // Force-load Cairo + Caveat at the weights we use, then wait for fonts.ready
+    try {
+      if (document.fonts && document.fonts.load) {
+        await Promise.all([
+          document.fonts.load('400 14px "Cairo"'),
+          document.fonts.load('600 14px "Cairo"'),
+          document.fonts.load('700 16px "Cairo"'),
+          document.fonts.load('600 32px "Caveat"'),
+          document.fonts.load('400 14px "Inter"'),
+          document.fonts.load('700 14px "Inter"')
+        ]);
+        await document.fonts.ready;
+      }
+    } catch(_) { /* ignore */ }
+    // Small extra delay so Webkit reliably swaps fonts before snapshot
+    await new Promise(r => setTimeout(r, 350));
+
+    // Capture
+    const innerEl = container.querySelector('.ctr-page');
+    const canvas = await window.html2canvas(innerEl, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#ffffff',
+      logging: false,
+      windowWidth: 794,
+      width: 794
     });
 
-    // Custom additional clauses if provided
-    if (contract.clauses && contract.clauses.trim()) {
-      if (y > 250) { doc.addPage(); y = M; }
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(9.5);
-      doc.setTextColor(...BRAND.text);
-      doc.text('Additional Terms', M, y);
-      y += 4;
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(8.5);
-      doc.setTextColor(...BRAND.muted);
-      const lines = doc.splitTextToSize(contract.clauses, pageW - M * 2);
-      lines.forEach(line => {
-        if (y > 278) { doc.addPage(); y = M; }
-        doc.text(line, M, y);
-        y += 3.8;
-      });
+    document.body.removeChild(container);
+
+    // Build PDF — slice the long canvas across A4 pages
+    const pdf = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
+    const pdfWidth = 210, pdfHeight = 297;
+    const usableH = 290; // leave 7mm at bottom for page numbers
+    const imgRatio = canvas.height / canvas.width;
+    const fullImgH = pdfWidth * imgRatio;
+    const imgData = canvas.toDataURL('image/jpeg', 0.92);
+
+    let positionY = 0;
+    let pageCount = 0;
+    while (positionY < fullImgH) {
+      if (pageCount > 0) pdf.addPage();
+      pdf.addImage(imgData, 'JPEG', 0, -positionY, pdfWidth, fullImgH);
+      // Cover the bottom strip with white so page numbers sit on clean background
+      pdf.setFillColor(255, 255, 255);
+      pdf.rect(0, usableH, pdfWidth, pdfHeight - usableH, 'F');
+      positionY += usableH;
+      pageCount++;
     }
 
-    // ===== ACKNOWLEDGMENT + SIGNATURES (always on a fresh page) =====
-    doc.addPage();
-    y = M + 4;
-
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
-    doc.setTextColor(...BRAND.purple);
-    doc.text('CLIENT ACKNOWLEDGMENT', M, y);
-    y += 4;
-    doc.setDrawColor(...BRAND.border);
-    doc.line(M, y, pageW - M, y);
-    y += 8;
-
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9.5);
-    doc.setTextColor(...BRAND.text);
-    const ackPara = 'I, the undersigned, hereby confirm that I have read, understood, and agreed to enter into this service agreement with Barkar Digital Marketing Agency to receive the services I have ticked above. I acknowledge the commercial terms, terms & conditions, and obligations set forth in this contract, and I authorize Barkar to commence work upon the receipt of this signed copy.';
-    const ackLines = doc.splitTextToSize(ackPara, pageW - M * 2);
-    ackLines.forEach(line => { doc.text(line, M, y); y += 4.5; });
-    y += 4;
-
-    // Hand-written declaration box (client writes by hand)
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(9.5);
-    doc.setTextColor(...BRAND.muted);
-    doc.text('Hand-written declaration (state services agreed + your full name):', M, y);
-    y += 4;
-    doc.setDrawColor(...BRAND.border);
-    doc.setLineWidth(0.4);
-    doc.rect(M, y, pageW - M * 2, 26);
-    y += 32;
-
-    // ============================================================
-    // Two signature columns — careful layout, no overlaps
-    // ============================================================
-    const sigW = (pageW - M * 2 - 10) / 2;
-    const xL  = M;                    // left column x
-    const xR  = M + sigW + 10;        // right column x
-
-    // Y-anchors for the whole block
-    const labelY = y;                 // section labels (PARTY A / PARTY B)
-    const sigBaseline = y + 16;       // baseline where the actual signature sits
-    const lineY = y + 18;             // signature line just below the signature
-    const infoY = y + 24;             // info text starts below the line
-
-    // ---- COLUMN LABELS ----
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(9);
-    doc.setTextColor(...BRAND.purple);
-    doc.text('PARTY A — BARKAR', xL, labelY);
-    doc.text('PARTY B — CLIENT', xR, labelY);
-
-    // ---- SIGNATURE LINES ----
-    doc.setDrawColor(...BRAND.border);
-    doc.setLineWidth(0.4);
-    doc.line(xL, lineY, xL + sigW, lineY);
-    doc.line(xR, lineY, xR + sigW, lineY);
-
-    // ---- PARTY A: pre-printed signature sitting on the line ----
-    doc.setFont('times', 'italic');
-    doc.setFontSize(22);
-    doc.setTextColor(...BRAND.purple);
-    doc.text(BRAND.representative, xL + 4, sigBaseline);
-
-    // Party A info block under the line
-    let yA = infoY;
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(9);
-    doc.setTextColor(...BRAND.text);
-    doc.text(BRAND.representative, xL, yA); yA += 4;
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
-    doc.setTextColor(...BRAND.muted);
-    doc.text(BRAND.title + ', Barkar', xL, yA); yA += 4;
-    doc.text('National ID: ' + BRAND.nationalId, xL, yA); yA += 4;
-    doc.text('Date: ' + (contract.issued_date || new Date().toLocaleDateString('en-GB')), xL, yA); yA += 4;
-    doc.text('Signed digitally on behalf of Barkar', xL, yA);
-
-    // ---- PARTY B: empty fields under the line for client to fill in ----
-    let yB = infoY;
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
-    doc.setTextColor(...BRAND.muted);
-    doc.text('Signature:    ____________________________', xR, yB); yB += 5;
-    doc.text('Full Name:    ____________________________', xR, yB); yB += 5;
-    doc.text('National ID:  ____________________________', xR, yB); yB += 5;
-    doc.text('Date:         ____________________________', xR, yB);
-
-    // Footer band
-    const fy = pageH - 14;
-    doc.setFillColor(...BRAND.purple);
-    doc.rect(0, fy, pageW, 14, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
-    doc.text(BRAND.fullName + '  |  ' + BRAND.email + '  |  ' + BRAND.website, pageW / 2, fy + 6, { align: 'center' });
-    doc.setFontSize(7);
-    doc.text('This contract is generated electronically and is legally binding once signed by both parties.', pageW / 2, fy + 10, { align: 'center' });
-
-    // Page numbers on every page
-    const totalPages = doc.internal.getNumberOfPages();
+    // Page number overlays
+    const totalPages = pdf.internal.getNumberOfPages();
     for (let i = 1; i <= totalPages; i++) {
-      doc.setPage(i);
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(7.5);
-      doc.setTextColor(...BRAND.muted);
-      doc.text('Page ' + i + ' of ' + totalPages, pageW - M, pageH - 4, { align: 'right' });
-      if (i < totalPages) {
-        doc.text(contract.contract_number || '', M, pageH - 4);
-      }
+      pdf.setPage(i);
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(7.5);
+      pdf.setTextColor(120, 120, 140);
+      pdf.text('Page ' + i + ' of ' + totalPages, pdfWidth - 8, pdfHeight - 3, { align: 'right' });
+      if (contract.contract_number) pdf.text(contract.contract_number, 8, pdfHeight - 3);
     }
 
-    return doc;
+    return pdf;
   };
 
-  // Convenience: download the PDF
-  window.downloadContractPDF = function(contract, filename) {
-    const doc = window.generateContractPDF(contract);
+  // Convenience wrappers — both are async now
+  window.downloadContractPDF = async function(contract, filename) {
+    const doc = await window.generateContractPDF(contract);
     if (!doc) return;
     doc.save(filename || ('Barkar_Contract_' + (contract.contract_number || 'draft') + '.pdf'));
   };
 
-  // Get PDF as Blob for upload
-  window.contractPDFBlob = function(contract) {
-    const doc = window.generateContractPDF(contract);
+  window.contractPDFBlob = async function(contract) {
+    const doc = await window.generateContractPDF(contract);
     if (!doc) return null;
     return doc.output('blob');
   };
