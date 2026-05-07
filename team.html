@@ -87,6 +87,14 @@
   .empty-state{text-align:center;padding:5rem 2rem;background:var(--card);border:1px solid var(--border);border-radius:18px;max-width:680px;margin:3rem auto}
   .empty-state h2{font-family:'Space Grotesk',sans-serif;font-size:1.5rem;margin-bottom:.6rem}
   .empty-state p{color:var(--muted);margin-bottom:1.5rem}
+
+  /* ROLE-SPECIFIC ACTIONS */
+  .role-actions{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem}
+  .role-action-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:1.3rem 1.1rem;cursor:pointer;transition:all .25s;text-align:center}
+  .role-action-card:hover{border-color:var(--border-strong);transform:translateY(-3px);background:var(--card-hover)}
+  .role-action-icon{font-size:2rem;margin-bottom:.6rem}
+  .role-action-label{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:.95rem;margin-bottom:.3rem}
+  .role-action-desc{font-size:.78rem;color:var(--muted);line-height:1.5}
 </style>
 </head>
 <body>
@@ -198,22 +206,200 @@ const safetyTimer = setTimeout(() => {
 let currentFilter = 'all';
 let allTasksCache = [];
 
-// Role configuration — each role has its own dashboard cards/icons
+// Role configuration — each role has its own dashboard cards/icons + role-specific quick actions
 const ROLE_CONFIG = {
-  designer: { icon:'🎨', label:'Graphic Designer', taskTypes:['design'], color:'#A855F7' },
-  video_editor: { icon:'🎬', label:'Video Editor', taskTypes:['video'], color:'#EC4899' },
-  content_creator: { icon:'📝', label:'Content Creator', taskTypes:['copy','social'], color:'#06B6D4' },
-  copywriter: { icon:'✍️', label:'Copywriter', taskTypes:['copy'], color:'#22D88F' },
-  social_media_specialist: { icon:'📱', label:'Social Media Specialist', taskTypes:['social','copy'], color:'#A855F7' },
-  media_buyer: { icon:'🎯', label:'Media Buyer', taskTypes:['ads'], color:'#EC4899' },
-  account_manager: { icon:'💼', label:'Account Manager', taskTypes:['strategy','general'], color:'#FEF3C7' },
-  seo_specialist: { icon:'🔍', label:'SEO Specialist', taskTypes:['seo'], color:'#22D88F' },
-  web_developer: { icon:'💻', label:'Web Developer', taskTypes:['development'], color:'#06B6D4' },
-  shopify_designer: { icon:'🛒', label:'Shopify Designer', taskTypes:['development','design'], color:'#22D88F' },
-  wordpress_designer: { icon:'🌐', label:'WordPress Designer', taskTypes:['development','design'], color:'#06B6D4' },
-  photographer: { icon:'📸', label:'Photographer', taskTypes:['design'], color:'#FEF3C7' },
-  strategist: { icon:'🧠', label:'Strategist', taskTypes:['strategy'], color:'#A855F7' },
-  other: { icon:'🌟', label:'Team Member', taskTypes:[], color:'#A855F7' }
+  designer: {
+    icon:'🎨', label:'Graphic Designer', taskTypes:['design'], color:'#A855F7',
+    quickActions:[
+      {icon:'🖼️', label:'Upload design', desc:'Share new artwork with the team', action:'upload'},
+      {icon:'📂', label:'My designs', desc:'View all your delivered work', action:'portfolio'},
+      {icon:'📋', label:'Brand guidelines', desc:'Reference brand assets', action:'brand'},
+    ],
+    metrics:[
+      {label:'Designs This Month', icon:'🎨', source:'tasks_done_month'},
+      {label:'In Progress', icon:'⚡', source:'in_progress'},
+      {label:'Pending Review', icon:'👀', source:'review'},
+      {label:'Avg Turnaround', icon:'⏱️', source:'avg_hours'},
+    ]
+  },
+  video_editor: {
+    icon:'🎬', label:'Video Editor', taskTypes:['video'], color:'#EC4899',
+    quickActions:[
+      {icon:'🎥', label:'Upload final cut', desc:'Submit edited video', action:'upload'},
+      {icon:'📹', label:'My videos', desc:'View all your edits', action:'portfolio'},
+      {icon:'🎞️', label:'Footage library', desc:'Access raw footage', action:'footage'},
+    ],
+    metrics:[
+      {label:'Videos This Month', icon:'🎬', source:'tasks_done_month'},
+      {label:'In Editing', icon:'⚡', source:'in_progress'},
+      {label:'Awaiting Approval', icon:'👀', source:'review'},
+      {label:'Hours Logged', icon:'⏱️', source:'hours_logged'},
+    ]
+  },
+  content_creator: {
+    icon:'📝', label:'Content Creator', taskTypes:['copy','social'], color:'#06B6D4',
+    quickActions:[
+      {icon:'✍️', label:'Submit content', desc:'Post copy & captions', action:'upload'},
+      {icon:'📅', label:'Content calendar', desc:'View scheduled posts', action:'calendar'},
+      {icon:'💡', label:'Content briefs', desc:'See what\'s needed next', action:'briefs'},
+    ],
+    metrics:[
+      {label:'Posts This Month', icon:'📝', source:'tasks_done_month'},
+      {label:'In Progress', icon:'⚡', source:'in_progress'},
+      {label:'Awaiting Approval', icon:'👀', source:'review'},
+      {label:'Total Done', icon:'✅', source:'done'},
+    ]
+  },
+  copywriter: {
+    icon:'✍️', label:'Copywriter', taskTypes:['copy'], color:'#22D88F',
+    quickActions:[
+      {icon:'📝', label:'Submit copy', desc:'Deliver headlines, captions, scripts', action:'upload'},
+      {icon:'📚', label:'Brand voice docs', desc:'Reference tone & style', action:'brand'},
+      {icon:'💬', label:'Messaging library', desc:'Past approved copy', action:'portfolio'},
+    ],
+    metrics:[
+      {label:'Pieces This Month', icon:'✍️', source:'tasks_done_month'},
+      {label:'In Drafting', icon:'⚡', source:'in_progress'},
+      {label:'In Review', icon:'👀', source:'review'},
+      {label:'Total Done', icon:'✅', source:'done'},
+    ]
+  },
+  social_media_specialist: {
+    icon:'📱', label:'Social Media Specialist', taskTypes:['social','copy'], color:'#A855F7',
+    quickActions:[
+      {icon:'📅', label:'Content calendar', desc:'Manage scheduled posts', action:'calendar'},
+      {icon:'📊', label:'Engagement reports', desc:'Track likes, comments, reach', action:'reports'},
+      {icon:'💬', label:'Community inbox', desc:'Reply to messages', action:'inbox'},
+    ],
+    metrics:[
+      {label:'Posts Scheduled', icon:'📅', source:'in_progress'},
+      {label:'Posts Published', icon:'🚀', source:'done'},
+      {label:'In Review', icon:'👀', source:'review'},
+      {label:'Active Clients', icon:'🏢', source:'clients_count'},
+    ]
+  },
+  media_buyer: {
+    icon:'🎯', label:'Media Buyer', taskTypes:['ads'], color:'#EC4899',
+    quickActions:[
+      {icon:'🎯', label:'Active campaigns', desc:'View running ads', action:'campaigns'},
+      {icon:'💰', label:'Spend tracker', desc:'Daily ad spend monitoring', action:'spend'},
+      {icon:'📈', label:'Performance', desc:'ROAS, CTR, CPM by client', action:'reports'},
+    ],
+    metrics:[
+      {label:'Active Campaigns', icon:'🎯', source:'in_progress'},
+      {label:'This Week Spend', icon:'💰', source:'spend_week'},
+      {label:'Optimizations Done', icon:'⚙️', source:'done'},
+      {label:'Active Clients', icon:'🏢', source:'clients_count'},
+    ]
+  },
+  account_manager: {
+    icon:'💼', label:'Account Manager', taskTypes:['strategy','general'], color:'#FEF3C7',
+    quickActions:[
+      {icon:'🏢', label:'My clients', desc:'View accounts you manage', action:'clients'},
+      {icon:'📞', label:'Schedule calls', desc:'Plan client check-ins', action:'calls'},
+      {icon:'📈', label:'Monthly reports', desc:'Review & send to clients', action:'reports'},
+    ],
+    metrics:[
+      {label:'My Clients', icon:'🏢', source:'clients_count'},
+      {label:'Open Tasks', icon:'📋', source:'todo'},
+      {label:'In Review', icon:'👀', source:'review'},
+      {label:'Done This Month', icon:'✅', source:'tasks_done_month'},
+    ]
+  },
+  seo_specialist: {
+    icon:'🔍', label:'SEO Specialist', taskTypes:['seo'], color:'#22D88F',
+    quickActions:[
+      {icon:'🔍', label:'Keyword research', desc:'Track target keywords', action:'keywords'},
+      {icon:'📊', label:'Rankings tracker', desc:'Monitor SERP positions', action:'rankings'},
+      {icon:'🔗', label:'Backlink audit', desc:'Manage link-building', action:'backlinks'},
+    ],
+    metrics:[
+      {label:'Active Audits', icon:'🔍', source:'in_progress'},
+      {label:'Pending Review', icon:'👀', source:'review'},
+      {label:'Completed', icon:'✅', source:'done'},
+      {label:'Active Clients', icon:'🏢', source:'clients_count'},
+    ]
+  },
+  web_developer: {
+    icon:'💻', label:'Web Developer', taskTypes:['development'], color:'#06B6D4',
+    quickActions:[
+      {icon:'🚀', label:'Deploy code', desc:'Push to production', action:'deploy'},
+      {icon:'🐛', label:'Bug tracker', desc:'View open issues', action:'bugs'},
+      {icon:'📦', label:'Repo overview', desc:'Active projects', action:'repos'},
+    ],
+    metrics:[
+      {label:'Active Projects', icon:'💻', source:'in_progress'},
+      {label:'Bugs Open', icon:'🐛', source:'todo'},
+      {label:'In Review', icon:'👀', source:'review'},
+      {label:'Deployed This Month', icon:'🚀', source:'tasks_done_month'},
+    ]
+  },
+  shopify_designer: {
+    icon:'🛒', label:'Shopify Designer', taskTypes:['development','design'], color:'#22D88F',
+    quickActions:[
+      {icon:'🛒', label:'Active stores', desc:'Manage Shopify projects', action:'stores'},
+      {icon:'🎨', label:'Theme library', desc:'Templates & components', action:'themes'},
+      {icon:'⚙️', label:'App integrations', desc:'Manage installed apps', action:'apps'},
+    ],
+    metrics:[
+      {label:'Active Stores', icon:'🛒', source:'in_progress'},
+      {label:'Pending Review', icon:'👀', source:'review'},
+      {label:'Launched', icon:'🚀', source:'done'},
+      {label:'Active Clients', icon:'🏢', source:'clients_count'},
+    ]
+  },
+  wordpress_designer: {
+    icon:'🌐', label:'WordPress Designer', taskTypes:['development','design'], color:'#06B6D4',
+    quickActions:[
+      {icon:'🌐', label:'Active sites', desc:'WordPress projects', action:'sites'},
+      {icon:'🔌', label:'Plugin manager', desc:'Updates & integrations', action:'plugins'},
+      {icon:'🎨', label:'Theme library', desc:'Templates', action:'themes'},
+    ],
+    metrics:[
+      {label:'Active Sites', icon:'🌐', source:'in_progress'},
+      {label:'Pending Review', icon:'👀', source:'review'},
+      {label:'Launched', icon:'🚀', source:'done'},
+      {label:'Active Clients', icon:'🏢', source:'clients_count'},
+    ]
+  },
+  photographer: {
+    icon:'📸', label:'Photographer', taskTypes:['design'], color:'#FEF3C7',
+    quickActions:[
+      {icon:'📷', label:'Upload shoot', desc:'Add photos to library', action:'upload'},
+      {icon:'📅', label:'Bookings', desc:'Schedule shoots', action:'calendar'},
+      {icon:'📂', label:'Photo library', desc:'View all shoots', action:'portfolio'},
+    ],
+    metrics:[
+      {label:'Shoots This Month', icon:'📸', source:'tasks_done_month'},
+      {label:'Editing', icon:'⚡', source:'in_progress'},
+      {label:'In Review', icon:'👀', source:'review'},
+      {label:'Total Delivered', icon:'✅', source:'done'},
+    ]
+  },
+  strategist: {
+    icon:'🧠', label:'Strategist', taskTypes:['strategy'], color:'#A855F7',
+    quickActions:[
+      {icon:'🧠', label:'Active strategies', desc:'Strategies you\'re building', action:'strategies'},
+      {icon:'📊', label:'Client briefs', desc:'Review submitted briefs', action:'briefs'},
+      {icon:'📈', label:'Performance review', desc:'Strategy vs actual', action:'reports'},
+    ],
+    metrics:[
+      {label:'Strategies Active', icon:'🧠', source:'in_progress'},
+      {label:'Pending Review', icon:'👀', source:'review'},
+      {label:'Completed', icon:'✅', source:'done'},
+      {label:'Active Clients', icon:'🏢', source:'clients_count'},
+    ]
+  },
+  other: {
+    icon:'🌟', label:'Team Member', taskTypes:[], color:'#A855F7',
+    quickActions:[],
+    metrics:[
+      {label:'To Do', icon:'📋', source:'todo'},
+      {label:'In Progress', icon:'⚡', source:'in_progress'},
+      {label:'In Review', icon:'👀', source:'review'},
+      {label:'Done', icon:'✅', source:'done'},
+    ]
+  }
 };
 
 async function renderPortal(member, user){
@@ -231,6 +417,20 @@ async function renderPortal(member, user){
   const inProgress = allTasksCache.filter(t => t.status === 'in_progress').length;
   const review = allTasksCache.filter(t => t.status === 'review').length;
   const done = allTasksCache.filter(t => t.status === 'done').length;
+  const monthAgo = Date.now() - 30*24*60*60*1000;
+  const tasksThisMonth = allTasksCache.filter(t => t.completed_at && new Date(t.completed_at).getTime() > monthAgo).length;
+  const uniqueClients = new Set(allTasksCache.filter(t => t.client_id).map(t => t.client_id)).size;
+  const hoursLogged = allTasksCache.reduce((sum, t) => sum + (Number(t.actual_hours)||0), 0);
+
+  // Role metric data sources
+  const metricSources = {
+    todo, in_progress: inProgress, review, done,
+    tasks_done_month: tasksThisMonth,
+    clients_count: uniqueClients,
+    hours_logged: hoursLogged.toFixed(1) + 'h',
+    avg_hours: done ? (hoursLogged/done).toFixed(1) + 'h' : '—',
+    spend_week: '—' // placeholder until ad spend integration
+  };
 
   const initials = (member.full_name || 'M').split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
   const roleConfig = ROLE_CONFIG[member.role_title] || ROLE_CONFIG.other;
@@ -245,12 +445,34 @@ async function renderPortal(member, user){
       </div>
     </div>
 
+    <!-- Role-specific stats -->
     <div class="stats-grid">
-      <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-label">To Do</div><div class="stat-num">${todo}</div></div>
-      <div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-label">In Progress</div><div class="stat-num">${inProgress}</div></div>
-      <div class="stat-card"><div class="stat-icon">👀</div><div class="stat-label">In Review</div><div class="stat-num">${review}</div></div>
-      <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-label">Done</div><div class="stat-num">${done}</div></div>
+      ${(roleConfig.metrics || []).map(m => `
+        <div class="stat-card">
+          <div class="stat-icon">${m.icon}</div>
+          <div class="stat-label">${m.label}</div>
+          <div class="stat-num">${metricSources[m.source] ?? 0}</div>
+        </div>
+      `).join('')}
     </div>
+
+    ${roleConfig.quickActions?.length ? `
+    <div class="section">
+      <div class="section-head">
+        <h3>${roleConfig.icon} ${roleConfig.label} — Quick Actions</h3>
+      </div>
+      <div class="role-actions">
+        ${roleConfig.quickActions.map(a => `
+          <div class="role-action-card" data-action="${a.action}">
+            <div class="role-action-icon">${a.icon}</div>
+            <div class="role-action-label">${a.label}</div>
+            <div class="role-action-desc">${a.desc}</div>
+          </div>
+        `).join('')}
+      </div>
+      <p style="text-align:center;color:var(--muted);font-size:.78rem;margin-top:1rem">Specialized tools for your role — coming soon as Phase 7+ features.</p>
+    </div>
+    ` : ''}
 
     <div class="section">
       <div class="section-head">
@@ -285,6 +507,16 @@ async function renderPortal(member, user){
           <label style="display:block;font-size:.78rem;font-weight:600;margin-bottom:.4rem">Skills (comma-separated)</label>
           <input type="text" id="pf_skills" value="${esc((member.skills||[]).join(', '))}" placeholder="Photoshop, Illustrator, Figma" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:.7rem .9rem;border-radius:9px;font-family:'Inter',sans-serif"/>
         </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:.8rem">
+          <div>
+            <label style="display:block;font-size:.78rem;font-weight:600;margin-bottom:.4rem">📂 Portfolio URL</label>
+            <input type="url" id="pf_portfolio" value="${esc(member.portfolio_url||'')}" placeholder="https://behance.net/yourname" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:.7rem .9rem;border-radius:9px;font-family:'Inter',sans-serif"/>
+          </div>
+          <div>
+            <label style="display:block;font-size:.78rem;font-weight:600;margin-bottom:.4rem">🖼️ Avatar URL (optional)</label>
+            <input type="url" id="pf_avatar" value="${esc(member.avatar_url||'')}" placeholder="https://..." style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:.7rem .9rem;border-radius:9px;font-family:'Inter',sans-serif"/>
+          </div>
+        </div>
         <div style="margin-bottom:1rem">
           <label style="display:block;font-size:.78rem;font-weight:600;margin-bottom:.4rem">Bio / About</label>
           <textarea id="pf_notes" rows="3" placeholder="Tell us about yourself, your style, your achievements…" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:.7rem .9rem;border-radius:9px;font-family:'Inter',sans-serif;resize:vertical">${esc(member.notes||'')}</textarea>
@@ -311,6 +543,8 @@ async function renderPortal(member, user){
       country: document.getElementById('pf_country').value.trim() || null,
       skills,
       notes: document.getElementById('pf_notes').value.trim() || null,
+      portfolio_url: document.getElementById('pf_portfolio').value.trim() || null,
+      avatar_url: document.getElementById('pf_avatar').value.trim() || null,
       updated_at: new Date().toISOString()
     };
     const { error } = await supabase.from('team_members').update(updates).eq('id', member.id);
