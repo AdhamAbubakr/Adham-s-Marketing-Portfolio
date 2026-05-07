@@ -75,6 +75,11 @@
   .footer-link{text-align:center;margin-top:1.5rem;font-size:.8rem;color:var(--muted)}
   .footer-link a{color:var(--purple-light);text-decoration:none}
 
+  /* PASSWORD HINT */
+  .pw-hint{font-size:.78rem;padding:.4rem .8rem;border-radius:8px;margin:-.6rem 0 .8rem}
+  .pw-hint.match{background:rgba(34,216,143,.12);color:var(--green);border:1px solid rgba(34,216,143,.3)}
+  .pw-hint.nomatch{background:rgba(239,68,68,.12);color:var(--red);border:1px solid rgba(239,68,68,.3)}
+
   /* TYPE PICKER */
   .type-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1.4rem}
   @media (max-width:480px){.type-grid{grid-template-columns:1fr}}
@@ -149,8 +154,17 @@
         </div>
         <label>Email *</label>
         <input type="email" id="su_email" required autocomplete="email" placeholder="you@company.com" />
-        <label>Password *</label>
-        <input type="password" id="su_password" required minlength="6" autocomplete="new-password" placeholder="At least 6 characters" />
+        <div class="row">
+          <div>
+            <label>Password *</label>
+            <input type="password" id="su_password" required minlength="6" autocomplete="new-password" placeholder="At least 6 characters" />
+          </div>
+          <div>
+            <label>Confirm Password *</label>
+            <input type="password" id="su_password2" required minlength="6" autocomplete="new-password" placeholder="Type password again" />
+          </div>
+        </div>
+        <div class="pw-hint" id="pwHintClient" style="display:none"></div>
         <div class="row">
           <div>
             <label>Phone / WhatsApp</label>
@@ -187,8 +201,17 @@
         </select>
         <label>Email *</label>
         <input type="email" id="su_team_email" autocomplete="email" placeholder="you@email.com" />
-        <label>Password *</label>
-        <input type="password" id="su_team_password" minlength="6" autocomplete="new-password" placeholder="At least 6 characters" />
+        <div class="row">
+          <div>
+            <label>Password *</label>
+            <input type="password" id="su_team_password" minlength="6" autocomplete="new-password" placeholder="At least 6 characters" />
+          </div>
+          <div>
+            <label>Confirm Password *</label>
+            <input type="password" id="su_team_password2" minlength="6" autocomplete="new-password" placeholder="Type password again" />
+          </div>
+        </div>
+        <div class="pw-hint" id="pwHintTeam" style="display:none"></div>
         <div class="row">
           <div>
             <label>Phone</label>
@@ -292,6 +315,29 @@ document.getElementById('backToTypePicker').addEventListener('click', (e) => {
   clearFb();
 });
 
+// Live password match check
+function setupPasswordMatch(p1Id, p2Id, hintId){
+  const p1 = document.getElementById(p1Id);
+  const p2 = document.getElementById(p2Id);
+  const hint = document.getElementById(hintId);
+  function check(){
+    if(!p2.value){ hint.style.display = 'none'; return; }
+    if(p1.value === p2.value){
+      hint.className = 'pw-hint match';
+      hint.textContent = '✅ Passwords match';
+      hint.style.display = '';
+    } else {
+      hint.className = 'pw-hint nomatch';
+      hint.textContent = '⚠️ Passwords do not match yet';
+      hint.style.display = '';
+    }
+  }
+  p1.addEventListener('input', check);
+  p2.addEventListener('input', check);
+}
+setupPasswordMatch('su_password', 'su_password2', 'pwHintClient');
+setupPasswordMatch('su_team_password', 'su_team_password2', 'pwHintTeam');
+
 // SIGNUP — handles both client and team
 signupForm.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -304,6 +350,17 @@ signupForm.addEventListener('submit', async (e) => {
     // ===== TEAM MEMBER SIGNUP =====
     const email = document.getElementById('su_team_email').value.trim();
     const password = document.getElementById('su_team_password').value;
+    const password2 = document.getElementById('su_team_password2').value;
+    if(password !== password2){
+      show('⚠️ Passwords do not match. Please try again.', 'error');
+      btn.disabled = false; btn.textContent = 'Create My Account →';
+      return;
+    }
+    if(password.length < 6){
+      show('⚠️ Password must be at least 6 characters.', 'error');
+      btn.disabled = false; btn.textContent = 'Create My Account →';
+      return;
+    }
     const fullName = document.getElementById('su_team_name').value.trim();
     const roleTitle = document.getElementById('su_team_role').value;
     const phone = document.getElementById('su_team_phone').value.trim();
@@ -344,6 +401,17 @@ signupForm.addEventListener('submit', async (e) => {
   // ===== CLIENT SIGNUP =====
   const email = document.getElementById('su_email').value.trim();
   const password = document.getElementById('su_password').value;
+  const password2 = document.getElementById('su_password2').value;
+  if(password !== password2){
+    show('⚠️ Passwords do not match. Please try again.', 'error');
+    btn.disabled = false; btn.textContent = 'Create My Account →';
+    return;
+  }
+  if(password.length < 6){
+    show('⚠️ Password must be at least 6 characters.', 'error');
+    btn.disabled = false; btn.textContent = 'Create My Account →';
+    return;
+  }
   const fullName = document.getElementById('su_name').value.trim();
   const brand = document.getElementById('su_brand').value.trim();
   const phone = document.getElementById('su_phone').value.trim();
