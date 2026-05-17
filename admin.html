@@ -499,6 +499,7 @@
       <a href="#team" class="tab" data-tab="team">👨‍💻 Team</a>
       <a href="#tasks" class="tab" data-tab="tasks">✅ Tasks</a>
       <a href="#contracts" class="tab" data-tab="contracts">📄 Contracts</a>
+      <a href="#workflow" class="tab" data-tab="workflow">🔄 Workflow</a>
       <a href="#adaccounts" class="tab" data-tab="adaccounts">📈 Ad Accounts</a>
       <a href="#leads" class="tab" data-tab="leads">📋 Leads</a>
       <a href="#pixels" class="tab" data-tab="pixels">📡 Pixels</a>
@@ -695,6 +696,17 @@
       </div>
       <div id="adAccountsContainer"></div>
     </div><!-- /view-adaccounts -->
+
+    <!-- ===== VIEW: WORKFLOW ===== -->
+    <div class="view" data-view="workflow" hidden>
+      <div class="view-header">
+        <div>
+          <h2 class="view-title">🔄 Workflow Engine</h2>
+          <p class="view-sub">The cycle that links every position. Track handoffs, spot bottlenecks, keep projects moving.</p>
+        </div>
+      </div>
+      <div id="workflowContainer"></div>
+    </div><!-- /view-workflow -->
 
     <!-- ===== VIEW: LEADS ===== -->
     <div class="view" data-view="leads" hidden>
@@ -1209,6 +1221,7 @@
 <script src="supabase-config.js"></script>
 <script src="contract-pdf.js"></script>
 <script src="ad-accounts.js"></script>
+<script src="workflow.js"></script>
 
 <script>
 const supabase = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
@@ -1549,6 +1562,13 @@ function setActiveView(){
       window.AdAccounts.renderAdminView({ container: 'adAccountsContainer', supabase });
     } else {
       document.getElementById('adAccountsContainer').innerHTML = '<div class="empty">⚠️ ad-accounts.js not loaded.</div>';
+    }
+  }
+  if(tab === 'workflow'){
+    if(window.Workflow){
+      window.Workflow.renderAdminWorkflow({ container: 'workflowContainer', supabase });
+    } else {
+      document.getElementById('workflowContainer').innerHTML = '<div class="empty">⚠️ workflow.js not loaded.</div>';
     }
   }
 }

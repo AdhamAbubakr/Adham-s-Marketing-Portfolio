@@ -270,7 +270,7 @@ user_tool_links       (user_id, tool_id, is_favorite, connected)
 | Phase | الهدف | Deliverable |
 |---|---|---|
 | **P1 ✅** | Ad Accounts system | اتعمل (admin/team/client + CSV) |
-| **P2** | Workflow Engine | جدول `workflow_handoffs` + Inbox/Handoff في كل بورتال |
+| **P2 ✅** | Workflow Engine | اتعمل: `workflow_handoffs` + Inbox/Handoff في team + Cycle Health في admin |
 | **P3** | AI Toolkit column | `ai_tools` + الـ right column في كل بورتال + launcher |
 | **P4** | Knowledge Base | upload + default playbooks (نبدأ بـ Media Buyer) |
 | **P5** | Per-Position Dashboards | كل بوزيشن داشبورد متفصّلة (نبدأ بأهم 4: Media Buyer ✅, Social, Content, Strategist) |
