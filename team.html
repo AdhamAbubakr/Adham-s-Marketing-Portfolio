@@ -192,6 +192,7 @@
 <script src="ad-accounts.js"></script>
 <script src="workflow.js"></script>
 <script src="ai-tools.js"></script>
+<script src="knowledge-base.js"></script>
 <script>
 const supabase = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
 const loading = document.getElementById('loading');
@@ -550,6 +551,14 @@ async function renderPortal(member, user){
       <div id="teamAIToolkitContainer"></div>
     </div>
 
+    <!-- Knowledge Base — role playbook + reference files -->
+    <div class="section">
+      <div class="section-head">
+        <h3>📚 Knowledge Base</h3>
+      </div>
+      <div id="teamKBContainer"></div>
+    </div>
+
     <!-- Workflow Inbox (work handed to my role from the previous cycle stage) -->
     <div class="section">
       <div class="section-head">
@@ -656,6 +665,15 @@ async function renderPortal(member, user){
   if(window.AITools){
     window.AITools.renderToolkit({
       container: 'teamAIToolkitContainer',
+      supabase,
+      role: member.role_title || 'other'
+    });
+  }
+
+  // Render Knowledge Base (role playbook + reference files)
+  if(window.KnowledgeBase){
+    window.KnowledgeBase.renderKB({
+      container: 'teamKBContainer',
       supabase,
       role: member.role_title || 'other'
     });
