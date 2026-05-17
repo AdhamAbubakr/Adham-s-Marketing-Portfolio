@@ -5,7 +5,7 @@
 -- It is idempotent: safe to re-run anytime (IF NOT EXISTS / DROP..CREATE / ON CONFLICT).
 -- Prerequisite: the base schema (clients, team_members, user_roles, is_admin())
 -- from database-backup.sql must already exist (your app already uses it).
--- Order: phase4-8 -> delete-user-fix -> contract-workflow -> ad-accounts -> workflow -> ai-tools -> knowledge-base
+-- Order: phase4-8 -> delete-user-fix -> contract-workflow -> ad-accounts -> workflow -> ai-tools -> knowledge-base -> content-team-rls
 -- =============================================================================
 
 
@@ -1445,4 +1445,57 @@ Inbox = your work. Use the AI Toolkit for speed. Hand off cleanly with notes.')
 ON CONFLICT (slug) DO UPDATE SET
   title=EXCLUDED.title, content=EXCLUDED.content, role=EXCLUDED.role,
   type=EXCLUDED.type, sort_order=EXCLUDED.sort_order;
+
+
+-- ####################################################################### --
+-- ##  SECTION: content-team-rls.sql
+-- ####################################################################### --
+
+-- =============================================================================
+-- Barkar OS — Team access to Content pipeline (Phase 5)
+-- =============================================================================
+-- Lets active team members see + work the content pipeline in their portal.
+-- Single-tenant agency model: the agency's own active team collaborates on content.
+-- Run AFTER knowledge-base-schema.sql (additive, idempotent).
+-- =============================================================================
+
+-- helper: is the current user an active team member?
+CREATE OR REPLACE FUNCTION public.is_active_team()
+RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.team_members
+    WHERE auth_user_id = auth.uid() AND status = 'active'
+  );
+$$;
+
+-- ---- content_items ----
+DROP POLICY IF EXISTS "Team reads content" ON public.content_items;
+CREATE POLICY "Team reads content" ON public.content_items FOR SELECT TO authenticated
+  USING (public.is_active_team());
+
+DROP POLICY IF EXISTS "Team updates content" ON public.content_items;
+CREATE POLICY "Team updates content" ON public.content_items FOR UPDATE TO authenticated
+  USING (public.is_active_team()) WITH CHECK (public.is_active_team());
+
+DROP POLICY IF EXISTS "Team creates content" ON public.content_items;
+CREATE POLICY "Team creates content" ON public.content_items FOR INSERT TO authenticated
+  WITH CHECK (public.is_active_team());
+
+-- ---- content_files (creative roles attach assets) ----
+DROP POLICY IF EXISTS "Team reads content files" ON public.content_files;
+CREATE POLICY "Team reads content files" ON public.content_files FOR SELECT TO authenticated
+  USING (public.is_active_team());
+
+DROP POLICY IF EXISTS "Team adds content files" ON public.content_files;
+CREATE POLICY "Team adds content files" ON public.content_files FOR INSERT TO authenticated
+  WITH CHECK (public.is_active_team());
+
+-- ---- content_comments (collaboration notes) ----
+DROP POLICY IF EXISTS "Team reads content comments" ON public.content_comments;
+CREATE POLICY "Team reads content comments" ON public.content_comments FOR SELECT TO authenticated
+  USING (public.is_active_team());
+
+DROP POLICY IF EXISTS "Team adds content comments" ON public.content_comments;
+CREATE POLICY "Team adds content comments" ON public.content_comments FOR INSERT TO authenticated
+  WITH CHECK (public.is_active_team());
 

@@ -193,6 +193,7 @@
 <script src="workflow.js"></script>
 <script src="ai-tools.js"></script>
 <script src="knowledge-base.js"></script>
+<script src="content-team.js"></script>
 <script>
 const supabase = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
 const loading = document.getElementById('loading');
@@ -567,6 +568,14 @@ async function renderPortal(member, user){
       <div id="teamWorkflowContainer"></div>
     </div>
 
+    <!-- Content Pipeline (role-aware view of content_items) -->
+    <div class="section">
+      <div class="section-head">
+        <h3>📅 Content Pipeline</h3>
+      </div>
+      <div id="teamContentContainer"></div>
+    </div>
+
     <!-- Ad Accounts (visible if assigned — RLS handles filtering) -->
     <div class="section">
       <div class="section-head">
@@ -683,6 +692,15 @@ async function renderPortal(member, user){
   if(window.Workflow){
     window.Workflow.renderTeamWorkflow({
       container: 'teamWorkflowContainer',
+      supabase,
+      member
+    });
+  }
+
+  // Render role-aware Content Pipeline
+  if(window.ContentTeam){
+    window.ContentTeam.renderTeamContent({
+      container: 'teamContentContainer',
       supabase,
       member
     });
