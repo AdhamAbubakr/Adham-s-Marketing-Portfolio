@@ -1,0 +1,15 @@
+{
+  "app": { "name": "Barkar OS", "tagline": "Marketing Operating System" },
+  "auth": {
+    "login": "Sign In",
+    "signup": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "asClient": "I'm a Client",
+    "asTeam": "I'm a Team Member",
+    "haveAccount": "Already have an account?",
+    "noAccount": "New here?"
+  },
+  "nav": { "dashboard": "Dashboard", "tasks": "Tasks", "clients": "Clients", "knowledge": "Knowledge", "logout": "Log out" },
+  "common": { "loading": "Loading…", "save": "Save", "cancel": "Cancel", "back": "Back" }
+}

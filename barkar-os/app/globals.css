@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: dark; }
+html, body { background: #0A0118; color: #F8F8FC; }
+/* §16 RTL: use logical properties everywhere (ms-/me-/ps-/pe-, text-start/text-end). */
