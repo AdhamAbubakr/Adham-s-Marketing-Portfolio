@@ -117,12 +117,14 @@ CREATE POLICY "Public read contracts bucket" ON storage.objects
   USING (bucket_id = 'contracts');
 
 -- 8. Helper view for admin dashboard — contracts with client info
-CREATE OR REPLACE VIEW public.contracts_full AS
+-- NOTE: clients table columns are name / contact_email / contact_name
+DROP VIEW IF EXISTS public.contracts_full;
+CREATE VIEW public.contracts_full AS
   SELECT
     c.*,
-    cl.business_name,
-    cl.email AS client_email,
-    cl.full_name AS client_default_name
+    cl.name           AS business_name,
+    cl.contact_email  AS client_email,
+    cl.contact_name   AS client_default_name
   FROM public.contracts c
   LEFT JOIN public.clients cl ON cl.id = c.client_id;
 
